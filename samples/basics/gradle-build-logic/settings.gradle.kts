@@ -1,0 +1,4 @@
+dependencyResolutionManagement {
+    repositories.gradlePluginPortal()
+    includeBuild("../../..")
+}
