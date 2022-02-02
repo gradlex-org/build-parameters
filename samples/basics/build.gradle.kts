@@ -1,6 +1,11 @@
 plugins {
-    id("my-base")
+    id("my-java-project")
 }
+
+
+
+
+
 
 // -PbuildParameter.dbPort=
 // BUILD_PARAMETER_DB_PORT -- BUILD_P_
@@ -14,7 +19,7 @@ plugins {
 }*/
 
 // Variante B
-extensions.create<MyParameters>("params")
+// extensions.create<MyParameters>("params")
 
 /*.apply {
     dbHost.convention("localhost").finalizeValue()

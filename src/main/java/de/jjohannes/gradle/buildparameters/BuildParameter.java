@@ -1,6 +1,19 @@
 package de.jjohannes.gradle.buildparameters;
 
-public @interface BuildParameter {
-    String defaultValue() default ""; // TODO what about optional values?
-    String description() default "";
+import org.gradle.api.provider.Property;
+
+public abstract class BuildParameter {
+
+    private final String name;
+
+    public BuildParameter(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public abstract Property<String> getDefaultValue();
+    public abstract Property<String> getDescription();
 }
