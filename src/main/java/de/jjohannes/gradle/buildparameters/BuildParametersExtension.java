@@ -1,10 +1,25 @@
 package de.jjohannes.gradle.buildparameters;
 
+import org.gradle.api.Action;
+import org.gradle.api.model.ObjectFactory;
+import org.gradle.api.provider.ListProperty;
 
-import org.gradle.api.NamedDomainObjectContainer;
+import javax.inject.Inject;
 
-public interface BuildParametersExtension {
+public abstract class BuildParametersExtension {
 
-    NamedDomainObjectContainer<BuildParameter> getParameters();
+    private final ObjectFactory objects;
 
+    @Inject
+    public BuildParametersExtension(ObjectFactory objects) {
+        this.objects = objects;
+    }
+
+    public void parameter(String name, Action<? super BuildParameter> configure) {
+        BuildParameter parameter = objects.newInstance(BuildParameter.class, name);
+        configure.execute(parameter);
+        getParameters().add(parameter);
+    }
+
+    public abstract ListProperty<BuildParameter> getParameters();
 }

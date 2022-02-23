@@ -4,3 +4,4 @@ plugins {
 }
 
 val host = buildParameters.dbHost
+val tomcatHome = buildParameters.tomcatHome
