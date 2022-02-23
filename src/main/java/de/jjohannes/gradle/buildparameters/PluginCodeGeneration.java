@@ -26,11 +26,22 @@ public abstract class PluginCodeGeneration extends DefaultTask {
     public void generate() throws IOException {
         // TODO java package structure
         Path extensionSource = getOutputDirectory().get().file("BuildParametersExtension.java").getAsFile().toPath();
-        final List<String> lines = new ArrayList<>();
+        List<String> lines = new ArrayList<>();
+        lines.add("import org.gradle.api.provider.ProviderFactory;");
+        lines.add("import javax.inject.Inject;");
         lines.add("public abstract class BuildParametersExtension {");
         for (BuildParameter parameter : getParameters().get()) {
+            lines.add("    private final String " + parameter.getName() + ";");
+        }
+        lines.add("    @Inject");
+        lines.add("    public BuildParametersExtension(ProviderFactory providers) {");
+        for (BuildParameter parameter : getParameters().get()) {
+            lines.add("        this." + parameter.getName() + " = providers.gradleProperty(\"" +  parameter.getName() + "\").getOrElse(\"" + parameter.getDefaultValue().get() + "\");");
+        }
+        lines.add("    }");
+        for (BuildParameter parameter : getParameters().get()) {
             lines.add("    public String get" + capitalize(parameter.getName()) + "() {");
-            lines.add("        return \"" + parameter.getDefaultValue().get() + "\";");
+            lines.add("        return this." + parameter.getName() + ";");
             lines.add("    }");
         }
         lines.add("}");
