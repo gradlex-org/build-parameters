@@ -3,6 +3,7 @@ plugins {
 }
 
 buildParameters {
+    pluginId("de.benediktritter.build-params")
     parameter("dbHost") {
         defaultValue.set("localhost")
         description.set("Define the database host")

@@ -14,24 +14,17 @@ public class BuildParametersPlugin implements Plugin<Project> {
     public void apply(Project project) {
         project.getPlugins().apply(JavaGradlePluginPlugin.class);
 
-        BuildParametersExtension buildParameters =
-                project.getExtensions().create("buildParameters", BuildParametersExtension.class);
-
         GradlePluginDevelopmentExtension gradlePlugins =
                 project.getExtensions().getByType(GradlePluginDevelopmentExtension.class);
+        BuildParametersExtension extension =
+                project.getExtensions().create("buildParameters", BuildParametersExtension.class, project.getObjects(), gradlePlugins);
 
         TaskProvider<PluginCodeGeneration> task = project.getTasks().register("generatePluginCode", PluginCodeGeneration.class, it -> {
-            it.getParameters().convention(buildParameters.getParameters());
+            it.getParameters().convention(extension.getParameters());
             it.getOutputDirectory().convention(project.getLayout().getBuildDirectory().dir("generated/sources/build-parameters-plugin/java/main"));
         });
         SourceSetContainer sourceSets = project.getExtensions().getByType(SourceSetContainer.class);
         SourceSet main = sourceSets.getByName("main");
         main.getJava().srcDir(task.flatMap(PluginCodeGeneration::getOutputDirectory));
-
-        gradlePlugins.getPlugins().create("my-build-params", p -> {
-            p.setId("my-build-params");
-            p.setImplementationClass("BuildParametersPlugin");
-            p.setDescription("This thing is generated and gives you your parameters");
-        });
     }
 }

@@ -1,6 +1,6 @@
 plugins {
     id("java-library")
-    id("my-build-params")
+    id("de.benediktritter.build-params")
 }
 
 val host = buildParameters.dbHost
