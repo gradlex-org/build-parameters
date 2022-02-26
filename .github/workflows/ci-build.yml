@@ -18,6 +18,19 @@ jobs:
           distribution: 'zulu'
           java-version: 11
       - name: gradle check
+        id: gradle
         uses: gradle/gradle-build-action@v2.1.0
         with:
           arguments: :check
+      - name: Comment build scan url
+        uses: actions/github-script@v5
+        if: github.event_name == 'pull_request' && failure()
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '❌ ${{ github.workflow }} failed: ${{ steps.gradle.outputs.build-scan-url }}'
+            })
