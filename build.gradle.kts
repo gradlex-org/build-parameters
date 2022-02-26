@@ -1,4 +1,5 @@
 plugins {
+    id("groovy")
     id("java-gradle-plugin")
     id("maven-publish")
 }
@@ -10,4 +11,13 @@ gradlePlugin {
         id = "${project.group}.${project.name}"
         implementationClass = "${project.group}.buildparameters.BuildParametersPlugin"
     }
+}
+
+dependencies {
+    testImplementation("org.spockframework:spock-core:2.1-groovy-3.0")
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
+    maxParallelForks = 4
 }
