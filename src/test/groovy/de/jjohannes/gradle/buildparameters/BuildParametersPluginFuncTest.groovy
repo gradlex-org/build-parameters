@@ -1,7 +1,6 @@
 package de.jjohannes.gradle.buildparameters
 
 import de.jjohannes.gradle.buildparameters.fixture.GradleBuild
-import org.gradle.testkit.runner.TaskOutcome
 import spock.lang.AutoCleanup
 import spock.lang.Specification
 
@@ -11,35 +10,29 @@ class BuildParametersPluginFuncTest extends Specification {
     @AutoCleanup
     GradleBuild build = new GradleBuild()
 
-    def "build depends on generatePluginCode"() {
-        given:
-        buildFile << """
+    File buildLogicBuildFile
+
+    def setup() {
+        buildLogicBuildFile = build.file("build-logic/build.gradle") << """
             plugins {
                 id 'de.jjohannes.gradle.build-parameters'
             }
-            
-            buildParameters {
-                parameter("myParameter") {
-                    description = "A simple string parameter"
-                    defaultValue = "foo"
-                }
+        """
+        settingsFile << """
+            pluginManagement {
+                includeBuild("build-logic")
             }
         """
-
-        when:
-        def result = build("build")
-
-        then:
-        result.task(":generatePluginCode").outcome == TaskOutcome.SUCCESS
+        buildFile << """
+            plugins {
+                id 'my-build-params'
+            }
+        """
     }
 
     def "supports build parameters with default value"() {
         given:
-        build.file("build-logic/build.gradle") << """
-            plugins {
-                id 'de.jjohannes.gradle.build-parameters'
-            }
-            
+        buildLogicBuildFile << """
             buildParameters {
                 parameter("myParameter") {
                     description = "A simple string parameter"
@@ -47,17 +40,8 @@ class BuildParametersPluginFuncTest extends Specification {
                 }
             }
         """
-        settingsFile << """
-        pluginManagement {
-            includeBuild("build-logic")
-        }
-        """
         buildFile << """
-        plugins {
-            id 'my-build-params'
-        }
-        
-        println buildParameters.myParameter
+            println buildParameters.myParameter
         """
 
         when:
@@ -69,28 +53,15 @@ class BuildParametersPluginFuncTest extends Specification {
 
     def "supports build parameters without default value"() {
         given:
-        build.file("build-logic/build.gradle") << """
-            plugins {
-                id 'de.jjohannes.gradle.build-parameters'
-            }
-            
+        buildLogicBuildFile << """
             buildParameters {
                 parameter("myParameter") {
                     description = "A simple string parameter"
                 }
             }
         """
-        settingsFile << """
-        pluginManagement {
-            includeBuild("build-logic")
-        }
-        """
         buildFile << """
-        plugins {
-            id 'my-build-params'
-        }
-        
-        println "myParameter: " + buildParameters.myParameter.present
+            println "myParameter: " + buildParameters.myParameter.present
         """
 
         when:
@@ -98,5 +69,36 @@ class BuildParametersPluginFuncTest extends Specification {
 
         then:
         result.output.contains("myParameter: false")
+    }
+
+    def "value of build parameters cannot be changed"() {
+        given:
+        buildLogicBuildFile << """
+            buildParameters {
+                parameter("myParameter") {
+                    description = "A simple string parameter"
+                    defaultValue = "fooDefault"
+                }
+                parameter("myParameterOptional") {
+                    description = "A simple string parameter"
+                }
+            }
+        """
+        buildFile << """
+            println "myParameter: " + buildParameters.myParameter
+            myParameter = "bar"
+            println "myParameter: " + buildParameters.myParameter
+          
+            println "myParameterOptional: " + buildParameters.myParameterOptional.get()
+            myParameterOptional = "bar"
+            println "myParameterOptional: " + buildParameters.myParameterOptional.get()
+        """
+
+        when:
+        def result = build("help", "-PmyParameter=foo", "-PmyParameterOptional=foo")
+
+        then:
+        result.output.count("myParameter: foo") == 2
+        result.output.count("myParameterOptional: foo") == 2
     }
 }
