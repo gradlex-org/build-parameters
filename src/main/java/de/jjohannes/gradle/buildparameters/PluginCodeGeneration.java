@@ -13,6 +13,9 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 public abstract class PluginCodeGeneration extends DefaultTask {
 
@@ -24,23 +27,24 @@ public abstract class PluginCodeGeneration extends DefaultTask {
 
     @TaskAction
     public void generate() throws IOException {
+        List<CodeGeneratingBuildParameter> parameters = getParameters().get().stream().map(CodeGeneratingBuildParameter::from).collect(toList());
         // TODO java package structure
         Path extensionSource = getOutputDirectory().get().file("BuildParametersExtension.java").getAsFile().toPath();
         List<String> lines = new ArrayList<>();
         lines.add("import org.gradle.api.provider.ProviderFactory;");
         lines.add("import javax.inject.Inject;");
         lines.add("public abstract class BuildParametersExtension {");
-        for (BuildParameter parameter : getParameters().get()) {
-            lines.add("    private final String " + parameter.getName() + ";");
+        for (CodeGeneratingBuildParameter parameter : parameters) {
+            lines.add("    private final " + parameter.getType() + " " + parameter.getName() + ";");
         }
         lines.add("    @Inject");
         lines.add("    public BuildParametersExtension(ProviderFactory providers) {");
-        for (BuildParameter parameter : getParameters().get()) {
-            lines.add("        this." + parameter.getName() + " = providers.gradleProperty(\"" +  parameter.getName() + "\").getOrElse(\"" + parameter.getDefaultValue().get() + "\");");
+        for (CodeGeneratingBuildParameter parameter : parameters) {
+            lines.add("        this." + parameter.getName() + " = " + parameter.getValue() + ";");
         }
         lines.add("    }");
-        for (BuildParameter parameter : getParameters().get()) {
-            lines.add("    public String get" + capitalize(parameter.getName()) + "() {");
+        for (CodeGeneratingBuildParameter parameter : parameters) {
+            lines.add("    public " + parameter.getType() + " get" + capitalize(parameter.getName()) + "() {");
             lines.add("        return this." + parameter.getName() + ";");
             lines.add("    }");
         }
