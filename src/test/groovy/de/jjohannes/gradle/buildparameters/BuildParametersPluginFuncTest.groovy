@@ -25,8 +25,9 @@ class BuildParametersPluginFuncTest extends Specification {
         """
         buildFile << """
             plugins {
-                id 'my-build-params'
+                id 'build-parameters'
             }
+            buildParameters {}
         """
     }
 
@@ -101,4 +102,24 @@ class BuildParametersPluginFuncTest extends Specification {
         result.output.count("myParameter: foo") == 2
         result.output.count("myParameterOptional: foo") == 2
     }
+
+    def "plugin id of generated plugin can be configured"() {
+        given:
+        buildLogicBuildFile << """
+            buildParameters {
+                pluginId("de.benediktritter.build-params")
+            }
+        """
+        buildFile.text = buildFile.text.replace("build-parameters", "de.benediktritter.build-params")
+
+        expect:
+        build("help")
+    }
+
+    // Missing Features
+    // - Help task for descriptions
+    // - Unknown parameter detection
+    // - Different Parameter Types
+    // - Grouping
+    // - Environment variable
 }

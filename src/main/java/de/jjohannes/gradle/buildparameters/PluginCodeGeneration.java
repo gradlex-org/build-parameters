@@ -13,8 +13,9 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
+import static de.jjohannes.gradle.buildparameters.Constants.PACKAGE_NAME;
+import static de.jjohannes.gradle.buildparameters.Constants.PLUGIN_CLASS_NAME;
 import static java.util.stream.Collectors.toList;
 
 public abstract class PluginCodeGeneration extends DefaultTask {
@@ -28,11 +29,16 @@ public abstract class PluginCodeGeneration extends DefaultTask {
     @TaskAction
     public void generate() throws IOException {
         List<CodeGeneratingBuildParameter> parameters = getParameters().get().stream().map(CodeGeneratingBuildParameter::from).collect(toList());
-        // TODO java package structure
-        Path extensionSource = getOutputDirectory().get().file("BuildParametersExtension.java").getAsFile().toPath();
+        String sourcesFolder = PACKAGE_NAME.replace(".", "/");
+        getOutputDirectory().get().dir(sourcesFolder).getAsFile().mkdirs();
+
+        Path extensionSource = getOutputDirectory().get().file(sourcesFolder + "/BuildParametersExtension.java").getAsFile().toPath();
         List<String> lines = new ArrayList<>();
+        lines.add("package " + PACKAGE_NAME + ";");
+        lines.add("");
         lines.add("import org.gradle.api.provider.ProviderFactory;");
         lines.add("import javax.inject.Inject;");
+        lines.add("");
         lines.add("public abstract class BuildParametersExtension {");
         for (CodeGeneratingBuildParameter parameter : parameters) {
             lines.add("    private final " + parameter.getType() + " " + parameter.getName() + ";");
@@ -51,11 +57,14 @@ public abstract class PluginCodeGeneration extends DefaultTask {
         lines.add("}");
         Files.write(extensionSource, lines);
 
-        Path pluginSource = getOutputDirectory().get().file("BuildParametersPlugin.java").getAsFile().toPath();
+        Path pluginSource = getOutputDirectory().get().file(sourcesFolder + "/" + PLUGIN_CLASS_NAME + ".java").getAsFile().toPath();
         Files.write(pluginSource, Arrays.asList(
+                "package " + PACKAGE_NAME + ";",
+                "",
                 "import org.gradle.api.Project;",
                 "import org.gradle.api.Plugin;",
-                "public class BuildParametersPlugin implements Plugin<Project> {",
+                "",
+                "public class " + PLUGIN_CLASS_NAME + " implements Plugin<Project> {",
                 "    @Override",
                 "    public void apply(Project project) {",
                 "        project.getExtensions().create(\"buildParameters\", BuildParametersExtension.class);",

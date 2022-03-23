@@ -17,7 +17,7 @@ public class BuildParametersPlugin implements Plugin<Project> {
         GradlePluginDevelopmentExtension gradlePlugins =
                 project.getExtensions().getByType(GradlePluginDevelopmentExtension.class);
         BuildParametersExtension extension =
-                project.getExtensions().create("buildParameters", BuildParametersExtension.class, project.getObjects(), gradlePlugins);
+                project.getExtensions().create("buildParameters", BuildParametersExtension.class, project, gradlePlugins);
 
         TaskProvider<PluginCodeGeneration> task = project.getTasks().register("generatePluginCode", PluginCodeGeneration.class, it -> {
             it.getParameters().convention(extension.getParameters());
