@@ -17,10 +17,10 @@ public class BuildParametersPlugin implements Plugin<Project> {
         GradlePluginDevelopmentExtension gradlePlugins =
                 project.getExtensions().getByType(GradlePluginDevelopmentExtension.class);
         BuildParametersExtension extension =
-                project.getExtensions().create("buildParameters", BuildParametersExtension.class, project, gradlePlugins);
+                project.getExtensions().create("buildParameters", BuildParametersExtension.class, gradlePlugins);
 
         TaskProvider<PluginCodeGeneration> task = project.getTasks().register("generatePluginCode", PluginCodeGeneration.class, it -> {
-            it.getParameters().convention(extension.getParameters());
+            it.getBaseGroup().convention(extension);
             it.getOutputDirectory().convention(project.getLayout().getBuildDirectory().dir("generated/sources/build-parameters-plugin/java/main"));
         });
         SourceSetContainer sourceSets = project.getExtensions().getByType(SourceSetContainer.class);

@@ -72,6 +72,33 @@ class BuildParametersPluginFuncTest extends Specification {
         result.output.contains("myParameter: false")
     }
 
+    def "parameters can be grouped"() {
+        given:
+        buildLogicBuildFile << """
+            buildParameters {
+                group("db") {
+                    parameter("host") {
+                        defaultValue = "localhost"
+                    }
+                    parameter("port") {
+                        defaultValue = "5432"
+                    }
+                }
+            }
+        """
+        buildFile << """
+            println "db.host: " + buildParameters.db.host
+            println "db.port: " + buildParameters.db.port
+        """
+
+        when:
+        def result = build("help", "-Pdb.port=9999")
+
+        then:
+        result.output.contains("db.host: localhost")
+        result.output.contains("db.port: 9999")
+    }
+
     def "value of build parameters cannot be changed"() {
         given:
         buildLogicBuildFile << """
@@ -120,6 +147,5 @@ class BuildParametersPluginFuncTest extends Specification {
     // - Help task for descriptions
     // - Unknown parameter detection
     // - Different Parameter Types
-    // - Grouping
     // - Environment variable
 }
