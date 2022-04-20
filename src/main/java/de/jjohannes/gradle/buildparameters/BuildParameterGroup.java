@@ -21,9 +21,16 @@ public abstract class BuildParameterGroup {
         this.prefix = prefix;
     }
 
-    public void parameter(String name, Action<? super BuildParameter> configure) {
+    public void parameter(String name, Action<? super BuildParameter<String>> configure) {
         String parameterPrefix = getPrefix();
-        BuildParameter parameter = getObjects().newInstance(BuildParameter.class, name, parameterPrefix);
+        BuildParameter<String> parameter = getObjects().newInstance(StringBuildParameter.class, name, parameterPrefix);
+        configure.execute(parameter);
+        getParameters().add(parameter);
+    }
+
+    public void integer(String name, Action<? super BuildParameter<Integer>> configure) {
+        String parameterPrefix = getPrefix();
+        BuildParameter<Integer> parameter = getObjects().newInstance(IntegerBuildParameter.class, name, parameterPrefix);
         configure.execute(parameter);
         getParameters().add(parameter);
     }
@@ -49,7 +56,7 @@ public abstract class BuildParameterGroup {
     protected abstract ObjectFactory getObjects();
 
     @Nested
-    public abstract ListProperty<BuildParameter> getParameters();
+    public abstract ListProperty<BuildParameter<?>> getParameters();
 
     @Nested
     public abstract ListProperty<BuildParameterGroup> getGroups();

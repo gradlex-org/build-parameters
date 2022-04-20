@@ -5,15 +5,12 @@ import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.Optional;
 
-import javax.inject.Inject;
-
-public abstract class BuildParameter {
+public abstract class BuildParameter<ParameterType> {
 
     private final String name;
     private final String prefix;
 
-    @Inject
-    public BuildParameter(String name, String prefix) {
+    protected BuildParameter(String name, String prefix) {
         this.name = name;
         this.prefix = prefix;
     }
@@ -30,7 +27,7 @@ public abstract class BuildParameter {
 
     @Input
     @Optional
-    public abstract Property<String> getDefaultValue();
+    public abstract Property<ParameterType> getDefaultValue();
 
     @Input
     @Optional

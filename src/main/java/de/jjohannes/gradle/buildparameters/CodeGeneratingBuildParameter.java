@@ -8,17 +8,21 @@ interface CodeGeneratingBuildParameter {
 
     String getName();
 
-    static CodeGeneratingBuildParameter from(BuildParameter parameter) {
+    static CodeGeneratingBuildParameter from(BuildParameter<?> parameter) {
+        boolean isInteger = parameter instanceof IntegerBuildParameter;
+
         if (parameter.getDefaultValue().isPresent()) {
             return new CodeGeneratingBuildParameter() {
                 @Override
                 public String getType() {
-                    return "String";
+                    return isInteger ? "int" : "String";
                 }
 
                 @Override
                 public String getValue() {
-                    return "providers.gradleProperty(\"" + parameter.getPath() + "\").getOrElse(\"" + parameter.getDefaultValue().get() + "\")";
+                    return isInteger
+                            ? "providers.gradleProperty(\"" + parameter.getPath() + "\").map(Integer::parseInt).getOrElse(" + parameter.getDefaultValue().get() + ")"
+                            : "providers.gradleProperty(\"" + parameter.getPath() + "\").getOrElse(\"" + parameter.getDefaultValue().get() + "\")";
                 }
 
                 @Override
