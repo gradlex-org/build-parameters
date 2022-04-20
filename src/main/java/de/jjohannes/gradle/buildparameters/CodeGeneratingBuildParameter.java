@@ -9,46 +9,88 @@ interface CodeGeneratingBuildParameter {
     String getName();
 
     static CodeGeneratingBuildParameter from(BuildParameter<?> parameter) {
-        boolean isInteger = parameter instanceof IntegerBuildParameter;
-        boolean isBoolean = parameter instanceof BooleanBuildParameter;
+        ParameterType type;
+        if (parameter instanceof IntegerBuildParameter) {
+            type = new ParameterType("int", "Integer", ".map(Integer::parseInt)", false);
+        } else if (parameter instanceof BooleanBuildParameter) {
+            type = new ParameterType("boolean", "Boolean", ".map(Boolean::parseBoolean)", false);
+        } else {
+            type = new ParameterType("String", "String", "", true);
+        }
 
         if (parameter.getDefaultValue().isPresent()) {
-            return new CodeGeneratingBuildParameter() {
-                @Override
-                public String getType() {
-                    return isInteger ? "int" : isBoolean ? "boolean" : "String";
-                }
-
-                @Override
-                public String getValue() {
-                    return isInteger
-                            ? "providers.gradleProperty(\"" + parameter.getPath() + "\").map(Integer::parseInt).getOrElse(" + parameter.getDefaultValue().get() + ")" : isBoolean
-                            ? "providers.gradleProperty(\"" + parameter.getPath() + "\").map(Boolean::parseBoolean).getOrElse(" + parameter.getDefaultValue().get() + ")"
-                            : "providers.gradleProperty(\"" + parameter.getPath() + "\").getOrElse(\"" + parameter.getDefaultValue().get() + "\")";
-                }
-
-                @Override
-                public String getName() {
-                    return parameter.getName();
-                }
-            };
+            return new ParameterWithDefault(parameter, type);
         } else {
-            return new CodeGeneratingBuildParameter() {
-                @Override
-                public String getType() {
-                    return "org.gradle.api.provider.Provider<String>";
-                }
+            return new ParameterWithoutDefault(parameter, type);
+        }
+    }
 
-                @Override
-                public String getValue() {
-                    return "providers.gradleProperty(\"" + parameter.getPath() + "\")";
-                }
+    class ParameterWithDefault implements CodeGeneratingBuildParameter {
+        private final BuildParameter<?> parameter;
+        private final ParameterType type;
 
-                @Override
-                public String getName() {
-                    return parameter.getName();
-                }
-            };
+        public ParameterWithDefault(BuildParameter<?> parameter, ParameterType type) {
+            this.parameter = parameter;
+            this.type = type;
+        }
+
+        @Override
+        public String getType() {
+            return type.name;
+        }
+
+        @Override
+        public String getValue() {
+            return "providers.gradleProperty(\"" + parameter.getPath() + "\")" + type.transformation + ".getOrElse(" + getDefaultValue() + ")";
+        }
+
+        private String getDefaultValue() {
+            return type.requiresQuoting ? "\"" + parameter.getDefaultValue().get() + "\"" : parameter.getDefaultValue().get().toString();
+        }
+
+        @Override
+        public String getName() {
+            return parameter.getName();
+        }
+    }
+
+    class ParameterWithoutDefault implements CodeGeneratingBuildParameter {
+        private final BuildParameter<?> parameter;
+        private final ParameterType type;
+
+        public ParameterWithoutDefault(BuildParameter<?> parameter, ParameterType type) {
+            this.parameter = parameter;
+            this.type = type;
+        }
+
+        @Override
+        public String getType() {
+            return "org.gradle.api.provider.Provider<" + type.typeParameter + ">";
+        }
+
+        @Override
+        public String getValue() {
+            return "providers.gradleProperty(\"" + parameter.getPath() + "\")" + type.transformation;
+        }
+
+        @Override
+        public String getName() {
+            return parameter.getName();
+        }
+    }
+
+    class ParameterType {
+
+        final String name;
+        final String typeParameter;
+        final String transformation;
+        final boolean requiresQuoting;
+
+        ParameterType(String name, String typeParameter, String transformation, boolean requiresQuoting) {
+            this.name = name;
+            this.typeParameter = typeParameter;
+            this.transformation = transformation;
+            this.requiresQuoting = requiresQuoting;
         }
     }
 }

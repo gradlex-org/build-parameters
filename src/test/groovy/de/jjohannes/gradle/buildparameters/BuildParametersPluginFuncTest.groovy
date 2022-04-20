@@ -31,7 +31,7 @@ class BuildParametersPluginFuncTest extends Specification {
         """
     }
 
-    def "supports build parameters with default value"() {
+    def "supports string build parameters with default value"() {
         given:
         buildLogicBuildFile << """
             buildParameters {
@@ -52,7 +52,7 @@ class BuildParametersPluginFuncTest extends Specification {
         result.output.contains("foo")
     }
 
-    def "supports build parameters without default value"() {
+    def "supports string build parameters without default value"() {
         given:
         buildLogicBuildFile << """
             buildParameters {
@@ -72,7 +72,7 @@ class BuildParametersPluginFuncTest extends Specification {
         result.output.contains("myParameter: false")
     }
 
-    def "supports integer build parameters"() {
+    def "supports integer build parameters with default value"() {
         given:
         buildLogicBuildFile << """
             buildParameters {
@@ -94,7 +94,24 @@ class BuildParametersPluginFuncTest extends Specification {
         result.output.contains("Parameter value: 2")
     }
 
-    def "supports boolean build parameters"() {
+    def "supports integer build parameters without default value"() {
+        given:
+        buildLogicBuildFile << """
+            buildParameters {
+                integer("myParameter") {
+                    description = "A simple integer parameter"
+                }
+            }
+        """
+        buildFile << """
+            assert buildParameters.myParameter.getOrElse(2) == 2
+        """
+
+        expect:
+        build("help")
+    }
+
+    def "supports boolean build parameters with default value"() {
         given:
         buildLogicBuildFile << """
             buildParameters {
@@ -114,6 +131,23 @@ class BuildParametersPluginFuncTest extends Specification {
 
         then:
         result.output.contains("true")
+    }
+
+    def "supports boolean build parameters without default value"() {
+        given:
+        buildLogicBuildFile << """
+            buildParameters {
+                bool("myParameter") {
+                    description = "A simple boolean parameter"
+                }
+            }
+        """
+        buildFile << """
+            assert buildParameters.myParameter.getOrElse(true) == true
+        """
+
+        expect:
+        build("help")
     }
 
     def "parameters can be grouped"() {
