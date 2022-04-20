@@ -224,6 +224,7 @@ class BuildParametersPluginFuncTest extends Specification {
     // Missing Features
     // - Help task for descriptions
     // - Unknown parameter detection
-    // - Different Parameter Types
+    // - Enum types
+    // - Error handling for unknown types added directly to parameters list
     // - Environment variable
 }
