@@ -72,18 +72,40 @@ class BuildParametersPluginFuncTest extends Specification {
         result.output.contains("myParameter: false")
     }
 
-    def "supports int build parameters"() {
+    def "supports integer build parameters"() {
         given:
         buildLogicBuildFile << """
             buildParameters {
                 integer("myParameter") {
-                    description = "A simple string parameter"
+                    description = "A simple integer parameter"
                     defaultValue = 2
                 }
             }
         """
         buildFile << """
             assert buildParameters.myParameter + 2 == 4
+            println "Parameter value: \${buildParameters.myParameter}"
+        """
+
+        when:
+        def result = build("help")
+
+        then:
+        result.output.contains("Parameter value: 2")
+    }
+
+    def "supports boolean build parameters"() {
+        given:
+        buildLogicBuildFile << """
+            buildParameters {
+                bool("myParameter") {
+                    description = "A simple boolean parameter"
+                    defaultValue = true
+                }
+            }
+        """
+        buildFile << """
+            assert buildParameters.myParameter == true
             println buildParameters.myParameter
         """
 
@@ -91,7 +113,7 @@ class BuildParametersPluginFuncTest extends Specification {
         def result = build("help")
 
         then:
-        result.output.contains("2")
+        result.output.contains("true")
     }
 
     def "parameters can be grouped"() {

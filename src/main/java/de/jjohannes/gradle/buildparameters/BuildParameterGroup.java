@@ -35,6 +35,13 @@ public abstract class BuildParameterGroup {
         getParameters().add(parameter);
     }
 
+    public void bool(String name, Action<? super BuildParameter<Boolean>> configure) {
+        String parameterPrefix = getPrefix();
+        BuildParameter<Boolean> parameter = getObjects().newInstance(BooleanBuildParameter.class, name, parameterPrefix);
+        configure.execute(parameter);
+        getParameters().add(parameter);
+    }
+
     public void group(String name, Action<? super BuildParameterGroup> configure) {
         String groupPrefix = getPrefix();
         BuildParameterGroup group = getObjects().newInstance(BuildParameterGroup.class, name, groupPrefix);
