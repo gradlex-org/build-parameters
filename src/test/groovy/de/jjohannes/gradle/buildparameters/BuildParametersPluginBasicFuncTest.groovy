@@ -19,7 +19,7 @@ class BuildParametersPluginBasicFuncTest extends Specification {
             }
             
             buildParameters {
-                parameter("myParameter") {
+                string("myParameter") {
                     description = "A simple string parameter"
                     defaultValue = "foo"
                 }

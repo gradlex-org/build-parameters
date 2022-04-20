@@ -31,11 +31,11 @@ class BuildParametersPluginFuncTest extends Specification {
         """
     }
 
-    def "supports build parameters with default value"() {
+    def "supports string build parameters with default value"() {
         given:
         buildLogicBuildFile << """
             buildParameters {
-                parameter("myParameter") {
+                string("myParameter") {
                     description = "A simple string parameter"
                     defaultValue = "foo"
                 }
@@ -52,11 +52,11 @@ class BuildParametersPluginFuncTest extends Specification {
         result.output.contains("foo")
     }
 
-    def "supports build parameters without default value"() {
+    def "supports string build parameters without default value"() {
         given:
         buildLogicBuildFile << """
             buildParameters {
-                parameter("myParameter") {
+                string("myParameter") {
                     description = "A simple string parameter"
                 }
             }
@@ -72,15 +72,93 @@ class BuildParametersPluginFuncTest extends Specification {
         result.output.contains("myParameter: false")
     }
 
+    def "supports integer build parameters with default value"() {
+        given:
+        buildLogicBuildFile << """
+            buildParameters {
+                integer("myParameter") {
+                    description = "A simple integer parameter"
+                    defaultValue = 2
+                }
+            }
+        """
+        buildFile << """
+            assert buildParameters.myParameter + 2 == 4
+            println "Parameter value: \${buildParameters.myParameter}"
+        """
+
+        when:
+        def result = build("help")
+
+        then:
+        result.output.contains("Parameter value: 2")
+    }
+
+    def "supports integer build parameters without default value"() {
+        given:
+        buildLogicBuildFile << """
+            buildParameters {
+                integer("myParameter") {
+                    description = "A simple integer parameter"
+                }
+            }
+        """
+        buildFile << """
+            assert buildParameters.myParameter.getOrElse(2) == 2
+        """
+
+        expect:
+        build("help")
+    }
+
+    def "supports boolean build parameters with default value"() {
+        given:
+        buildLogicBuildFile << """
+            buildParameters {
+                bool("myParameter") {
+                    description = "A simple boolean parameter"
+                    defaultValue = true
+                }
+            }
+        """
+        buildFile << """
+            assert buildParameters.myParameter == true
+            println buildParameters.myParameter
+        """
+
+        when:
+        def result = build("help")
+
+        then:
+        result.output.contains("true")
+    }
+
+    def "supports boolean build parameters without default value"() {
+        given:
+        buildLogicBuildFile << """
+            buildParameters {
+                bool("myParameter") {
+                    description = "A simple boolean parameter"
+                }
+            }
+        """
+        buildFile << """
+            assert buildParameters.myParameter.getOrElse(true) == true
+        """
+
+        expect:
+        build("help")
+    }
+
     def "parameters can be grouped"() {
         given:
         buildLogicBuildFile << """
             buildParameters {
                 group("db") {
-                    parameter("host") {
+                    string("host") {
                         defaultValue = "localhost"
                     }
-                    parameter("port") {
+                    string("port") {
                         defaultValue = "5432"
                     }
                 }
@@ -103,11 +181,11 @@ class BuildParametersPluginFuncTest extends Specification {
         given:
         buildLogicBuildFile << """
             buildParameters {
-                parameter("myParameter") {
+                string("myParameter") {
                     description = "A simple string parameter"
                     defaultValue = "fooDefault"
                 }
-                parameter("myParameterOptional") {
+                string("myParameterOptional") {
                     description = "A simple string parameter"
                 }
             }
@@ -146,6 +224,7 @@ class BuildParametersPluginFuncTest extends Specification {
     // Missing Features
     // - Help task for descriptions
     // - Unknown parameter detection
-    // - Different Parameter Types
+    // - Enum types
+    // - Error handling for unknown types added directly to parameters list
     // - Environment variable
 }
