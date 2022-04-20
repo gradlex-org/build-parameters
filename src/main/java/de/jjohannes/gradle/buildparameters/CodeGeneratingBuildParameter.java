@@ -18,7 +18,7 @@ interface CodeGeneratingBuildParameter {
 
                 @Override
                 public String getValue() {
-                    return "providers.gradleProperty(\"" + parameter.getName() + "\").getOrElse(\"" + parameter.getDefaultValue().get() + "\")";
+                    return "providers.gradleProperty(\"" + parameter.getPath() + "\").getOrElse(\"" + parameter.getDefaultValue().get() + "\")";
                 }
 
                 @Override
@@ -35,7 +35,7 @@ interface CodeGeneratingBuildParameter {
 
                 @Override
                 public String getValue() {
-                    return "providers.gradleProperty(\"" + parameter.getName() + "\")";
+                    return "providers.gradleProperty(\"" + parameter.getPath() + "\")";
                 }
 
                 @Override
