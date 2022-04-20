@@ -21,7 +21,7 @@ public abstract class BuildParameterGroup {
         this.prefix = prefix;
     }
 
-    public void parameter(String name, Action<? super BuildParameter<String>> configure) {
+    public void string(String name, Action<? super BuildParameter<String>> configure) {
         String parameterPrefix = getPrefix();
         BuildParameter<String> parameter = getObjects().newInstance(StringBuildParameter.class, name, parameterPrefix);
         configure.execute(parameter);

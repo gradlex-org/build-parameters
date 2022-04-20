@@ -35,7 +35,7 @@ class BuildParametersPluginFuncTest extends Specification {
         given:
         buildLogicBuildFile << """
             buildParameters {
-                parameter("myParameter") {
+                string("myParameter") {
                     description = "A simple string parameter"
                     defaultValue = "foo"
                 }
@@ -56,7 +56,7 @@ class BuildParametersPluginFuncTest extends Specification {
         given:
         buildLogicBuildFile << """
             buildParameters {
-                parameter("myParameter") {
+                string("myParameter") {
                     description = "A simple string parameter"
                 }
             }
@@ -99,10 +99,10 @@ class BuildParametersPluginFuncTest extends Specification {
         buildLogicBuildFile << """
             buildParameters {
                 group("db") {
-                    parameter("host") {
+                    string("host") {
                         defaultValue = "localhost"
                     }
-                    parameter("port") {
+                    string("port") {
                         defaultValue = "5432"
                     }
                 }
@@ -125,11 +125,11 @@ class BuildParametersPluginFuncTest extends Specification {
         given:
         buildLogicBuildFile << """
             buildParameters {
-                parameter("myParameter") {
+                string("myParameter") {
                     description = "A simple string parameter"
                     defaultValue = "fooDefault"
                 }
-                parameter("myParameterOptional") {
+                string("myParameterOptional") {
                     description = "A simple string parameter"
                 }
             }
