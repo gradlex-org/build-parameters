@@ -17,6 +17,7 @@ import java.util.List;
 
 import static de.jjohannes.gradle.buildparameters.Constants.PACKAGE_NAME;
 import static de.jjohannes.gradle.buildparameters.Constants.PLUGIN_CLASS_NAME;
+import static de.jjohannes.gradle.buildparameters.Strings.capitalize;
 import static java.util.stream.Collectors.toList;
 
 public abstract class PluginCodeGeneration extends DefaultTask {
@@ -50,10 +51,13 @@ public abstract class PluginCodeGeneration extends DefaultTask {
     }
 
     private void generateGroupClass(BuildParameterGroup group) {
-        final List<BuildParameterGroup> subGroups = group.getGroups().get();
-        subGroups.forEach(this::generateGroupClass);
+        List<BuildParameterGroup> subGroups = group.getGroups().get();
+        List<BuildParameter<?>> buildParameters = group.getParameters().get();
 
-        List<CodeGeneratingBuildParameter> parameters = group.getParameters().get().stream().map(CodeGeneratingBuildParameter::from).collect(toList());
+        subGroups.forEach(this::generateGroupClass);
+        buildParameters.stream().filter(p -> p instanceof EnumBuildParameter).forEach(p -> generateEnumClass((EnumBuildParameter) p));
+
+        List<CodeGeneratingBuildParameter> parameters = buildParameters.stream().map(CodeGeneratingBuildParameter::from).collect(toList());
         String groupClassName = group.getName();
         Path groupSource = getOutputDirectory().get().file(getSourcesPath() + "/" + groupClassName + ".java").getAsFile().toPath();
         List<String> lines = new ArrayList<>();
@@ -94,6 +98,22 @@ public abstract class PluginCodeGeneration extends DefaultTask {
         write(groupSource, lines);
     }
 
+    private void generateEnumClass(EnumBuildParameter enumBuildParameter) {
+        String enumClassName = capitalize(enumBuildParameter.getSimpleName());
+        Path enumSource = getOutputDirectory().get().file(getSourcesPath() + "/" + enumClassName + ".java").getAsFile().toPath();
+
+        List<String> lines = new ArrayList<>();
+        lines.add("package " + PACKAGE_NAME + ";");
+        lines.add("");
+        lines.add("public enum " + enumClassName + " {");
+        for (String enumValue : enumBuildParameter.getValues().get()) {
+            lines.add("    " + enumValue + ",");
+        }
+        lines.add("}");
+
+        write(enumSource, lines);
+    }
+
     private static String getSourcesPath() {
         return PACKAGE_NAME.replace(".", "/");
     }
@@ -106,7 +126,4 @@ public abstract class PluginCodeGeneration extends DefaultTask {
         }
     }
 
-    private static String capitalize(String str) {
-        return str.substring(0, 1).toUpperCase() + str.substring(1);
-    }
 }

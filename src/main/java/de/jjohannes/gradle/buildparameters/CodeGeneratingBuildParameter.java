@@ -1,5 +1,9 @@
 package de.jjohannes.gradle.buildparameters;
 
+import java.util.function.Function;
+
+import static de.jjohannes.gradle.buildparameters.Strings.capitalize;
+
 interface CodeGeneratingBuildParameter {
 
     String getType();
@@ -11,11 +15,14 @@ interface CodeGeneratingBuildParameter {
     static CodeGeneratingBuildParameter from(BuildParameter<?> parameter) {
         ParameterType type;
         if (parameter instanceof IntegerBuildParameter) {
-            type = new ParameterType("int", "Integer", ".map(Integer::parseInt)", false);
+            type = new ParameterType("int", "Integer", ".map(Integer::parseInt)", Function.identity());
         } else if (parameter instanceof BooleanBuildParameter) {
-            type = new ParameterType("boolean", "Boolean", ".map(Boolean::parseBoolean)", false);
+            type = new ParameterType("boolean", "Boolean", ".map(Boolean::parseBoolean)", Function.identity());
+        } else if (parameter instanceof EnumBuildParameter) {
+            String typeName = capitalize(parameter.getSimpleName());
+            type = new ParameterType(typeName, typeName, ".map(" + typeName + "::valueOf)", s -> Constants.PACKAGE_NAME + "." + typeName + "." + s);
         } else {
-            type = new ParameterType("String", "String", "", true);
+            type = new ParameterType("String", "String", "", s -> "\"" + s + "\"");
         }
 
         if (parameter.getDefaultValue().isPresent()) {
@@ -45,7 +52,7 @@ interface CodeGeneratingBuildParameter {
         }
 
         private String getDefaultValue() {
-            return type.requiresQuoting ? "\"" + parameter.getDefaultValue().get() + "\"" : parameter.getDefaultValue().get().toString();
+            return type.defaultValueTransformation.apply(parameter.getDefaultValue().get().toString());
         }
 
         @Override
@@ -84,13 +91,13 @@ interface CodeGeneratingBuildParameter {
         final String name;
         final String typeParameter;
         final String transformation;
-        final boolean requiresQuoting;
+        final Function<String, String> defaultValueTransformation;
 
-        ParameterType(String name, String typeParameter, String transformation, boolean requiresQuoting) {
+        ParameterType(String name, String typeParameter, String transformation, Function<String, String> defaultValueTransformation) {
             this.name = name;
             this.typeParameter = typeParameter;
             this.transformation = transformation;
-            this.requiresQuoting = requiresQuoting;
+            this.defaultValueTransformation = defaultValueTransformation;
         }
     }
 }

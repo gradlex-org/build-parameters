@@ -18,19 +18,23 @@ public abstract class BuildParameterGroup {
     }
 
     public void string(String name, Action<? super BuildParameter<String>> configure) {
-        BuildParameter<String> parameter = getObjects().newInstance(StringBuildParameter.class, id.append(name));
-        configure.execute(parameter);
-        getParameters().add(parameter);
+        configureParameter(name, StringBuildParameter.class, configure);
     }
 
     public void integer(String name, Action<? super BuildParameter<Integer>> configure) {
-        BuildParameter<Integer> parameter = getObjects().newInstance(IntegerBuildParameter.class, id.append(name));
-        configure.execute(parameter);
-        getParameters().add(parameter);
+        configureParameter(name, IntegerBuildParameter.class, configure);
     }
 
     public void bool(String name, Action<? super BuildParameter<Boolean>> configure) {
-        BuildParameter<Boolean> parameter = getObjects().newInstance(BooleanBuildParameter.class, id.append(name));
+        configureParameter(name, BooleanBuildParameter.class, configure);
+    }
+
+    public void enumeration(String name, Action<EnumBuildParameter> configure) {
+        configureParameter(name, EnumBuildParameter.class, configure);
+    }
+
+    private <T extends BuildParameter<?>> void configureParameter(String name, Class<T> paramType, Action<? super T> configure) {
+        T parameter = getObjects().newInstance(paramType, id.append(name));
         configure.execute(parameter);
         getParameters().add(parameter);
     }

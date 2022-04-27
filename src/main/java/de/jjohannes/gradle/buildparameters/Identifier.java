@@ -27,7 +27,7 @@ class Identifier {
 
     public String toCamelCase() {
         return segments.stream()
-                .map(seg -> seg.substring(0, 1).toUpperCase() + seg.substring(1))
+                .map(Strings::capitalize)
                 .collect(Collectors.joining());
     }
 

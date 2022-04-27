@@ -150,6 +150,43 @@ class BuildParametersPluginFuncTest extends Specification {
         build("help")
     }
 
+    def "supports enum build parameters with default value"() {
+        given:
+        buildLogicBuildFile << """
+            buildParameters {
+                enumeration("myParameter") {
+                    description = "A simple enum parameter"
+                    values = ['One', 'Two', 'Three']
+                    defaultValue = 'Two'
+                }
+            }
+        """
+        buildFile << """
+            assert buildParameters.myParameter == buildparameters.MyParameter.Two
+        """
+
+        expect:
+        build("help")
+    }
+
+    def "supports enum build parameters without default value"() {
+        given:
+        buildLogicBuildFile << """
+            buildParameters {
+                enumeration("myParameter") {
+                    description = "A simple enum parameter"
+                    values = ['One', 'Two', 'Three']
+                }
+            }
+        """
+        buildFile << """
+            assert buildParameters.myParameter.getOrElse(buildparameters.MyParameter.Three) == buildparameters.MyParameter.Three
+        """
+
+        expect:
+        build("help")
+    }
+
     def "parameters can be grouped"() {
         given:
         buildLogicBuildFile << """
@@ -257,7 +294,7 @@ class BuildParametersPluginFuncTest extends Specification {
     // Missing Features
     // - Help task for descriptions
     // - Unknown parameter detection
-    // - Enum types
     // - Error handling for unknown types added directly to parameters list
     // - Environment variable
+    // - Enum with same names collide (solve or better error)
 }
