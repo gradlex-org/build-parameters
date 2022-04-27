@@ -6,7 +6,7 @@ interface CodeGeneratingBuildParameter {
 
     String getValue();
 
-    String getName();
+    String getSimpleName();
 
     static CodeGeneratingBuildParameter from(BuildParameter<?> parameter) {
         ParameterType type;
@@ -49,8 +49,8 @@ interface CodeGeneratingBuildParameter {
         }
 
         @Override
-        public String getName() {
-            return parameter.getName();
+        public String getSimpleName() {
+            return parameter.getSimpleName();
         }
     }
 
@@ -74,8 +74,8 @@ interface CodeGeneratingBuildParameter {
         }
 
         @Override
-        public String getName() {
-            return parameter.getName();
+        public String getSimpleName() {
+            return parameter.getSimpleName();
         }
     }
 

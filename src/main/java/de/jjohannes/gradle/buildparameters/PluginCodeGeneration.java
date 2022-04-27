@@ -54,7 +54,7 @@ public abstract class PluginCodeGeneration extends DefaultTask {
         subGroups.forEach(this::generateGroupClass);
 
         List<CodeGeneratingBuildParameter> parameters = group.getParameters().get().stream().map(CodeGeneratingBuildParameter::from).collect(toList());
-        String groupClassName = capitalize(group.getName());
+        String groupClassName = group.getName();
         Path groupSource = getOutputDirectory().get().file(getSourcesPath() + "/" + groupClassName + ".java").getAsFile().toPath();
         List<String> lines = new ArrayList<>();
         lines.add("package " + PACKAGE_NAME + ";");
@@ -65,28 +65,28 @@ public abstract class PluginCodeGeneration extends DefaultTask {
         lines.add("");
         lines.add("public abstract class " + groupClassName + " {");
         for (BuildParameterGroup subGroup : subGroups) {
-            lines.add("    private final " + capitalize(subGroup.getName()) + " " + subGroup.getName() + ";");
+            lines.add("    private final " + subGroup.getName() + " " + subGroup.getSimpleName() + ";");
         }
         for (CodeGeneratingBuildParameter parameter : parameters) {
-            lines.add("    private final " + parameter.getType() + " " + parameter.getName() + ";");
+            lines.add("    private final " + parameter.getType() + " " + parameter.getSimpleName() + ";");
         }
         lines.add("    @Inject");
         lines.add("    public " + groupClassName + "(ProviderFactory providers, ObjectFactory objects) {");
         for (BuildParameterGroup subGroup : subGroups) {
-            lines.add("        this." + subGroup.getName() + " = objects.newInstance(" + capitalize(subGroup.getName()) + ".class);");
+            lines.add("        this." + subGroup.getSimpleName() + " = objects.newInstance(" + subGroup.getName() + ".class);");
         }
         for (CodeGeneratingBuildParameter parameter : parameters) {
-            lines.add("        this." + parameter.getName() + " = " + parameter.getValue() + ";");
+            lines.add("        this." + parameter.getSimpleName() + " = " + parameter.getValue() + ";");
         }
         lines.add("    }");
         for (BuildParameterGroup subGroup : subGroups) {
-            lines.add("    public " + capitalize(subGroup.getName()) + " get" + capitalize(subGroup.getName()) + "() {");
-            lines.add("        return this." + subGroup.getName() + ";");
+            lines.add("    public " + subGroup.getName() + " get" + capitalize(subGroup.getSimpleName()) + "() {");
+            lines.add("        return this." + subGroup.getSimpleName() + ";");
             lines.add("    }");
         }
         for (CodeGeneratingBuildParameter parameter : parameters) {
-            lines.add("    public " + parameter.getType() + " get" + capitalize(parameter.getName()) + "() {");
-            lines.add("        return this." + parameter.getName() + ";");
+            lines.add("    public " + parameter.getType() + " get" + capitalize(parameter.getSimpleName()) + "() {");
+            lines.add("        return this." + parameter.getSimpleName() + ";");
             lines.add("    }");
         }
         lines.add("}");

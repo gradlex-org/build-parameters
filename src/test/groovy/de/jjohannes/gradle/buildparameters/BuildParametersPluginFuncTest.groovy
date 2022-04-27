@@ -177,6 +177,39 @@ class BuildParametersPluginFuncTest extends Specification {
         result.output.contains("db.port: 9999")
     }
 
+    def "several subgroups can have the same name"() {
+        given:
+        buildLogicBuildFile << """
+            buildParameters {
+                group("db") {
+                    group("connection") {
+                        string("host") {
+                            defaultValue = "db host"
+                        }
+                    }
+                }
+                group("server") {
+                    group("connection") {
+                        string("host") {
+                            defaultValue = "server host"
+                        }
+                    }
+                }
+            }
+        """
+        buildFile << """
+            println "db.connection.host: " + buildParameters.db.connection.host
+            println "server.connection.host: " + buildParameters.server.connection.host
+        """
+
+        when:
+        def result = build("help", "-Pdb.port=9999")
+
+        then:
+        result.output.contains("db.connection.host: db host")
+        result.output.contains("server.connection.host: server host")
+    }
+
     def "value of build parameters cannot be changed"() {
         given:
         buildLogicBuildFile << """

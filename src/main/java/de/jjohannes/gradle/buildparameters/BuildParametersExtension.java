@@ -1,6 +1,5 @@
 package de.jjohannes.gradle.buildparameters;
 
-import org.gradle.api.model.ObjectFactory;
 import org.gradle.plugin.devel.GradlePluginDevelopmentExtension;
 import org.gradle.plugin.devel.PluginDeclaration;
 
@@ -15,8 +14,7 @@ public abstract class BuildParametersExtension extends BuildParameterGroup {
 
     @Inject
     public BuildParametersExtension(GradlePluginDevelopmentExtension gradlePlugins) {
-        // This name is used by the code generation
-        super(BuildParameterGroup.BASE_GROUP_NAME, "");
+        super(Identifier.root());
         this.pluginDeclaration = gradlePlugins.getPlugins().create("build-parameters", p -> {
             p.setId("build-parameters");
             p.setImplementationClass(PACKAGE_NAME + "." + PLUGIN_CLASS_NAME);
@@ -25,5 +23,15 @@ public abstract class BuildParametersExtension extends BuildParameterGroup {
 
     public void pluginId(String pluginId) {
         pluginDeclaration.setId(pluginId);
+    }
+
+    @Override
+    public String getSimpleName() {
+        return "buildParametersExtension";
+    }
+
+    @Override
+    public String getName() {
+        return "BuildParametersExtension";
     }
 }

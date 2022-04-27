@@ -5,8 +5,8 @@ import javax.inject.Inject;
 public abstract class IntegerBuildParameter extends BuildParameter<Integer> {
 
     @Inject
-    public IntegerBuildParameter(String name, String prefix) {
-        super(name, prefix);
+    public IntegerBuildParameter(Identifier identifier) {
+        super(identifier);
     }
 
 }

@@ -7,22 +7,20 @@ import org.gradle.api.tasks.Optional;
 
 public abstract class BuildParameter<ParameterType> {
 
-    private final String name;
-    private final String prefix;
+    private final Identifier id;
 
-    protected BuildParameter(String name, String prefix) {
-        this.name = name;
-        this.prefix = prefix;
+    protected BuildParameter(Identifier identifier) {
+        this.id = identifier;
     }
 
     @Input
-    public String getName() {
-        return name;
+    public String getSimpleName() {
+        return id.lastSegment();
     }
 
     @Internal
     public String getPath() {
-        return prefix.isEmpty() ? name : prefix + "." + name;
+        return id.toDottedCase();
     }
 
     @Input
