@@ -1,4 +1,5 @@
 plugins {
+    id("checkstyle")
     id("groovy")
     id("java-gradle-plugin")
     id("maven-publish")
