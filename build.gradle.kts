@@ -22,3 +22,7 @@ tasks.withType<Test> {
     useJUnitPlatform()
     maxParallelForks = 4
 }
+
+checkstyle {
+    configDirectory.set(layout.projectDirectory.dir("gradle/checkstyle"))
+}
