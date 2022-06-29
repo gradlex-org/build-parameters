@@ -1,4 +1,5 @@
 plugins {
+    id("checkstyle")
     id("groovy")
     id("java-gradle-plugin")
     id("maven-publish")
@@ -20,4 +21,8 @@ dependencies {
 tasks.withType<Test> {
     useJUnitPlatform()
     maxParallelForks = 4
+}
+
+checkstyle {
+    configDirectory.set(layout.projectDirectory.dir("gradle/checkstyle"))
 }
