@@ -1,5 +1,5 @@
 plugins {
-    id("de.jjohannes.gradle.build-parameters")
+    id("org.gradlex.build-parameters")
 }
 
 buildParameters {
