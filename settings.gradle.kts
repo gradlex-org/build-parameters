@@ -1,6 +1,10 @@
+pluginManagement {
+    includeBuild("gradle/plugins")
+}
+
 plugins {
-    id("com.gradle.enterprise") version("3.8.1")
-    id("com.gradle.common-custom-user-data-gradle-plugin") version "1.6.3"
+    id("com.gradle.enterprise") version("3.11.1")
+    id("com.gradle.common-custom-user-data-gradle-plugin") version "1.7.2"
 }
 
 dependencyResolutionManagement {

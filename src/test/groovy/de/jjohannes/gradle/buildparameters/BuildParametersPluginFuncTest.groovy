@@ -31,7 +31,7 @@ class BuildParametersPluginFuncTest extends Specification {
     def setup() {
         buildLogicBuildFile = build.file("build-logic/build.gradle") << """
             plugins {
-                id 'de.jjohannes.gradle.build-parameters'
+                id 'org.gradlex.build-parameters'
             }
         """
         settingsFile << """
