@@ -337,11 +337,4 @@ class BuildParametersPluginFuncTest extends Specification {
         expect:
         build("help")
     }
-
-    // Missing Features
-    // - Help task for descriptions
-    // - Unknown parameter detection
-    // - Error handling for unknown types added directly to parameters list
-    // - Environment variable
-    // - Enum with same names collide (solve or better error)
 }
