@@ -2,6 +2,7 @@ import gradlexbuild.pluginpublishconventions.PluginPublishConventionExtension
 
 plugins {
     id("com.gradle.plugin-publish")
+    id("signing")
 }
 
 java {
