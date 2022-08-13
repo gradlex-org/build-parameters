@@ -298,10 +298,10 @@ class BuildParametersPluginFuncTest extends Specification {
         given:
         buildLogicBuildFile << """
             buildParameters {
-                pluginId("de.benediktritter.build-params")
+                pluginId("org.example.build-params")
             }
         """
-        buildFile.text = buildFile.text.replace("build-parameters", "de.benediktritter.build-params")
+        buildFile.text = buildFile.text.replace("build-parameters", "org.example.build-params")
 
         expect:
         build("help")
