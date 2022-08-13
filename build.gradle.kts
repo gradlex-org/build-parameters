@@ -9,7 +9,7 @@ version = "0.1"
 
 pluginPublishConvention {
     id("${project.group}.${project.name}")
-    implementationClass("de.jjohannes.gradle.buildparameters.BuildParametersPlugin")
+    implementationClass("org.gradlex.buildparameters.BuildParametersPlugin")
     displayName("Build Parameters Gradle Plugin")
     description("Compile-safe access to parameters supplied to a Gradle build.")
     tags("gradlex", "parameters", "build parameters")

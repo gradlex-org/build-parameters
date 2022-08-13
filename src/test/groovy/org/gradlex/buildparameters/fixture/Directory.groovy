@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.jjohannes.gradle.buildparameters.fixture
+package org.gradlex.buildparameters.fixture
 
 import java.nio.file.Files
 

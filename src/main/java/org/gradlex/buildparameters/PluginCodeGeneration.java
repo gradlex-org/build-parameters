@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.jjohannes.gradle.buildparameters;
+package org.gradlex.buildparameters;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.DirectoryProperty;
@@ -31,9 +31,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static de.jjohannes.gradle.buildparameters.Constants.PACKAGE_NAME;
-import static de.jjohannes.gradle.buildparameters.Constants.PLUGIN_CLASS_NAME;
-import static de.jjohannes.gradle.buildparameters.Strings.capitalize;
+import static org.gradlex.buildparameters.Constants.PACKAGE_NAME;
+import static org.gradlex.buildparameters.Constants.PLUGIN_CLASS_NAME;
+import static org.gradlex.buildparameters.Strings.capitalize;
 import static java.util.stream.Collectors.toList;
 
 public abstract class PluginCodeGeneration extends DefaultTask {

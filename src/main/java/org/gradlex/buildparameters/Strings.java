@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.jjohannes.gradle.buildparameters;
+package org.gradlex.buildparameters;
 
 final class Strings {
 

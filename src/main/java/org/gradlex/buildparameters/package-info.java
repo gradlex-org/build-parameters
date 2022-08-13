@@ -15,6 +15,6 @@
  */
 
 @NonNullApi
-package de.jjohannes.gradle.buildparameters;
+package org.gradlex.buildparameters;
 
 import org.gradle.api.NonNullApi;

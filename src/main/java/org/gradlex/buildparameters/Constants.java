@@ -14,15 +14,9 @@
  * limitations under the License.
  */
 
-package de.jjohannes.gradle.buildparameters;
+package org.gradlex.buildparameters;
 
-import javax.inject.Inject;
-
-public abstract class IntegerBuildParameter extends BuildParameter<Integer> {
-
-    @Inject
-    public IntegerBuildParameter(Identifier identifier) {
-        super(identifier);
-    }
-
+interface Constants {
+    String PACKAGE_NAME = "buildparameters";
+    String PLUGIN_CLASS_NAME = "GeneratedBuildParametersPlugin";
 }

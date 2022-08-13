@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package de.jjohannes.gradle.buildparameters;
+package org.gradlex.buildparameters;
 
 import java.util.function.Function;
 
-import static de.jjohannes.gradle.buildparameters.Strings.capitalize;
+import static org.gradlex.buildparameters.Strings.capitalize;
 
 interface CodeGeneratingBuildParameter {
 

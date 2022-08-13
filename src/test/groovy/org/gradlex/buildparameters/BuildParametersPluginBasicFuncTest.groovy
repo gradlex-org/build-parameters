@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package de.jjohannes.gradle.buildparameters
+package org.gradlex.buildparameters
 
-import de.jjohannes.gradle.buildparameters.fixture.GradleBuild
+import org.gradlex.buildparameters.fixture.GradleBuild
 import org.gradle.testkit.runner.TaskOutcome
 import spock.lang.AutoCleanup
 import spock.lang.Specification

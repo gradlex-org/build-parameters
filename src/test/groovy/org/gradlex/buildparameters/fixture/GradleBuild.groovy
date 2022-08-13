@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.jjohannes.gradle.buildparameters.fixture
+package org.gradlex.buildparameters.fixture
 
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner

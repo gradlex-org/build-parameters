@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package de.jjohannes.gradle.buildparameters;
+package org.gradlex.buildparameters;
 
 import org.gradle.plugin.devel.GradlePluginDevelopmentExtension;
 import org.gradle.plugin.devel.PluginDeclaration;
 
 import javax.inject.Inject;
 
-import static de.jjohannes.gradle.buildparameters.Constants.PACKAGE_NAME;
-import static de.jjohannes.gradle.buildparameters.Constants.PLUGIN_CLASS_NAME;
+import static org.gradlex.buildparameters.Constants.PACKAGE_NAME;
+import static org.gradlex.buildparameters.Constants.PLUGIN_CLASS_NAME;
 
 public abstract class BuildParametersExtension extends BuildParameterGroup {
 
