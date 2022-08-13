@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "org.gradlex"
-version = "0.1"
+version = "1.0"
 
 pluginPublishConvention {
     id("${project.group}.${project.name}")
