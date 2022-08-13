@@ -61,6 +61,10 @@ class Identifier {
         return toPackageName() + "." + toSimpleTypeName();
     }
 
+    public String toEnvironmentVariableName() {
+        return Strings.screamingSnakeCase(toPropertyPath());
+    }
+
     private static void checkNotEmpty(String s) {
         if (s.trim().isEmpty()) {
             throw new IllegalArgumentException("Must not be empty.");

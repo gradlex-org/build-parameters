@@ -62,6 +62,11 @@ interface CodeGeneratingBuildParameter {
 
         @Override
         public String getValue() {
+            if (parameter.getEnvironmentVariableName().isPresent()) {
+                String envName = parameter.getEnvironmentVariableName().get();
+                envName = envName.isEmpty() ? parameter.id.toEnvironmentVariableName() : envName;
+                return "providers.gradleProperty(\"" + parameter.id.toPropertyPath() + "\").orElse(providers.environmentVariable(\"" + envName + "\"))" + type.transformation + ".getOrElse(" + getDefaultValue() + ")";
+            }
             return "providers.gradleProperty(\"" + parameter.id.toPropertyPath() + "\")" + type.transformation + ".getOrElse(" + getDefaultValue() + ")";
         }
 
@@ -91,7 +96,13 @@ interface CodeGeneratingBuildParameter {
 
         @Override
         public String getValue() {
-            return "providers.gradleProperty(\"" + parameter.id.toPropertyPath() + "\")" + type.transformation;
+            if (parameter.getEnvironmentVariableName().isPresent()) {
+                String envName = parameter.getEnvironmentVariableName().get();
+                envName = envName.isEmpty() ? parameter.id.toEnvironmentVariableName() : envName;
+                return "providers.gradleProperty(\"" + parameter.id.toPropertyPath() + "\").orElse(providers.environmentVariable(\"" + envName + "\"))" + type.transformation;
+            } else {
+                return "providers.gradleProperty(\"" + parameter.id.toPropertyPath() + "\")" + type.transformation;
+            }
         }
 
         @Override

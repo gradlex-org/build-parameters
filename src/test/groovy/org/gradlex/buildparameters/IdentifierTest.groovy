@@ -39,6 +39,7 @@ class IdentifierTest extends Specification {
         id.toPackageName() == "buildparameters"
         id.toPropertyPath() == "connection"
         id.toSimpleTypeName() == "Connection"
+        id.toEnvironmentVariableName() == "CONNECTION"
     }
 
     def "id with group can be converted"() {
@@ -52,5 +53,6 @@ class IdentifierTest extends Specification {
         id.toPackageName() == "buildparameters.db"
         id.toPropertyPath() == "db.connection"
         id.toSimpleTypeName() == "Connection"
+        id.toEnvironmentVariableName() == "DB_CONNECTION"
     }
 }

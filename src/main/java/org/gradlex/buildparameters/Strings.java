@@ -21,4 +21,8 @@ final class Strings {
     static String capitalize(String str) {
         return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
+
+    static String screamingSnakeCase(String str) {
+        return str.toUpperCase().replace(".", "_");
+    }
 }

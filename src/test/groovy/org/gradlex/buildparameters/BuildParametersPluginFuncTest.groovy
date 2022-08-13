@@ -337,4 +337,228 @@ class BuildParametersPluginFuncTest extends Specification {
         expect:
         build("help")
     }
+
+    def "parameter values without default can be derived from environment variable"() {
+        given:
+        buildLogicBuildFile << """
+            buildParameters {
+                string("myString") {
+                    fromEnvironment()
+                }
+                integer("myInt") {
+                    fromEnvironment()
+                }
+                bool("myBool") {
+                    fromEnvironment()
+                }
+                enumeration("myEnum") {
+                    fromEnvironment()
+                    values = ['A', 'B']
+                }
+            }
+        """
+        buildFile << """
+            println "myString: " + buildParameters.myString.get()
+            println "myInt: " + buildParameters.myInt.get()
+            println "myBool: " + buildParameters.myBool.get()
+            println "myEnum: " + buildParameters.myEnum.get()
+        """
+
+        and:
+        environment.MYSTRING = "something else"
+        environment.MYINT = "13"
+        environment.MYBOOL = "true"
+        environment.MYENUM = "A"
+
+        when:
+        def result = build("help")
+
+        then:
+        result.output.contains("myString: something else")
+        result.output.contains("myInt: 13")
+        result.output.contains("myBool: true")
+        result.output.contains("myEnum: A")
+    }
+
+    def "parameter values can be derived from environment variable"() {
+        given:
+        buildLogicBuildFile << """
+            buildParameters {
+                string("myString") {
+                    fromEnvironment()
+                    defaultValue = "fooDefault"
+                }
+                integer("myInt") {
+                    fromEnvironment()
+                    defaultValue = 19
+                }
+                bool("myBool") {
+                    fromEnvironment()
+                    defaultValue = true
+                }
+                enumeration("myEnum") {
+                    fromEnvironment()
+                    values = ['A', 'B']
+                    defaultValue = 'B'
+                }
+            }
+        """
+        buildFile << """
+            println "myString: " + buildParameters.myString
+            println "myInt: " + buildParameters.myInt
+            println "myBool: " + buildParameters.myBool
+            println "myEnum: " + buildParameters.myEnum
+        """
+
+        and:
+        environment.MYSTRING = "something else"
+        environment.MYINT = "13"
+        environment.MYBOOL = "false"
+        environment.MYENUM = "A"
+
+        when:
+        def result = build("help")
+
+        then:
+        result.output.contains("myString: something else")
+        result.output.contains("myInt: 13")
+        result.output.contains("myBool: false")
+        result.output.contains("myEnum: A")
+    }
+
+    def "parameter values can be derived from custom environment variable"() {
+        given:
+        buildLogicBuildFile << """
+            buildParameters {
+                string("myString") {
+                    fromEnvironment("CUSTOM_STRING")
+                    defaultValue = "fooDefault"
+                }
+                integer("myInt") {
+                    fromEnvironment("CUSTOM_INT")
+                    defaultValue = 19
+                }
+                bool("myBool") {
+                    fromEnvironment("CUSTOM_BOOL")
+                    defaultValue = true
+                }
+                enumeration("myEnum") {
+                    fromEnvironment("CUSTOM_ENUM")
+                    values = ['A', 'B']
+                    defaultValue = 'B'
+                }
+            }
+        """
+        buildFile << """
+            println "myString: " + buildParameters.myString
+            println "myInt: " + buildParameters.myInt
+            println "myBool: " + buildParameters.myBool
+            println "myEnum: " + buildParameters.myEnum
+        """
+
+        and:
+        environment.CUSTOM_STRING = "something else"
+        environment.CUSTOM_INT = "13"
+        environment.CUSTOM_BOOL = "false"
+        environment.CUSTOM_ENUM = "A"
+
+        when:
+        def result = build("help")
+
+        then:
+        result.output.contains("myString: something else")
+        result.output.contains("myInt: 13")
+        result.output.contains("myBool: false")
+        result.output.contains("myEnum: A")
+    }
+
+    def "parameter values can be derived from custom environment variable"() {
+        given:
+        buildLogicBuildFile << """
+            buildParameters {
+                group("group") {
+                    string("myString") {
+                        fromEnvironment()
+                        defaultValue = "fooDefault"
+                    }
+                    integer("myInt") {
+                        fromEnvironment()
+                        defaultValue = 19
+                    }
+                    bool("myBool") {
+                        fromEnvironment()
+                        defaultValue = true
+                    }
+                    enumeration("myEnum") {
+                        fromEnvironment()
+                        values = ['A', 'B']
+                        defaultValue = 'B'
+                    }
+                }
+            }
+        """
+        buildFile << """
+            println "myString: " + buildParameters.group.myString
+            println "myInt: " + buildParameters.group.myInt
+            println "myBool: " + buildParameters.group.myBool
+            println "myEnum: " + buildParameters.group.myEnum
+        """
+
+        and:
+        environment.GROUP_MYSTRING = "something else"
+        environment.GROUP_MYINT = "13"
+        environment.GROUP_MYBOOL = "false"
+        environment.GROUP_MYENUM = "A"
+
+        when:
+        def result = build("help")
+
+        then:
+        result.output.contains("myString: something else")
+        result.output.contains("myInt: 13")
+        result.output.contains("myBool: false")
+        result.output.contains("myEnum: A")
+    }
+
+    def "parameter values are taken from command line first"() {
+        given:
+        buildLogicBuildFile << """
+            buildParameters {
+                string("myString") {
+                    fromEnvironment()
+                }
+                integer("myInt") {
+                    fromEnvironment()
+                }
+                bool("myBool") {
+                    fromEnvironment()
+                }
+                enumeration("myEnum") {
+                    fromEnvironment()
+                    values = ['A', 'B']
+                }
+            }
+        """
+        buildFile << """
+            println "myString: " + buildParameters.myString.get()
+            println "myInt: " + buildParameters.myInt.get()
+            println "myBool: " + buildParameters.myBool.get()
+            println "myEnum: " + buildParameters.myEnum.get()
+        """
+
+        and:
+        environment.MYSTRING = "mystring from env"
+        environment.MYINT = "13"
+        environment.MYBOOL = "true"
+        environment.MYENUM = "A"
+
+        when:
+        def result = build("help", "-PmyString=Something", "-PmyInt=2", "-PmyBool=false", "-PmyEnum=B")
+
+        then:
+        result.output.contains("myString: Something")
+        result.output.contains("myInt: 2")
+        result.output.contains("myBool: false")
+        result.output.contains("myEnum: B")
+    }
 }

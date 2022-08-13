@@ -40,4 +40,16 @@ public abstract class BuildParameter<ParameterType> {
     @Input
     @Optional
     public abstract Property<String> getDescription();
+
+    @Input
+    @Optional
+    public abstract Property<String> getEnvironmentVariableName();
+
+    public void fromEnvironment() {
+        getEnvironmentVariableName().set("");
+    }
+
+    public void fromEnvironment(String variableName) {
+        getEnvironmentVariableName().set(variableName);
+    }
 }

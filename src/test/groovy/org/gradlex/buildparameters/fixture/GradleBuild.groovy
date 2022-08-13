@@ -29,6 +29,7 @@ class GradleBuild {
     final File buildFile
     final File settingsFile
     final File gradleProperties
+    final Map<String, String> environment = [:]
 
     GradleBuild(File projectDir = Files.createTempDirectory("gradle-build").toFile()) {
         this.projectDir = new Directory(projectDir)
@@ -46,12 +47,16 @@ class GradleBuild {
     }
 
     GradleRunner runner(String... args) {
-        GradleRunner.create()
+        def runner = GradleRunner.create()
                 .withProjectDir(projectDir.dir)
                 .withPluginClasspath()
                 .withArguments(args)
                 .forwardOutput()
                 .withDebug(ManagementFactory.getRuntimeMXBean().getInputArguments().toString().indexOf("-agentlib:jdwp") > 0)
+        if (!environment.isEmpty()) {
+            runner.withEnvironment(environment)
+        }
+        runner
     }
 
     def close() {
