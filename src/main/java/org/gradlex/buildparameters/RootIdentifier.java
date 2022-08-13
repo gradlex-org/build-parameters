@@ -16,28 +16,36 @@
 
 package org.gradlex.buildparameters;
 
-import org.gradle.api.provider.Property;
-import org.gradle.api.tasks.Input;
-import org.gradle.api.tasks.Optional;
+import java.util.Collections;
 
-public abstract class BuildParameter<ParameterType> {
+class RootIdentifier extends Identifier {
 
-    final Identifier id;
-
-    protected BuildParameter(Identifier identifier) {
-        this.id = identifier;
+    RootIdentifier() {
+        super(Collections.emptyList());
     }
 
-    @Input
-    public String getPropertyPath() {
-        return id.toPropertyPath();
+    @Override
+    public String toPropertyPath() {
+        return "";
     }
 
-    @Input
-    @Optional
-    public abstract Property<ParameterType> getDefaultValue();
+    @Override
+    public String toPackageFolderPath() {
+        return Constants.PACKAGE_NAME;
+    }
 
-    @Input
-    @Optional
-    public abstract Property<String> getDescription();
+    @Override
+    public String toPackageName() {
+        return Constants.PACKAGE_NAME;
+    }
+
+    @Override
+    public String toSimpleTypeName() {
+        return "BuildParametersExtension";
+    }
+
+    @Override
+    public String toFieldName() {
+        return "buildParametersExtension";
+    }
 }

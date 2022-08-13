@@ -22,25 +22,35 @@ class IdentifierTest extends Specification {
 
     def "does not accept empty strings"() {
         when:
-        Identifier.root().append(" ")
+        new Identifier([]).append(" ")
 
         then:
         thrown(IllegalArgumentException)
     }
 
-    def "can be converted to CamelCase"() {
+    def "id without group can be converted"() {
         given:
-        def id = Identifier.root().append("db").append("connection")
+        def id = new Identifier([]).append("connection")
 
         expect:
-        id.toCamelCase() == "DbConnection"
+        id.toFieldName() == "connection"
+        id.toFullQualifiedTypeName() == "buildparameters.Connection"
+        id.toPackageFolderPath() == "buildparameters/"
+        id.toPackageName() == "buildparameters"
+        id.toPropertyPath() == "connection"
+        id.toSimpleTypeName() == "Connection"
     }
 
-    def "can be converted to dotted.case"() {
+    def "id with group can be converted"() {
         given:
-        def id = Identifier.root().append("db").append("connection")
+        def id = new Identifier([]).append("db").append("connection")
 
         expect:
-        id.toDottedCase() == "db.connection"
+        id.toFieldName() == "connection"
+        id.toFullQualifiedTypeName() == "buildparameters.db.Connection"
+        id.toPackageFolderPath() == "buildparameters/db"
+        id.toPackageName() == "buildparameters.db"
+        id.toPropertyPath() == "db.connection"
+        id.toSimpleTypeName() == "Connection"
     }
 }

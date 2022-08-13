@@ -26,11 +26,6 @@ public abstract class EnumBuildParameter extends BuildParameter<String> {
     @Input
     public abstract ListProperty<String> getValues();
 
-    @Input
-    public String getName() {
-        return id.toCamelCase();
-    }
-
     @Inject
     public EnumBuildParameter(Identifier identifier) {
         super(identifier);

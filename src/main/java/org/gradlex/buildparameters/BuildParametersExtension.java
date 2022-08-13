@@ -30,7 +30,7 @@ public abstract class BuildParametersExtension extends BuildParameterGroup {
 
     @Inject
     public BuildParametersExtension(GradlePluginDevelopmentExtension gradlePlugins) {
-        super(Identifier.root());
+        super(new RootIdentifier());
         this.pluginDeclaration = gradlePlugins.getPlugins().create("build-parameters", p -> {
             p.setId("build-parameters");
             p.setImplementationClass(PACKAGE_NAME + "." + PLUGIN_CLASS_NAME);
@@ -39,15 +39,5 @@ public abstract class BuildParametersExtension extends BuildParameterGroup {
 
     public void pluginId(String pluginId) {
         pluginDeclaration.setId(pluginId);
-    }
-
-    @Override
-    public String getSimpleName() {
-        return "buildParametersExtension";
-    }
-
-    @Override
-    public String getName() {
-        return "BuildParametersExtension";
     }
 }

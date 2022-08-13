@@ -20,14 +20,14 @@ import org.gradle.api.Action;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.tasks.Input;
-import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.Nested;
 
 import javax.inject.Inject;
 
 public abstract class BuildParameterGroup {
 
-    private final Identifier id;
+    final Identifier id;
+
     @Inject
     public BuildParameterGroup(Identifier identifier) {
         this.id = identifier;
@@ -71,12 +71,7 @@ public abstract class BuildParameterGroup {
     public abstract ListProperty<BuildParameterGroup> getGroups();
 
     @Input
-    public String getName() {
-        return id.toCamelCase();
-    }
-
-    @Internal("Already tracked by getName()")
-    public String getSimpleName() {
-        return id.lastSegment();
+    public String getPropertyPath() {
+        return id.toPropertyPath();
     }
 }

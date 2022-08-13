@@ -18,15 +18,13 @@ package org.gradlex.buildparameters;
 
 import java.util.function.Function;
 
-import static org.gradlex.buildparameters.Strings.capitalize;
-
 interface CodeGeneratingBuildParameter {
 
     String getType();
 
     String getValue();
 
-    String getSimpleName();
+    Identifier getId();
 
     static CodeGeneratingBuildParameter from(BuildParameter<?> parameter) {
         ParameterType type;
@@ -35,8 +33,8 @@ interface CodeGeneratingBuildParameter {
         } else if (parameter instanceof BooleanBuildParameter) {
             type = new ParameterType("boolean", "Boolean", ".map(Boolean::parseBoolean)", Function.identity());
         } else if (parameter instanceof EnumBuildParameter) {
-            String typeName = capitalize(((EnumBuildParameter) parameter).getName());
-            type = new ParameterType(typeName, typeName, ".map(" + typeName + "::valueOf)", s -> Constants.PACKAGE_NAME + "." + typeName + "." + s);
+            String typeName = parameter.id.toFullQualifiedTypeName();
+            type = new ParameterType(typeName, typeName, ".map(" + typeName + "::valueOf)", s -> typeName + "." + s);
         } else {
             type = new ParameterType("String", "String", "", s -> "\"" + s + "\"");
         }
@@ -64,7 +62,7 @@ interface CodeGeneratingBuildParameter {
 
         @Override
         public String getValue() {
-            return "providers.gradleProperty(\"" + parameter.getPath() + "\")" + type.transformation + ".getOrElse(" + getDefaultValue() + ")";
+            return "providers.gradleProperty(\"" + parameter.id.toPropertyPath() + "\")" + type.transformation + ".getOrElse(" + getDefaultValue() + ")";
         }
 
         private String getDefaultValue() {
@@ -72,8 +70,8 @@ interface CodeGeneratingBuildParameter {
         }
 
         @Override
-        public String getSimpleName() {
-            return parameter.getSimpleName();
+        public Identifier getId() {
+            return parameter.id;
         }
     }
 
@@ -93,12 +91,12 @@ interface CodeGeneratingBuildParameter {
 
         @Override
         public String getValue() {
-            return "providers.gradleProperty(\"" + parameter.getPath() + "\")" + type.transformation;
+            return "providers.gradleProperty(\"" + parameter.id.toPropertyPath() + "\")" + type.transformation;
         }
 
         @Override
-        public String getSimpleName() {
-            return parameter.getSimpleName();
+        public Identifier getId() {
+            return parameter.id;
         }
     }
 

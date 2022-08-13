@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.gradlex.buildparameters.Constants.PACKAGE_NAME;
 import static org.gradlex.buildparameters.Constants.PLUGIN_CLASS_NAME;
 import static org.gradlex.buildparameters.Strings.capitalize;
 import static java.util.stream.Collectors.toList;
@@ -46,13 +45,14 @@ public abstract class PluginCodeGeneration extends DefaultTask {
 
     @TaskAction
     public void generate() {
-        getOutputDirectory().get().dir(getSourcesPath()).getAsFile().mkdirs();
+        BuildParameterGroup baseGroup = getBaseGroup().get();
+        getOutputDirectory().get().dir(baseGroup.id.toPackageFolderPath()).getAsFile().mkdirs();
 
-        generateGroupClass(getBaseGroup().get());
+        generateGroupClass(baseGroup);
 
-        Path pluginSource = getOutputDirectory().get().file(getSourcesPath() + "/" + PLUGIN_CLASS_NAME + ".java").getAsFile().toPath();
+        Path pluginSource = getOutputDirectory().get().file(baseGroup.id.toPackageFolderPath() + "/" + PLUGIN_CLASS_NAME + ".java").getAsFile().toPath();
         write(pluginSource, Arrays.asList(
-                "package " + PACKAGE_NAME + ";",
+                "package " + baseGroup.id.toPackageName() + ";",
                 "",
                 "import org.gradle.api.Project;",
                 "import org.gradle.api.Plugin;",
@@ -74,10 +74,13 @@ public abstract class PluginCodeGeneration extends DefaultTask {
         buildParameters.stream().filter(p -> p instanceof EnumBuildParameter).forEach(p -> generateEnumClass((EnumBuildParameter) p));
 
         List<CodeGeneratingBuildParameter> parameters = buildParameters.stream().map(CodeGeneratingBuildParameter::from).collect(toList());
-        String groupClassName = group.getName();
-        Path groupSource = getOutputDirectory().get().file(getSourcesPath() + "/" + groupClassName + ".java").getAsFile().toPath();
+        String groupClassName = group.id.toSimpleTypeName();
+
+        getOutputDirectory().get().dir(group.id.toPackageFolderPath()).getAsFile().mkdirs();
+        Path groupSource = getOutputDirectory().get().file(group.id.toPackageFolderPath() + "/" + groupClassName + ".java").getAsFile().toPath();
+
         List<String> lines = new ArrayList<>();
-        lines.add("package " + PACKAGE_NAME + ";");
+        lines.add("package " + group.id.toPackageName() + ";");
         lines.add("");
         lines.add("import org.gradle.api.model.ObjectFactory;");
         lines.add("import org.gradle.api.provider.ProviderFactory;");
@@ -85,28 +88,28 @@ public abstract class PluginCodeGeneration extends DefaultTask {
         lines.add("");
         lines.add("public abstract class " + groupClassName + " {");
         for (BuildParameterGroup subGroup : subGroups) {
-            lines.add("    private final " + subGroup.getName() + " " + subGroup.getSimpleName() + ";");
+            lines.add("    private final " + subGroup.id.toFullQualifiedTypeName() + " " + subGroup.id.toFieldName() + ";");
         }
         for (CodeGeneratingBuildParameter parameter : parameters) {
-            lines.add("    private final " + parameter.getType() + " " + parameter.getSimpleName() + ";");
+            lines.add("    private final " + parameter.getType() + " " + parameter.getId().toFieldName() + ";");
         }
         lines.add("    @Inject");
         lines.add("    public " + groupClassName + "(ProviderFactory providers, ObjectFactory objects) {");
         for (BuildParameterGroup subGroup : subGroups) {
-            lines.add("        this." + subGroup.getSimpleName() + " = objects.newInstance(" + subGroup.getName() + ".class);");
+            lines.add("        this." + subGroup.id.toFieldName() + " = objects.newInstance(" + subGroup.id.toFullQualifiedTypeName() + ".class);");
         }
         for (CodeGeneratingBuildParameter parameter : parameters) {
-            lines.add("        this." + parameter.getSimpleName() + " = " + parameter.getValue() + ";");
+            lines.add("        this." + parameter.getId().toFieldName() + " = " + parameter.getValue() + ";");
         }
         lines.add("    }");
         for (BuildParameterGroup subGroup : subGroups) {
-            lines.add("    public " + subGroup.getName() + " get" + capitalize(subGroup.getSimpleName()) + "() {");
-            lines.add("        return this." + subGroup.getSimpleName() + ";");
+            lines.add("    public " + subGroup.id.toFullQualifiedTypeName() + " get" + subGroup.id.toSimpleTypeName() + "() {");
+            lines.add("        return this." + subGroup.id.toFieldName() + ";");
             lines.add("    }");
         }
         for (CodeGeneratingBuildParameter parameter : parameters) {
-            lines.add("    public " + parameter.getType() + " get" + capitalize(parameter.getSimpleName()) + "() {");
-            lines.add("        return this." + parameter.getSimpleName() + ";");
+            lines.add("    public " + parameter.getType() + " get" + capitalize(parameter.getId().toFieldName()) + "() {");
+            lines.add("        return this." + parameter.getId().toFieldName() + ";");
             lines.add("    }");
         }
         lines.add("}");
@@ -115,23 +118,19 @@ public abstract class PluginCodeGeneration extends DefaultTask {
     }
 
     private void generateEnumClass(EnumBuildParameter enumBuildParameter) {
-        String enumClassName = capitalize(enumBuildParameter.getName());
-        Path enumSource = getOutputDirectory().get().file(getSourcesPath() + "/" + enumClassName + ".java").getAsFile().toPath();
+        getOutputDirectory().get().dir(enumBuildParameter.id.toPackageFolderPath()).getAsFile().mkdirs();
+        Path enumSource = getOutputDirectory().get().file(enumBuildParameter.id.toPackageFolderPath() + "/" + enumBuildParameter.id.toSimpleTypeName() + ".java").getAsFile().toPath();
 
         List<String> lines = new ArrayList<>();
-        lines.add("package " + PACKAGE_NAME + ";");
+        lines.add("package " + enumBuildParameter.id.toPackageName() + ";");
         lines.add("");
-        lines.add("public enum " + enumClassName + " {");
+        lines.add("public enum " + enumBuildParameter.id.toSimpleTypeName() + " {");
         for (String enumValue : enumBuildParameter.getValues().get()) {
             lines.add("    " + enumValue + ",");
         }
         lines.add("}");
 
         write(enumSource, lines);
-    }
-
-    private static String getSourcesPath() {
-        return PACKAGE_NAME.replace(".", "/");
     }
 
     private static void write(Path file, List<String> lines) {

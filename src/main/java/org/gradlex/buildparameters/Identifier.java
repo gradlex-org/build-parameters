@@ -19,17 +19,12 @@ package org.gradlex.buildparameters;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 class Identifier {
 
     private final List<String> segments;
 
-    static Identifier root() {
-        return new Identifier(Collections.emptyList());
-    }
-
-    private Identifier(List<String> segments) {
+    Identifier(List<String> segments) {
         this.segments = Collections.unmodifiableList(segments);
     }
 
@@ -41,23 +36,34 @@ class Identifier {
         return new Identifier(newSegments);
     }
 
-    public String toCamelCase() {
-        return segments.stream()
-                .map(Strings::capitalize)
-                .collect(Collectors.joining());
+    public String toPropertyPath() {
+        return String.join(".", segments);
     }
 
-    public String toDottedCase() {
-        return String.join(".", segments);
+    public String toPackageFolderPath() {
+        return Constants.PACKAGE_NAME + "/" + String.join("/", segments.subList(0, segments.size() - 1));
+    }
+
+    public String toPackageName() {
+        List<String> packageSegments = segments.subList(0, segments.size() - 1);
+        return Constants.PACKAGE_NAME + (packageSegments.isEmpty() ? "" : ".") + String.join(".", packageSegments);
+    }
+
+    public String toSimpleTypeName() {
+        return Strings.capitalize(toFieldName());
+    }
+
+    public String toFieldName() {
+        return segments.get(segments.size() - 1);
+    }
+
+    public String toFullQualifiedTypeName() {
+        return toPackageName() + "." + toSimpleTypeName();
     }
 
     private static void checkNotEmpty(String s) {
         if (s.trim().isEmpty()) {
             throw new IllegalArgumentException("Must not be empty.");
         }
-    }
-
-    public String lastSegment() {
-        return segments.get(segments.size() - 1);
     }
 }
