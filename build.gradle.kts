@@ -11,7 +11,7 @@ pluginPublishConvention {
     id("${project.group}.${project.name}")
     implementationClass("de.jjohannes.gradle.buildparameters.BuildParametersPlugin")
     displayName("Build Parameters Gradle Plugin")
-    description("GradleX Plugin: Compile-safe access to parameters supplied to a Gradle build.")
+    description("Compile-safe access to parameters supplied to a Gradle build.")
     tags("gradlex", "parameters", "build parameters")
     gitHub("https://github.com/gradlex-org/build-parameters")
 }

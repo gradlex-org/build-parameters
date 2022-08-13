@@ -13,14 +13,14 @@ val pluginPublishConvention = extensions.create<PluginPublishConventionExtension
     "pluginPublishConvention", project, gradlePlugin, pluginBundle
 )
 
-publishing.publications.withType<MavenPublication>().all {
+publishing.publications.withType<MavenPublication>().configureEach {
     pom.name.set(pluginPublishConvention.displayName)
     pom.description.set(pluginPublishConvention.description)
     pom.url.set(pluginPublishConvention.gitHub)
     pom.licenses {
         // License could be configurable
         license {
-            name.set("Apache License, Version 2.0")
+            name.set("Apache-2.0")
             url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
         }
     }
