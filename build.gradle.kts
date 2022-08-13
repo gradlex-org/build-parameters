@@ -1,7 +1,7 @@
 plugins {
     id("checkstyle")
     id("groovy")
-    id("org.gradlex.plugin-publish-convention")
+    id("gradlexbuild.plugin-publish-convention")
 }
 
 group = "org.gradlex"
@@ -20,7 +20,7 @@ dependencies {
     testImplementation("org.spockframework:spock-core:2.1-groovy-3.0")
 }
 
-tasks.withType<Test> {
+tasks.withType<Test>().configureEach {
     useJUnitPlatform()
     maxParallelForks = 4
 }

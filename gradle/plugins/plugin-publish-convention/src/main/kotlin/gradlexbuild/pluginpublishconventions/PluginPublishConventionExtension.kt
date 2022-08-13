@@ -1,4 +1,4 @@
-package org.gradlex.pluginpublishconventions
+package gradlexbuild.pluginpublishconventions
 
 import com.gradle.publish.PluginBundleExtension
 import org.gradle.api.Project
@@ -11,6 +11,10 @@ abstract class PluginPublishConventionExtension(
     private val pluginBundle: PluginBundleExtension
 ) {
 
+    companion object {
+        const val NAME = "pluginPublishConvention"
+    }
+
     private val pluginDefinition = gradlePlugin.plugins.create(project.name)
 
     val id: Provider<String> = project.provider { pluginDefinition.id }
@@ -18,7 +22,7 @@ abstract class PluginPublishConventionExtension(
     val displayName: Provider<String> = project.provider { pluginDefinition.displayName!! }
     val description: Provider<String> = project.provider { pluginDefinition.description!! }
     val tags: Provider<Collection<String>> = project.provider { pluginBundle.tags }
-    val gitHub: Provider<String> =project.provider { pluginBundle.website }
+    val gitHub: Provider<String> = project.provider { pluginBundle.website }
 
     fun id(id: String) {
         pluginDefinition.id = id
