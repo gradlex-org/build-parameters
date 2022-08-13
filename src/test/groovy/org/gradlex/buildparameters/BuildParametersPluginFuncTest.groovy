@@ -203,6 +203,37 @@ class BuildParametersPluginFuncTest extends Specification {
         build("help")
     }
 
+    def "several enums in different groups can have the same name"() {
+        given:
+        buildLogicBuildFile << """
+            buildParameters {
+                group("group1") {
+                    enumeration("myParameter") {
+                        description = "A simple enum parameter"
+                        values = ['One', 'Two', 'Three']
+                    }
+                }
+                group("group2") {
+                    enumeration("myParameter") {
+                        description = "Another simple enum parameter"
+                        values = ['A', 'B', 'C']
+                    }
+                }
+            }
+        """
+        buildFile << """
+            println "group1.myParameter: " + buildParameters.group1.myParameter.get()
+            println "group2.myParameter: " + buildParameters.group2.myParameter.get()
+        """
+
+        when:
+        def result = build("help", "-Pgroup1.myParameter=One", "-Pgroup2.myParameter=C")
+
+        then:
+        result.output.contains("group1.myParameter: One")
+        result.output.contains("group2.myParameter: C")
+    }
+
     def "parameters can be grouped"() {
         given:
         buildLogicBuildFile << """

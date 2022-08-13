@@ -115,7 +115,7 @@ public abstract class PluginCodeGeneration extends DefaultTask {
     }
 
     private void generateEnumClass(EnumBuildParameter enumBuildParameter) {
-        String enumClassName = capitalize(enumBuildParameter.getSimpleName());
+        String enumClassName = capitalize(enumBuildParameter.getName());
         Path enumSource = getOutputDirectory().get().file(getSourcesPath() + "/" + enumClassName + ".java").getAsFile().toPath();
 
         List<String> lines = new ArrayList<>();

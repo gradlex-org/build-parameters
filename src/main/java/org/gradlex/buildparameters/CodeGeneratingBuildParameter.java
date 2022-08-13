@@ -35,7 +35,7 @@ interface CodeGeneratingBuildParameter {
         } else if (parameter instanceof BooleanBuildParameter) {
             type = new ParameterType("boolean", "Boolean", ".map(Boolean::parseBoolean)", Function.identity());
         } else if (parameter instanceof EnumBuildParameter) {
-            String typeName = capitalize(parameter.getSimpleName());
+            String typeName = capitalize(((EnumBuildParameter) parameter).getName());
             type = new ParameterType(typeName, typeName, ".map(" + typeName + "::valueOf)", s -> Constants.PACKAGE_NAME + "." + typeName + "." + s);
         } else {
             type = new ParameterType("String", "String", "", s -> "\"" + s + "\"");

@@ -23,7 +23,7 @@ import org.gradle.api.tasks.Optional;
 
 public abstract class BuildParameter<ParameterType> {
 
-    private final Identifier id;
+    final Identifier id;
 
     protected BuildParameter(Identifier identifier) {
         this.id = identifier;
