@@ -1,12 +1,13 @@
-= Build Parameters Gradle Plugin
+= Build Parameters Gradle plugin
 
 image:https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fgradlex-org%2Fbuild-parameters%2Fbadge%3Fref%3Dmain&style=flat["Build Status", link="https://actions-badge.atrox.dev/gradlex/build-parameters/goto?ref=main"]
 image:https://img.shields.io/maven-metadata/v?label=Plugin%20Portal&metadataUrl=https%3A%2F%2Fplugins.gradle.org%2Fm2%2Fde%2Fgradlex-org%2Fbuild-parameters%2Forg.gradlex.build-parameters.gradle.plugin%2Fmaven-metadata.xml["Gradle Plugin Portal", link="https://plugins.gradle.org/plugin/org.gradlex.build-parameters"]
 
 The Build Parameters Gradle plugin provides compile-safe access to parameters supplied to a Gradle build.
 It does so by providing a DSL to describe parameters and their types.
-Based on this description it generates code for plugin that can then be applied to your build.
-See the setup section for more information on how to set up your build to use this plugin.
+Based on this description it generates code for a plugin that can then be applied to your build.
+In that sense Build Parameters Gradle plugin is not a conventional plugin, but a meta plugin that you use to generate a plugin for your build.
+See the setup section for more information on how to configure your build to use this plugin.
 
 Compatible with Java 8 and Gradle 7.0 or later. Earlier versions of Gradle may also work but compatibility is not tested.
 
@@ -15,6 +16,10 @@ Compatible with Java 8 and Gradle 7.0 or later. Earlier versions of Gradle may a
 Describe build parameters using a rich DSL:
 
 ```kotlin
+plugins {
+    id("org.gradlex.build-parameters")
+}
+
 buildParameters {
     group("deployment") {
         string("username") {
@@ -31,6 +36,10 @@ buildParameters {
 Use compile-safe accessor in you build scripts to access parameter values:
 
 ```kotlin
+plugins {
+    id("build-parameters")
+}
+
 publishing {
     repositories {
         maven {
@@ -52,14 +61,14 @@ Run your build and pass the parameters to it using `-P` commandline parameters:
 
 == Features
 
-- Parameters can be supplied via `-P` on the command line or via environment variables
-- Definition of default values
-- Parameters can be grouped
-- Support for various types:
-  - String
-  - Integer
-  - Boolean
-  - Enumerations
+* Parameters can be supplied via `-P` on the command line or via environment variables
+* Definition of default values
+* Parameters can be grouped
+* Support for various types:
+** String
+** Integer
+** Boolean
+** Enumerations
 
 == Setup
 
@@ -92,12 +101,51 @@ plugins {
 }
 ```
 
-The plugin create an extension called `buildParameters` on the project object that can be used to described parameters of the build.
+The plugin generate a new plugin based on the description in the DSL.
+The generated plugin will use `build-parameters` as plugin ID.
+This plugin can then be applied to your build scripts in order to access parameters supplied to the build.
+For that the generated plugin creates an extension called `buildParameters` on the project object.
+
+```kotlin
+plugins {
+    id("build-parameters")
+}
+
+if(buildParameters.myParameter) {
+    println("myParameter was set to true")
+}
+```
+
+=== Controlling the generated plugin ID
+
+The ID of the generated plugin can be configured using the `pluginId` method.
+
+```kotlin
+plugins {
+    id("org.gradlex.build-parameters")
+}
+
+buildParameters {
+    pluginId("mybuild.build-params")
+}
+```
+
+And then in your build script:
+
+```kotlin
+plugins {
+    id("mybuild.build-parms")
+}
+```
+
+=== Defining parameters
+
+This plugin supports String, boolean, integer and enum types for modelling build parameters.
 Parameters can be defined with and without default value.
 If not default value is defined, the resulting compile-safe parameter accessor will be a `org.gradle.api.provider.Provider`.
 If a default value is defined, the resulting compile-safe parameter accessor will have the actual parameter type.
 
-=== String parameters
+==== String parameters
 
 Use the `string` method to define parameters of type String:
 
@@ -110,7 +158,7 @@ buildParameters {
 }
 ```
 
-=== Int parameters
+==== Int parameters
 
 Use the `integer` method to define parameters of type Integer:
 
@@ -123,7 +171,7 @@ buildParameters {
 }
 ```
 
-=== Boolean parameters
+==== Boolean parameters
 
 Use the `bool` method to define parameters of type Boolean:
 
@@ -136,7 +184,7 @@ buildParameters {
 }
 ```
 
-=== Enum parameters
+==== Enum parameters
 
 Use the `enumeration` method to define enumeration parameters.
 The `build-parameters` plugin will generate an enum class based on the name of the parameter and the supplied value list.
@@ -160,7 +208,7 @@ public enum MyEnum {
 }
 ```
 
-=== Grouping
+=== Grouping parameters
 
 Parameters can be namespaced using the `group` method:
 
@@ -175,11 +223,14 @@ buildParameters {
 
 The group name will be used to namespace parameter when supplied via the command line and when using in the build script.
 
-=== Environment variable support
+=== Deriving parameter values from environment variables
 
 Sometimes you may want to supply a build parameter using the system environment.
 A good example of this is the `CI` variable that most CI servers set.
 By looking at this variable the build can detect that it's running in a CI environment.
+
+NOTE: Parameters supplied via the command line take precedence over those supplied via the environment.
+
 In order to derive a build parameter value from the environment use the `fromEnvironment()` method:
 
 ```kotlin
@@ -194,4 +245,36 @@ buildParameters {
 The `fromEnvironment()` method will translate the parameters property path into SCREAMING_SNAKE_CASE and use that to look up the value in the environment.
 In the example above `ci` will be translated to `CI`.
 
-There's also the `fromEnvironment(String)` overload that you can use to customize the environment variable name for look up.
+The translation also works in combination with grouped paramters:
+
+```kotlin
+buildParameters {
+    group("myGroup") {
+        string("someString") {
+            fromEnvironment()
+        }
+    }
+}
+```
+
+The `mygroup.someString` parameter can then be set by configuring the `MYGROUP_SOMESTRING` environment variable.
+
+If you need full control over the environment variable name used to look up the parameters value, use the `fromEnvironment(String)` overload.
+
+```kotlin
+buildParameters {
+    group("myGroup") {
+        string("someString") {
+            fromEnvironment("SOME_CUSTOM_ENV_VAR")
+        }
+    }
+}
+```
+
+Given the configuration above, the generated plugin will look up the `SOME_CUSTOM_ENV_VAR` variable for setting the value of `myGroup.someString`.
+
+[CAUTION]
+====
+The plugin does not verify whether the value supplied to `fromEnvironment(String)` is a valid environment variable name.
+It's the responsibility of the user to make sure only upper case letters and underscores are used.
+====
