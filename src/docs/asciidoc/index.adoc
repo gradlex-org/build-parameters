@@ -7,7 +7,7 @@ The Build Parameters Gradle plugin provides compile-safe access to parameters su
 It does so by providing a DSL to describe parameters and their types.
 Based on this description it generates code for a plugin that can then be applied to your build.
 In that sense Build Parameters Gradle plugin is not a conventional plugin, but a meta plugin that you use to generate a plugin for your build.
-See the setup section for more information on how to configure your build to use this plugin.
+See the <<Setup>> section for more information on how to configure your build to use this plugin.
 
 Compatible with Java 8 and Gradle 7.0 or later. Earlier versions of Gradle may also work but compatibility is not tested.
 
@@ -72,7 +72,7 @@ Run your build and pass the parameters to it using `-P` commandline parameters:
 
 == Setup
 
-In order to use this plugin you need to setup an included build that will produce the resulting plugin.
+In order to use this plugin you need to set up an included build that will produce the resulting plugin.
 A typical project layout looks like this:
 
 ```
@@ -88,7 +88,7 @@ my-project
 
 1. Configure the build to include the `build-logic` build by adding `includeBuild("build-logic")` to your settings script.
 2. Configure the `build-logic` build to include your `build-parameters` module by adding `include("build-parameters")` to the settings script of the `build-logic` build.
-3. Use this plugin to describe your build parameters. See the Usage section for more information on this.
+3. Use this plugin to describe your build parameters. See the <<Usage>> section for more information on this.
 4. Finally, you can now use the generated plugin in your build scripts.
 
 == Usage
