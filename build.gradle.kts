@@ -1,6 +1,7 @@
 plugins {
     id("checkstyle")
     id("groovy")
+    id("gradlexbuild.documentation-convention")
     id("gradlexbuild.plugin-publish-convention")
 }
 

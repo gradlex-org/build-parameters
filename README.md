@@ -1,4 +1,4 @@
-# build-parameters
+# Build Parameters Gradle plugin
 
 Compile-safe access to parameters supplied to a Gradle build
 
