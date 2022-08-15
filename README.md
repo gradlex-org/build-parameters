@@ -39,9 +39,9 @@ publishing {
         maven {
             url = uri("https://repo.my-company.com")
             // username has a default and is therefore of type String
-            username = buildParameters.username
+            username = buildParameters.deployment.username
             // password does not have a default and is therefore of type Provider<String>
-            password = buildParameters.password.get()
+            password = buildParameters.deployment.password.get()
         }
     }
 }
