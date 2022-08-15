@@ -6,7 +6,7 @@ image:https://img.shields.io/maven-metadata/v?label=Plugin%20Portal&metadataUrl=
 The Build Parameters Gradle plugin provides compile-safe access to parameters supplied to a Gradle build.
 It does so by providing a DSL to describe parameters and their types.
 Based on this description it generates code for a plugin that can then be applied to your build.
-In that sense Build Parameters Gradle plugin is not a conventional plugin, but a meta plugin that you use to generate a plugin for your build.
+In that sense, the Build Parameters Gradle plugin is not a conventional plugin, but a meta plugin that you use to generate a plugin for your build.
 See the <<Setup>> section for more information on how to configure your build to use this plugin.
 
 Compatible with Java 8 and Gradle 7.0 or later. Earlier versions of Gradle may also work but compatibility is not tested.
@@ -45,9 +45,9 @@ publishing {
         maven {
             url = uri("https://repo.my-company.com")
             // username has a default and is therefore of type String
-            username = buildParameters.username
+            username = buildParameters.deployment.username
             // password does not have a default and is therefore of type Provider<String>
-            password = buildParameters.password.get()
+            password = buildParameters.deployment.password.get()
         }
     }
 }
@@ -61,7 +61,7 @@ Run your build and pass the parameters to it using `-P` commandline parameters:
 
 == Features
 
-* Parameters can be supplied via `-P` on the command line or via environment variables
+* Parameters can be supplied via `-P` on the command line, via `gradle.properties` files or via environment variables
 * Definition of default values
 * Parameters can be grouped
 * Support for various types:
@@ -72,28 +72,29 @@ Run your build and pass the parameters to it using `-P` commandline parameters:
 
 == Setup
 
-In order to use this plugin you need to set up an included build that will produce the resulting plugin.
+In order to use this plugin you need an included build that will produce the resulting plugin.
 A typical project layout looks like this:
 
 ```
 my-project
- |- build-logic
- |   |- build-parameters
- |   |  |- build.gradle.kts <3>
- |   |- settings.gradle.kts <2>
+ |- gradle
+ |   |- plugins
+ |      |- build-parameters
+ |      |  |- build.gradle.kts <3>
+ |      |- settings.gradle.kts <2>
  |- src
  |- build.gradle.kts <4>
  |- settings.gradle.kts <1>
 ```
 
-1. Configure the build to include the `build-logic` build by adding `includeBuild("build-logic")` to your settings script.
-2. Configure the `build-logic` build to include your `build-parameters` module by adding `include("build-parameters")` to the settings script of the `build-logic` build.
-3. Use this plugin to describe your build parameters. See the <<Usage>> section for more information on this.
+1. Configure the build to include the `gradle/plugins` build by adding `includeBuild("gradle/plugins")` to your settings file.
+2. Configure the `gradle/plugins` build to include your `build-parameters` subproject by adding `include("build-parameters")` to the settings script of the `gradle/plugins` build.
+3. Use the `org.gradlex.build-parameters` plugin to describe your build parameters. See the <<Usage>> section for more information on this.
 4. Finally, you can now use the generated plugin in your build scripts.
 
 == Usage
 
-Add the plugin to your `build-parameters` module using the plugins block:
+Add the plugin to your `build-parameters` subproject using the plugins block:
 
 ```kotlin
 plugins {
@@ -101,17 +102,17 @@ plugins {
 }
 ```
 
-The plugin generate a new plugin based on the description in the DSL.
+The plugin generates a new plugin based on the description in the DSL.
 The generated plugin will use `build-parameters` as plugin ID.
 This plugin can then be applied to your build scripts in order to access parameters supplied to the build.
-For that the generated plugin creates an extension called `buildParameters` on the project object.
+For that, the generated plugin creates an extension called `buildParameters`.
 
 ```kotlin
 plugins {
     id("build-parameters")
 }
 
-if(buildParameters.myParameter) {
+if (buildParameters.myParameter) {
     println("myParameter was set to true")
 }
 ```
@@ -142,7 +143,7 @@ plugins {
 
 This plugin supports String, boolean, integer and enum types for modelling build parameters.
 Parameters can be defined with and without default value.
-If not default value is defined, the resulting compile-safe parameter accessor will be a `org.gradle.api.provider.Provider`.
+If no default value is defined, the resulting compile-safe parameter accessor will be a `org.gradle.api.provider.Provider`.
 If a default value is defined, the resulting compile-safe parameter accessor will have the actual parameter type.
 
 ==== String parameters
@@ -221,7 +222,7 @@ buildParameters {
 }
 ```
 
-The group name will be used to namespace parameter when supplied via the command line and when using in the build script.
+The group name will be used to namespace parameters when supplied via the command line and when accessing them in build scripts.
 
 === Deriving parameter values from environment variables
 
@@ -231,7 +232,7 @@ By looking at this variable the build can detect that it's running in a CI envir
 
 NOTE: Parameters supplied via the command line take precedence over those supplied via the environment.
 
-In order to derive a build parameter value from the environment use the `fromEnvironment()` method:
+In order to derive a build parameter value from the environment, use the `fromEnvironment()` method:
 
 ```kotlin
 buildParameters {
