@@ -16,6 +16,7 @@
 
 package org.gradlex.buildparameters;
 
+import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.Optional;
@@ -45,11 +46,19 @@ public abstract class BuildParameter<ParameterType> {
     @Optional
     public abstract Property<String> getEnvironmentVariableName();
 
+    @Input
+    @Optional
+    public abstract ListProperty<String> getAliases();
+
     public void fromEnvironment() {
         getEnvironmentVariableName().set("");
     }
 
     public void fromEnvironment(String variableName) {
         getEnvironmentVariableName().set(variableName);
+    }
+
+    public void alias(String alias) {
+        getAliases().add(alias);
     }
 }

@@ -561,4 +561,44 @@ class BuildParametersPluginFuncTest extends Specification {
         result.output.contains("myBool: false")
         result.output.contains("myEnum: B")
     }
+
+    def "parameters can be given aliases to source from other property names"() {
+        given:
+        buildLogicBuildFile << """
+            buildParameters {
+                group("group") {
+                    string("myString") {
+                        alias("group_myString")
+                        alias("groupMyString")
+                    }
+                    integer("myInt") {
+                        alias("group_myInt")
+                    }
+                    bool("myBool") {
+                        alias("group_myBool")
+                    }
+                    enumeration("myEnum") {
+                        alias("group_myEnum")
+                        values = ['A', 'B']
+                    }
+                }
+            }
+        """
+
+        buildFile << """
+            println "myString: " + buildParameters.group.myString.get()
+            println "myInt: " + buildParameters.group.myInt.get()
+            println "myBool: " + buildParameters.group.myBool.get()
+            println "myEnum: " + buildParameters.group.myEnum.get()
+        """
+
+        when:
+        def result = build("help", "-PgroupMyString=Something", "-Pgroup_myInt=2", "-Pgroup_myBool=false", "-Pgroup_myEnum=B")
+
+        then:
+        result.output.contains("myString: Something")
+        result.output.contains("myInt: 2")
+        result.output.contains("myBool: false")
+        result.output.contains("myEnum: B")
+    }
 }

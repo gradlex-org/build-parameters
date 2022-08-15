@@ -224,6 +224,36 @@ buildParameters {
 
 The group name will be used to namespace parameters when supplied via the command line and when accessing them in build scripts.
 
+
+=== Sourcing parameters from an alternate property name
+
+Parameters can be sourced from a different property name than the auto-generated one by using the `alias` method:
+
+```kotlin
+buildParameters {
+    group("myGroup") {
+        string("myString") {
+            alias("myGroup_myString")
+        }
+    }
+}
+```
+
+Multiple aliases can be specified
+
+```kotlin
+buildParameters {
+    group("myGroup") {
+        string("myString") {
+            alias("myGroup_myString")
+            alias("myStringFromMyGroup")
+        }
+    }
+}
+```
+
+The alias provides a fallback for the property source, so the original property value (`myGroup.myString`) can still be used as the source. The alias also does not change the buildParameter path (`buildParameters.myGroup.myString`).
+
 === Deriving parameter values from environment variables
 
 Sometimes you may want to supply a build parameter using the system environment.

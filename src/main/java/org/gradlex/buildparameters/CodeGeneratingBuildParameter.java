@@ -62,12 +62,32 @@ interface CodeGeneratingBuildParameter {
 
         @Override
         public String getValue() {
+            StringBuilder sb = new StringBuilder("providers.gradleProperty(\"")
+              .append(parameter.id.toPropertyPath())
+              .append("\")");
+
+            //Setup property alias fallback
+            for (String alias : parameter.getAliases().get()) {
+              sb.append(".orElse(providers.gradleProperty(\"")
+                .append(alias)
+                .append("\"))");
+            }
+
+            //Setup ENV variable fallback
             if (parameter.getEnvironmentVariableName().isPresent()) {
                 String envName = parameter.getEnvironmentVariableName().get();
                 envName = envName.isEmpty() ? parameter.id.toEnvironmentVariableName() : envName;
-                return "providers.gradleProperty(\"" + parameter.id.toPropertyPath() + "\").orElse(providers.environmentVariable(\"" + envName + "\"))" + type.transformation + ".getOrElse(" + getDefaultValue() + ")";
+                sb.append(".orElse(providers.environmentVariable(\"")
+                  .append(envName)
+                  .append("\"))");
             }
-            return "providers.gradleProperty(\"" + parameter.id.toPropertyPath() + "\")" + type.transformation + ".getOrElse(" + getDefaultValue() + ")";
+
+            sb.append(type.transformation)
+              .append(".getOrElse(")
+              .append(getDefaultValue())
+              .append(")");
+
+            return sb.toString();
         }
 
         private String getDefaultValue() {
@@ -96,13 +116,29 @@ interface CodeGeneratingBuildParameter {
 
         @Override
         public String getValue() {
+            StringBuilder sb = new StringBuilder("providers.gradleProperty(\"")
+              .append(parameter.id.toPropertyPath())
+              .append("\")");
+
+            //Setup property alias fallback
+            for (String alias : parameter.getAliases().get()) {
+              sb.append(".orElse(providers.gradleProperty(\"")
+                .append(alias)
+                .append("\"))");
+            }
+
+            //Setup ENV variable fallback
             if (parameter.getEnvironmentVariableName().isPresent()) {
                 String envName = parameter.getEnvironmentVariableName().get();
                 envName = envName.isEmpty() ? parameter.id.toEnvironmentVariableName() : envName;
-                return "providers.gradleProperty(\"" + parameter.id.toPropertyPath() + "\").orElse(providers.environmentVariable(\"" + envName + "\"))" + type.transformation;
-            } else {
-                return "providers.gradleProperty(\"" + parameter.id.toPropertyPath() + "\")" + type.transformation;
+                sb.append(".orElse(providers.environmentVariable(\"")
+                  .append(envName)
+                  .append("\"))");
             }
+
+            sb.append(type.transformation);
+
+            return sb.toString();
         }
 
         @Override
