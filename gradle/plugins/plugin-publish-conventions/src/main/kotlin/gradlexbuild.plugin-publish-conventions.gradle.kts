@@ -5,12 +5,8 @@ plugins {
     id("signing")
 }
 
-java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(8))
-}
-
 val pluginPublishConventions = extensions.create<PluginPublishConventionsExtension>(
-    PluginPublishConventionsExtension.NAME, project, gradlePlugin, pluginBundle
+    PluginPublishConventionsExtension.NAME, project, gradlePlugin, pluginBundle, publishing.publications
 )
 
 publishing.publications.withType<MavenPublication>().configureEach {
@@ -22,19 +18,6 @@ publishing.publications.withType<MavenPublication>().configureEach {
         license {
             name.set("Apache-2.0")
             url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
-        }
-    }
-    pom.developers {
-        // Developers could be configurable
-        developer {
-            id.set("britter")
-            name.set("Benedikt Ritter")
-            email.set("benedikt@gradlex.org")
-        }
-        developer {
-            id.set("jjohannes")
-            name.set("Jendrik Johannes")
-            email.set("jendrik@gradlex.org")
         }
     }
     pom.scm {

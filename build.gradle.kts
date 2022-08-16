@@ -8,6 +8,10 @@ plugins {
 group = "org.gradlex"
 version = "1.1"
 
+java {
+    toolchain.languageVersion.set(JavaLanguageVersion.of(8))
+}
+
 pluginPublishConventions {
     id("${project.group}.${project.name}")
     implementationClass("org.gradlex.buildparameters.BuildParametersPlugin")
@@ -15,6 +19,16 @@ pluginPublishConventions {
     description("Compile-safe access to parameters supplied to a Gradle build.")
     tags("gradlex", "parameters", "build parameters")
     gitHub("https://github.com/gradlex-org/build-parameters")
+    developer {
+        id.set("britter")
+        name.set("Benedikt Ritter")
+        email.set("benedikt@gradlex.org")
+    }
+    developer {
+        id.set("jjohannes")
+        name.set("Jendrik Johannes")
+        email.set("jendrik@gradlex.org")
+    }
 }
 
 dependencies {

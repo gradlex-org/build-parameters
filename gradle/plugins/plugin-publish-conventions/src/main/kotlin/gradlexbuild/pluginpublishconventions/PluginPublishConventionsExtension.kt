@@ -3,12 +3,17 @@ package gradlexbuild.pluginpublishconventions
 import com.gradle.publish.PluginBundleExtension
 import org.gradle.api.Project
 import org.gradle.api.provider.Provider
+import org.gradle.api.publish.PublicationContainer
+import org.gradle.api.publish.maven.MavenPomDeveloper
+import org.gradle.api.publish.maven.MavenPublication
+import org.gradle.kotlin.dsl.withType
 import org.gradle.plugin.devel.GradlePluginDevelopmentExtension
 
 abstract class PluginPublishConventionsExtension(
     project: Project,
     gradlePlugin: GradlePluginDevelopmentExtension,
-    private val pluginBundle: PluginBundleExtension
+    private val pluginBundle: PluginBundleExtension,
+    private val publications: PublicationContainer
 ) {
 
     companion object {
@@ -48,5 +53,11 @@ abstract class PluginPublishConventionsExtension(
 
     fun tags(vararg tags: String) {
         pluginBundle.tags = tags.toList()
+    }
+
+    fun developer(action: MavenPomDeveloper.() -> Unit) {
+        publications.withType<MavenPublication>().configureEach {
+            pom.developers { developer(action) }
+        }
     }
 }
