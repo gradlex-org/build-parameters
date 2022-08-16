@@ -1,4 +1,4 @@
-import gradlexbuild.pluginpublishconventions.PluginPublishConventionExtension
+import gradlexbuild.pluginpublishconventions.PluginPublishConventionsExtension
 
 plugins {
     id("com.gradle.plugin-publish")
@@ -9,14 +9,14 @@ java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(8))
 }
 
-val pluginPublishConvention = extensions.create<PluginPublishConventionExtension>(
-    PluginPublishConventionExtension.NAME, project, gradlePlugin, pluginBundle
+val pluginPublishConventions = extensions.create<PluginPublishConventionsExtension>(
+    PluginPublishConventionsExtension.NAME, project, gradlePlugin, pluginBundle
 )
 
 publishing.publications.withType<MavenPublication>().configureEach {
-    pom.name.set(pluginPublishConvention.displayName)
-    pom.description.set(pluginPublishConvention.description)
-    pom.url.set(pluginPublishConvention.gitHub)
+    pom.name.set(pluginPublishConventions.displayName)
+    pom.description.set(pluginPublishConventions.description)
+    pom.url.set(pluginPublishConventions.gitHub)
     pom.licenses {
         // License could be configurable
         license {
@@ -38,6 +38,6 @@ publishing.publications.withType<MavenPublication>().configureEach {
         }
     }
     pom.scm {
-        url.set(pluginPublishConvention.gitHub)
+        url.set(pluginPublishConventions.gitHub)
     }
 }

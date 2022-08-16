@@ -5,14 +5,14 @@ import org.gradle.api.Project
 import org.gradle.api.provider.Provider
 import org.gradle.plugin.devel.GradlePluginDevelopmentExtension
 
-abstract class PluginPublishConventionExtension(
+abstract class PluginPublishConventionsExtension(
     project: Project,
     gradlePlugin: GradlePluginDevelopmentExtension,
     private val pluginBundle: PluginBundleExtension
 ) {
 
     companion object {
-        const val NAME = "pluginPublishConvention"
+        const val NAME = "pluginPublishConventions"
     }
 
     private val pluginDefinition = gradlePlugin.plugins.create(project.name)

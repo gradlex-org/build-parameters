@@ -1,14 +1,14 @@
 plugins {
     id("checkstyle")
     id("groovy")
-    id("gradlexbuild.documentation-convention")
-    id("gradlexbuild.plugin-publish-convention")
+    id("gradlexbuild.documentation-conventions")
+    id("gradlexbuild.plugin-publish-conventions")
 }
 
 group = "org.gradlex"
 version = "1.1"
 
-pluginPublishConvention {
+pluginPublishConventions {
     id("${project.group}.${project.name}")
     implementationClass("org.gradlex.buildparameters.BuildParametersPlugin")
     displayName("Build Parameters Gradle Plugin")

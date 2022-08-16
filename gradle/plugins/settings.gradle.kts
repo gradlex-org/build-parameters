@@ -2,5 +2,5 @@ dependencyResolutionManagement {
     repositories.gradlePluginPortal()
 }
 
-include("documentation-convention")
-include("plugin-publish-convention")
+include("documentation-conventions")
+include("plugin-publish-conventions")
