@@ -3,4 +3,3 @@ dependencyResolutionManagement {
 }
 
 include("documentation-conventions")
-include("plugin-publish-conventions")

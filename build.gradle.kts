@@ -1,8 +1,7 @@
 plugins {
-    id("checkstyle")
     id("groovy")
     id("gradlexbuild.documentation-conventions")
-    id("gradlexbuild.plugin-publish-conventions")
+    id("org.gradlex.internal.plugin-publish-conventions") version "0.4"
 }
 
 group = "org.gradlex"
@@ -19,6 +18,7 @@ pluginPublishConventions {
     description("Compile-safe access to parameters supplied to a Gradle build.")
     tags("gradlex", "parameters", "build parameters")
     gitHub("https://github.com/gradlex-org/build-parameters")
+    website("https://gradlex.org/build-parameters")
     developer {
         id.set("britter")
         name.set("Benedikt Ritter")
@@ -38,8 +38,4 @@ dependencies {
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
     maxParallelForks = 4
-}
-
-checkstyle {
-    configDirectory.set(layout.projectDirectory.dir("gradle/checkstyle"))
 }
