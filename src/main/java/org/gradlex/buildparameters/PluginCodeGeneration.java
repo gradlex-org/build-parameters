@@ -31,7 +31,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.gradlex.buildparameters.Constants.GENERATED_EXTENSION_CLASS_NAME;
+import static org.gradlex.buildparameters.Constants.GENERATED_EXTENSION_NAME;
 import static org.gradlex.buildparameters.Constants.PLUGIN_CLASS_NAME;
+import static org.gradlex.buildparameters.Constants.SETTINGS_PLUGIN_CLASS_NAME;
 import static org.gradlex.buildparameters.Strings.capitalize;
 import static java.util.stream.Collectors.toList;
 
@@ -57,10 +60,25 @@ public abstract class PluginCodeGeneration extends DefaultTask {
                 "import org.gradle.api.Project;",
                 "import org.gradle.api.Plugin;",
                 "",
-                "public class " + PLUGIN_CLASS_NAME + " implements Plugin<Project> {",
+                "public abstract class " + PLUGIN_CLASS_NAME + " implements Plugin<Project> {",
                 "    @Override",
                 "    public void apply(Project project) {",
-                "        project.getExtensions().create(\"buildParameters\", BuildParametersExtension.class);",
+                "        project.getExtensions().create(\"" + GENERATED_EXTENSION_NAME + "\", " + GENERATED_EXTENSION_CLASS_NAME + ".class);",
+                "    }",
+                "}"
+        ));
+
+        Path settingsPluginSource = getOutputDirectory().get().file(baseGroup.id.toPackageFolderPath() + "/" + SETTINGS_PLUGIN_CLASS_NAME + ".java").getAsFile().toPath();
+        write(settingsPluginSource, Arrays.asList(
+                "package " + baseGroup.id.toPackageName() + ";",
+                "",
+                "import org.gradle.api.Plugin;",
+                "import org.gradle.api.initialization.Settings;",
+                "",
+                "public abstract class " + SETTINGS_PLUGIN_CLASS_NAME + " implements Plugin<Settings> {",
+                "    @Override",
+                "    public void apply(Settings settings) {",
+                "        settings.getExtensions().create(\"" + GENERATED_EXTENSION_NAME + "\", " + GENERATED_EXTENSION_CLASS_NAME + ".class);",
                 "    }",
                 "}"
         ));
