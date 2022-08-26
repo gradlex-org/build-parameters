@@ -37,6 +37,11 @@ public abstract class BuildParametersExtension extends BuildParameterGroup {
         });
     }
 
+    /**
+     * Change the plugin ID of the generated plugin (the default is 'build-parameters').
+     *
+     * @param pluginId The plugin ID for the generated plugin.
+     */
     public void pluginId(String pluginId) {
         pluginDeclaration.setId(pluginId);
     }

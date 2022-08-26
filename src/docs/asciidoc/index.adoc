@@ -33,7 +33,7 @@ buildParameters {
 }
 ```
 
-Use compile-safe accessor in you build scripts to access parameter values:
+Use compile-safe accessor in your build scripts to access parameter values:
 
 ```kotlin
 plugins {
@@ -48,6 +48,28 @@ publishing {
             username = buildParameters.deployment.username
             // password does not have a default and is therefore of type Provider<String>
             password = buildParameters.deployment.password.get()
+        }
+    }
+}
+```
+
+Use compile-safe accessor in your `settings.gradle(.kts)` (since 1.1):
+
+```kotlin
+plugins {
+    id("build-parameters")
+}
+
+dependencyResolutionManagement {
+    repositories {
+        maven {
+            url = uri("https://repo.my-company.com")
+            credentials {
+                // username has a default and is therefore of type String
+                username = the<BuildParametersExtension>().deployment.username // Groovy DSL: buildParameters...
+                // password does not have a default and is therefore of type Provider<String>
+                password = the<BuildParametersExtension>().deployment.password.get() // Groovy DSL: buildParameters...
+            }
         }
     }
 }

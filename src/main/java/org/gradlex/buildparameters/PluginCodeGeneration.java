@@ -31,6 +31,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.gradlex.buildparameters.Constants.GENERATED_EXTENSION_CLASS_NAME;
+import static org.gradlex.buildparameters.Constants.GENERATED_EXTENSION_NAME;
 import static org.gradlex.buildparameters.Constants.PLUGIN_CLASS_NAME;
 import static org.gradlex.buildparameters.Strings.capitalize;
 import static java.util.stream.Collectors.toList;
@@ -54,13 +56,13 @@ public abstract class PluginCodeGeneration extends DefaultTask {
         write(pluginSource, Arrays.asList(
                 "package " + baseGroup.id.toPackageName() + ";",
                 "",
-                "import org.gradle.api.Project;",
                 "import org.gradle.api.Plugin;",
+                "import org.gradle.api.plugins.ExtensionAware;",
                 "",
-                "public class " + PLUGIN_CLASS_NAME + " implements Plugin<Project> {",
+                "public abstract class " + PLUGIN_CLASS_NAME + " implements Plugin<ExtensionAware> {",
                 "    @Override",
-                "    public void apply(Project project) {",
-                "        project.getExtensions().create(\"buildParameters\", BuildParametersExtension.class);",
+                "    public void apply(ExtensionAware projectOrSettings) {",
+                "        projectOrSettings.getExtensions().create(\"" + GENERATED_EXTENSION_NAME + "\", " + GENERATED_EXTENSION_CLASS_NAME + ".class);",
                 "    }",
                 "}"
         ));
