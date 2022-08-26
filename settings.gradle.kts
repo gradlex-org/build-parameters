@@ -1,3 +1,5 @@
+import buildparameters.BuildParametersExtension
+
 pluginManagement {
     includeBuild("gradle/plugins")
 }
@@ -5,13 +7,14 @@ pluginManagement {
 plugins {
     id("com.gradle.enterprise") version "3.11.1"
     id("com.gradle.common-custom-user-data-gradle-plugin") version "1.7.2"
+    id("gradlexbuild.build-parameters")
 }
 
 dependencyResolutionManagement {
     repositories.gradlePluginPortal()
 }
 
-if ("CI" in System.getenv()) {
+if (the<BuildParametersExtension>().ci) {
     gradleEnterprise {
         buildScan {
             publishAlways()
