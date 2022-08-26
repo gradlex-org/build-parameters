@@ -19,7 +19,6 @@ package org.gradlex.buildparameters;
 interface Constants {
     String PACKAGE_NAME = "buildparameters";
     String PLUGIN_CLASS_NAME = "GeneratedBuildParametersPlugin";
-    String SETTINGS_PLUGIN_CLASS_NAME = "GeneratedBuildParametersSettingsPlugin";
     String GENERATED_EXTENSION_NAME = "buildParameters";
     String GENERATED_EXTENSION_CLASS_NAME = "BuildParametersExtension";
 }

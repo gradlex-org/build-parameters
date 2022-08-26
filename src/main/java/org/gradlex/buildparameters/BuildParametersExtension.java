@@ -23,12 +23,10 @@ import javax.inject.Inject;
 
 import static org.gradlex.buildparameters.Constants.PACKAGE_NAME;
 import static org.gradlex.buildparameters.Constants.PLUGIN_CLASS_NAME;
-import static org.gradlex.buildparameters.Constants.SETTINGS_PLUGIN_CLASS_NAME;
 
 public abstract class BuildParametersExtension extends BuildParameterGroup {
 
     private final PluginDeclaration pluginDeclaration;
-    private final PluginDeclaration settingsPluginDeclaration;
 
     @Inject
     public BuildParametersExtension(GradlePluginDevelopmentExtension gradlePlugins) {
@@ -37,21 +35,14 @@ public abstract class BuildParametersExtension extends BuildParameterGroup {
             p.setId("build-parameters");
             p.setImplementationClass(PACKAGE_NAME + "." + PLUGIN_CLASS_NAME);
         });
-        this.settingsPluginDeclaration = gradlePlugins.getPlugins().create("build-parameters-settings", p -> {
-            p.setId("build-parameters-settings");
-            p.setImplementationClass(PACKAGE_NAME + "." + SETTINGS_PLUGIN_CLASS_NAME);
-        });
     }
 
     /**
-     * Configure the plugin IDs of the generated plugins.
-     * The project plugin ID will be 'pluginId' (the default is 'build-parameters').
-     * The settings plugin ID will be 'pluginId'-settings (the default is 'build-parameters-settings').
+     * Change the plugin ID of the generated plugin (the default is 'build-parameters').
      *
-     * @param pluginId The plugin ID for the generated plugins.
+     * @param pluginId The plugin ID for the generated plugin.
      */
     public void pluginId(String pluginId) {
         pluginDeclaration.setId(pluginId);
-        settingsPluginDeclaration.setId(pluginId + "-settings");
     }
 }

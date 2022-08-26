@@ -57,7 +57,7 @@ Use compile-safe accessor in your `settings.gradle(.kts)` (since 1.1):
 
 ```kotlin
 plugins {
-    id("build-parameters-settings")
+    id("build-parameters")
 }
 
 dependencyResolutionManagement {

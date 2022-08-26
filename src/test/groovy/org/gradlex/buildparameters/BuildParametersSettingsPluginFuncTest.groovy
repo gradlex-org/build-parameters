@@ -39,7 +39,7 @@ class BuildParametersSettingsPluginFuncTest extends Specification {
                 includeBuild("build-logic")
             }
             plugins {
-                id 'build-parameters-settings'
+                id 'build-parameters'
             }
             buildParameters {}
         """
@@ -81,19 +81,6 @@ class BuildParametersSettingsPluginFuncTest extends Specification {
         result.output.contains("myInt: 99")
         result.output.contains("myBool: true")
         result.output.contains("myEnum: B")
-    }
-
-    def "plugin id of generated settings plugin can be configured"() {
-        given:
-        buildLogicBuildFile << """
-            buildParameters {
-                pluginId("org.example.build-params")
-            }
-        """
-        settingsFile.text = settingsFile.text.replace("build-parameters-settings", "org.example.build-params-settings")
-
-        expect:
-        build("help")
     }
 
 }
