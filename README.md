@@ -57,6 +57,10 @@ Run your build and pass the parameters to it using `-P` commandline parameters:
 
 See the plugin's [documentation page](https://gradlex.org/build-parameters) for more details on how to configure your build.
 
+# Example
+
+You can find a basic example project setup here: [samples/basics](samples/basics)
+
 # Disclaimer
 
 Gradle and the Gradle logo are trademarks of Gradle, Inc.
