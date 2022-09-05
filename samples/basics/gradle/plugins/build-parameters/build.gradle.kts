@@ -1,5 +1,5 @@
 plugins {
-    id("org.gradlex.build-parameters")
+    id("org.gradlex.build-parameters") version "1.1"
 }
 
 buildParameters {
@@ -13,10 +13,10 @@ buildParameters {
         description.set("Define the installation directory of the local Tomcat server")
     }
     bool("ci") {
-        fromEnvironmentVariable() // -> -Pci=true, env var CI
+        fromEnvironment() // -> -Pci=true, env var CI
+        defaultValue.set(false)
     }
     bool("local") {
-        fromEnvironmentVariable("LOCAL_RUN") // -> -Plocal=true, env var LOCAL_RUN
-        fromSystemProperty() // -> -Dlocal=true
+        fromEnvironment("LOCAL_RUN") // -> -Plocal=true, env var LOCAL_RUN
     }
 }

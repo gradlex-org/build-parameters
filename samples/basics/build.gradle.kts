@@ -1,3 +1,7 @@
 plugins {
-    id("my-java-project")
+    id("my-java-library")
+}
+
+if (buildParameters.ci) {
+    println("Running on CI!")
 }

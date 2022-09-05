@@ -6,5 +6,5 @@ dependencyResolutionManagement {
     repositories.gradlePluginPortal()
 }
 
-include("my-build-parameters")
+include("build-parameters")
 include("java-plugins")

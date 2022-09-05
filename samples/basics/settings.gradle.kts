@@ -1,3 +1,3 @@
 pluginManagement {
-    includeBuild("gradle-build-logic")
+    includeBuild("gradle/plugins")
 }
