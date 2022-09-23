@@ -32,11 +32,11 @@ jobs:
         id: gradle
         uses: gradle/gradle-build-action@v2.1.0
         with:
-          arguments: :asciidoctor
+          arguments: ':asciidoctor'
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: ./build/docs/asciidoc
+          path: './build/docs/asciidoc'
 
   deploy:
     environment:
