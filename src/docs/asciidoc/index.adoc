@@ -15,23 +15,10 @@ Compatible with Java 8 and Gradle 7.0 or later. Earlier versions of Gradle may a
 
 Describe build parameters using a rich DSL:
 
-```kotlin
-plugins {
-    id("org.gradlex.build-parameters")
-}
+:snippetsDir: ../samples
 
-buildParameters {
-    group("deployment") {
-        string("username") {
-            description.set("The username used for deploying to the artifact repository")
-            defaultValue.set("deployer")
-        }
-        string("password") {
-            description.set("The password used for deploying to the artifact repository")
-        }
-    }
-}
-```
+include::{snippetsDir}/primer/kotlin/gradle/plugins/build-parameters/build.gradle.kts[]
+
 
 Use compile-safe accessor in you build scripts to access parameter values:
 
