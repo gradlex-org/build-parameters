@@ -6,8 +6,9 @@ val testSamples by testing.suites.registering(JvmTestSuite::class) {
     useJUnit()
     dependencies {
         implementation("org.gradle.exemplar:samples-check:1.0.0")
-        implementation(project.dependencies.gradleTestKit())
-        runtimeOnly("org.slf4j:slf4j-simple:1.7.16")
+        runtimeOnly(project.dependencies.gradleTestKit()) {
+            because("It's required by GradleSamplesRunner but since gradleTestKit synthetic dependency it's not contained in sample-check's dependency metadata")
+        }
     }
     targets.all {
         testTask {
