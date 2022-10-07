@@ -15,7 +15,8 @@ tasks {
             "icons" to "font",
             "sectanchors" to true,
             "idprefix" to "",
-            "idseparator" to "-"
+            "idseparator" to "-",
+            "samples-path" to "$projectDir/src/docs/samples"
         ))
     }
 }

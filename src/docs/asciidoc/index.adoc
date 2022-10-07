@@ -15,10 +15,14 @@ Compatible with Java 8 and Gradle 7.0 or later. Earlier versions of Gradle may a
 
 Describe build parameters using a rich DSL:
 
-:snippetsDir: ../samples
-
-include::{snippetsDir}/primer/kotlin/gradle/plugins/build-parameters/build.gradle.kts[]
-
+[source.multi-language-sample,kotlin]
+----
+include::{samples-path}/primer/kotlin/gradle/plugins/build-parameters/build.gradle.kts[]
+----
+[source.multi-language-sample,groovy]
+----
+include::{samples-path}/primer/groovy/gradle/plugins/build-parameters/build.gradle[]
+----
 
 Use compile-safe accessor in you build scripts to access parameter values:
 

@@ -35,7 +35,7 @@ dependencies {
     testImplementation("org.spockframework:spock-core:2.1-groovy-3.0")
 }
 
-tasks.withType<Test>().configureEach {
+tasks.test {
     useJUnitPlatform()
     maxParallelForks = 4
 }
