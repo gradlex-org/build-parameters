@@ -9,6 +9,13 @@ val testSamples by testing.suites.registering(JvmTestSuite::class) {
         implementation(project.dependencies.gradleTestKit())
         runtimeOnly("org.slf4j:slf4j-simple:1.7.16")
     }
+    targets.all {
+        testTask {
+            inputs.dir("src/docs/samples")
+                .withPathSensitivity(PathSensitivity.RELATIVE)
+                .withPropertyName("samples")
+        }
+    }
 }
 
 tasks.named("check") {

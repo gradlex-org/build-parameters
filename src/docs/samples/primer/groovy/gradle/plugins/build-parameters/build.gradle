@@ -1,0 +1,15 @@
+plugins {
+    id 'org.gradlex.build-parameters' version '1.0'
+}
+
+buildParameters {
+    group('deployment') {
+        string('username') {
+            description = 'The username used for deploying to the artifact repository'
+            defaultValue = 'deployer'
+        }
+        string('password') {
+            description = 'The password used for deploying to the artifact repository'
+        }
+    }
+}
