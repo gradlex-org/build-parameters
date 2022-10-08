@@ -26,23 +26,14 @@ include::{samples-path}/primer/groovy/gradle/plugins/build-parameters/build.grad
 
 Use compile-safe accessor in you build scripts to access parameter values:
 
-```kotlin
-plugins {
-    id("build-parameters")
-}
-
-publishing {
-    repositories {
-        maven {
-            url = uri("https://repo.my-company.com")
-            // username has a default and is therefore of type String
-            username = buildParameters.deployment.username
-            // password does not have a default and is therefore of type Provider<String>
-            password = buildParameters.deployment.password.get()
-        }
-    }
-}
-```
+[source.multi-language-sample,kotlin]
+----
+include::{samples-path}/primer/kotlin/build.gradle.kts[]
+----
+[source.multi-language-sample,groovy]
+----
+include::{samples-path}/primer/groovy/build.gradle[]
+----
 
 Run your build and pass the parameters to it using `-P` commandline parameters:
 
