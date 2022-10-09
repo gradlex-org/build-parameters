@@ -78,26 +78,29 @@ my-project
 
 Add the plugin to your `build-parameters` subproject using the plugins block:
 
-```kotlin
-plugins {
-    id("org.gradlex.build-parameters") version <<latest-version>>
-}
-```
+[source.multi-language-sample,kotlin]
+----
+include::{samples-path}/usage/kotlin/gradle/plugins/build-parameters/build.gradle.kts[tags=plugin-application]
+----
+[source.multi-language-sample,groovy]
+----
+include::{samples-path}/usage/groovy/gradle/plugins/build-parameters/build.gradle[tags=plugin-application]
+----
 
 The plugin generates a new plugin based on the description in the DSL.
 The generated plugin will use `build-parameters` as plugin ID.
 This plugin can then be applied to your build scripts in order to access parameters supplied to the build.
 For that, the generated plugin creates an extension called `buildParameters`.
 
-```kotlin
-plugins {
-    id("build-parameters")
-}
 
-if (buildParameters.myParameter) {
-    println("myParameter was set to true")
-}
-```
+[source.multi-language-sample,kotlin]
+----
+include::{samples-path}/usage/kotlin/build.gradle.kts[]
+----
+[source.multi-language-sample,groovy]
+----
+include::{samples-path}/usage/groovy/build.gradle[]
+----
 
 === Controlling the generated plugin ID
 
