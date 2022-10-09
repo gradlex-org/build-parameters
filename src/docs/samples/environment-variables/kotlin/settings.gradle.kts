@@ -1,0 +1,1 @@
+pluginManagement.includeBuild("gradle/plugins")
