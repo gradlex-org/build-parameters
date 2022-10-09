@@ -138,55 +138,54 @@ If a default value is defined, the resulting compile-safe parameter accessor wil
 
 Use the `string` method to define parameters of type String:
 
-```kotlin
-buildParameters {
-    string("myString") {
-        description.set("Optional description of the string parameter")
-        defaultValue.set("Optional default value")
-    }
-}
-```
+[source.multi-language-sample,kotlin]
+----
+include::{samples-path}/defining-parameters/kotlin/gradle/plugins/build-parameters/build.gradle.kts[tags=string-parameter]
+----
+[source.multi-language-sample,groovy]
+----
+include::{samples-path}/defining-parameters/groovy/gradle/plugins/build-parameters/build.gradle[tags=string-parameter]
+----
 
 ==== Int parameters
 
 Use the `integer` method to define parameters of type Integer:
 
-```kotlin
-buildParameters {
-    integer("myInt") {
-        description.set("Optional description of the int parameter")
-        defaultValue.set(9) // optional
-    }
-}
-```
+[source.multi-language-sample,kotlin]
+----
+include::{samples-path}/defining-parameters/kotlin/gradle/plugins/build-parameters/build.gradle.kts[tags=int-parameter]
+----
+[source.multi-language-sample,groovy]
+----
+include::{samples-path}/defining-parameters/groovy/gradle/plugins/build-parameters/build.gradle[tags=int-parameter]
+----
 
 ==== Boolean parameters
 
 Use the `bool` method to define parameters of type Boolean:
 
-```kotlin
-buildParameters {
-    bool("mybool") {
-        description.set("Optional description of the bool parameter")
-        defaultValue.set(true) // optional
-    }
-}
-```
+[source.multi-language-sample,kotlin]
+----
+include::{samples-path}/defining-parameters/kotlin/gradle/plugins/build-parameters/build.gradle.kts[tags=boolean-parameter]
+----
+[source.multi-language-sample,groovy]
+----
+include::{samples-path}/defining-parameters/groovy/gradle/plugins/build-parameters/build.gradle[tags=boolean-parameter]
+----
 
 ==== Enum parameters
 
 Use the `enumeration` method to define enumeration parameters.
 The `build-parameters` plugin will generate an enum class based on the name of the parameter and the supplied value list.
 
-```kotlin
-buildParameters {
-    enumeration("myEnum") {
-        description.set("Optional description of the enum parameter")
-        values.addAll("One", "Two", "Three")
-        defaultValue.set("One") // optional
-    }
-}
-```
+[source.multi-language-sample,kotlin]
+----
+include::{samples-path}/defining-parameters/kotlin/gradle/plugins/build-parameters/build.gradle.kts[tags=enum-parameter]
+----
+[source.multi-language-sample,groovy]
+----
+include::{samples-path}/defining-parameters/groovy/gradle/plugins/build-parameters/build.gradle[tags=enum-parameter]
+----
 
 Using an enum parameter you can restrict he values that can be passed to the build.
 The generated enum class will look like the following:
