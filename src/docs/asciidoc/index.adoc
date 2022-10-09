@@ -236,43 +236,42 @@ NOTE: Parameters supplied via the command line take precedence over those suppli
 
 In order to derive a build parameter value from the environment, use the `fromEnvironment()` method:
 
-```kotlin
-buildParameters {
-    bool("ci") {
-        fromEnvironment()
-        defaultValue.set(false)
-    }
-}
-```
+[source.multi-language-sample,kotlin]
+----
+include::{samples-path}/environment-variables/kotlin/gradle/plugins/build-parameters/build.gradle.kts[tags=environment-variable]
+----
+[source.multi-language-sample,groovy]
+----
+include::{samples-path}/environment-variables/groovy/gradle/plugins/build-parameters/build.gradle[tags=environment-variable]
+----
 
 The `fromEnvironment()` method will translate the parameters property path into SCREAMING_SNAKE_CASE and use that to look up the value in the environment.
 In the example above `ci` will be translated to `CI`.
 
 The translation also works in combination with grouped paramters:
 
-```kotlin
-buildParameters {
-    group("myGroup") {
-        string("someString") {
-            fromEnvironment()
-        }
-    }
-}
-```
+[source.multi-language-sample,kotlin]
+----
+include::{samples-path}/environment-variables/kotlin/gradle/plugins/build-parameters/build.gradle.kts[tags=grouped-environment-variable]
+----
+[source.multi-language-sample,groovy]
+----
+include::{samples-path}/environment-variables/groovy/gradle/plugins/build-parameters/build.gradle[tags=grouped-environment-variable]
+----
 
 The `mygroup.someString` parameter can then be set by configuring the `MYGROUP_SOMESTRING` environment variable.
 
 If you need full control over the environment variable name used to look up the parameters value, use the `fromEnvironment(String)` overload.
 
-```kotlin
-buildParameters {
-    group("myGroup") {
-        string("someString") {
-            fromEnvironment("SOME_CUSTOM_ENV_VAR")
-        }
-    }
-}
-```
+
+[source.multi-language-sample,kotlin]
+----
+include::{samples-path}/environment-variables/kotlin/gradle/plugins/build-parameters/build.gradle.kts[tags=custom-environment-variable]
+----
+[source.multi-language-sample,groovy]
+----
+include::{samples-path}/environment-variables/groovy/gradle/plugins/build-parameters/build.gradle[tags=custom-environment-variable]
+----
 
 Given the configuration above, the generated plugin will look up the `SOME_CUSTOM_ENV_VAR` variable for setting the value of `myGroup.someString`.
 
