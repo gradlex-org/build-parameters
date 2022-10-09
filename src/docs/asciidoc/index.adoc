@@ -104,25 +104,28 @@ include::{samples-path}/usage/groovy/build.gradle[]
 
 === Controlling the generated plugin ID
 
+By default, `build-parameters` is used as plugin ID for the generated plugin.
 The ID of the generated plugin can be configured using the `pluginId` method.
 
-```kotlin
-plugins {
-    id("org.gradlex.build-parameters")
-}
-
-buildParameters {
-    pluginId("mybuild.build-params")
-}
-```
+[source.multi-language-sample,kotlin]
+----
+include::{samples-path}/plugin-id/kotlin/gradle/plugins/build-parameters/build.gradle.kts[]
+----
+[source.multi-language-sample,groovy]
+----
+include::{samples-path}/plugin-id/groovy/gradle/plugins/build-parameters/build.gradle[]
+----
 
 And then in your build script:
 
-```kotlin
-plugins {
-    id("mybuild.build-parms")
-}
-```
+[source.multi-language-sample,kotlin]
+----
+include::{samples-path}/plugin-id/kotlin/build.gradle.kts[]
+----
+[source.multi-language-sample,groovy]
+----
+include::{samples-path}/plugin-id/groovy/build.gradle[]
+----
 
 === Defining parameters
 
