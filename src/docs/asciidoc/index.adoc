@@ -200,16 +200,31 @@ public enum MyEnum {
 
 Parameters can be namespaced using the `group` method:
 
-```kotlin
-buildParameters {
-    group("myGroup") {
-        string("myString")
-        integer("myInt")
-    }
-}
+[source.multi-language-sample,kotlin]
+----
+include::{samples-path}/grouping/kotlin/gradle/plugins/build-parameters/build.gradle.kts[tags=grouping]
+----
+[source.multi-language-sample,groovy]
+----
+include::{samples-path}/grouping/groovy/gradle/plugins/build-parameters/build.gradle[tags=grouping]
+----
+
+The group name will be used to namespace parameters when supplied via the command line:
+
+```shell
+./gradlew help -PmyGroup.myString=hello -PmyGroup.myInt=1
 ```
 
-The group name will be used to namespace parameters when supplied via the command line and when accessing them in build scripts.
+And when accessing them in build scripts:
+
+[source.multi-language-sample,kotlin]
+----
+include::{samples-path}/grouping/kotlin/build.gradle.kts[tags=grouping]
+----
+[source.multi-language-sample,groovy]
+----
+include::{samples-path}/grouping/groovy/build.gradle[tags=grouping]
+----
 
 === Deriving parameter values from environment variables
 
