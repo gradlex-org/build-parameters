@@ -98,7 +98,7 @@ public abstract class PluginCodeGeneration extends DefaultTask {
         lines.add("    @Inject");
         lines.add("    public " + groupClassName + "(ProviderFactory providers, ObjectFactory objects) {");
         for (BuildParameterGroup subGroup : subGroups) {
-            lines.add("        this." + subGroup.id.toFieldName() + " = objects.newInstance(" + subGroup.id.toFullQualifiedTypeName() + ".class);");
+            lines.add("        this." + subGroup.id.toFieldName() + " = objects.newInstance(" + subGroup.id.toFullQualifiedTypeName() + ".class, providers, objects);");
         }
         for (CodeGeneratingBuildParameter parameter : parameters) {
             lines.add("        this." + parameter.getId().toFieldName() + " = " + parameter.getValue() + ";");
