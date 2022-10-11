@@ -243,14 +243,13 @@ class BuildParametersPluginFuncTest extends Specification {
                         defaultValue = "localhost"
                     }
                     string("port") {
-                        defaultValue = "5432"
                     }
                 }
             }
         """
         buildFile << """
             println "db.host: " + buildParameters.db.host
-            println "db.port: " + buildParameters.db.port
+            println "db.port: " + buildParameters.db.port.get()
         """
 
         when:

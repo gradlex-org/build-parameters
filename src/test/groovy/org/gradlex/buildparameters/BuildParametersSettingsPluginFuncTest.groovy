@@ -83,4 +83,30 @@ class BuildParametersSettingsPluginFuncTest extends Specification {
         result.output.contains("myEnum: B")
     }
 
+    def "supports reading parameter groups in settings file"() {
+        given:
+        buildLogicBuildFile << """
+            buildParameters {
+                group("db") {
+                    string("host") {
+                        defaultValue = "localhost"
+                    }
+                    string("port") {
+                    }
+                }
+            }
+        """
+        settingsFile << """
+            println "db.host: " + buildParameters.db.host
+            println "db.port: " + buildParameters.db.port.get()
+        """
+
+        when:
+        def result = build("help", "-Pdb.port=9999")
+
+        then:
+        result.output.contains("db.host: localhost")
+        result.output.contains("db.port: 9999")
+    }
+
 }
