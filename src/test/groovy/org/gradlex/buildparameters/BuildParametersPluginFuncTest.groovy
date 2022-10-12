@@ -18,6 +18,7 @@ package org.gradlex.buildparameters
 
 import org.gradlex.buildparameters.fixture.GradleBuild
 import spock.lang.AutoCleanup
+import spock.lang.Issue
 import spock.lang.Specification
 
 class BuildParametersPluginFuncTest extends Specification {
@@ -559,5 +560,25 @@ class BuildParametersPluginFuncTest extends Specification {
         result.output.contains("myInt: 2")
         result.output.contains("myBool: false")
         result.output.contains("myEnum: B")
+    }
+
+    @Issue("https://github.com/gradlex-org/build-parameters/issues/40")
+    def "parameters can be defined without configuration closure"() {
+        given:
+        buildLogicBuildFile << """
+            buildParameters {
+                string("myString")
+                integer("myInt")
+                bool("myBool")
+                group("myGroup") {
+                    string("myString")
+                    integer("myInt")
+                    bool("myBool")
+                }
+            }
+        """
+
+        expect:
+        build("help")
     }
 }

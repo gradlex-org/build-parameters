@@ -26,6 +26,8 @@ import javax.inject.Inject;
 
 public abstract class BuildParameterGroup {
 
+    private static final Action<Object> NO_OP = o -> {};
+
     final Identifier id;
 
     @Inject
@@ -33,12 +35,33 @@ public abstract class BuildParameterGroup {
         this.id = identifier;
     }
 
+    /**
+     * @since 1.2
+     */
+    public void string(String name) {
+        configureParameter(name, StringBuildParameter.class, NO_OP);
+    }
+
     public void string(String name, Action<? super BuildParameter<String>> configure) {
         configureParameter(name, StringBuildParameter.class, configure);
     }
 
+    /**
+     * @since 1.2
+     */
+    public void integer(String name) {
+        configureParameter(name, IntegerBuildParameter.class, NO_OP);
+    }
+
     public void integer(String name, Action<? super BuildParameter<Integer>> configure) {
         configureParameter(name, IntegerBuildParameter.class, configure);
+    }
+
+    /**
+     * @since 1.2
+     */
+    public void bool(String name) {
+        configureParameter(name, BooleanBuildParameter.class, NO_OP);
     }
 
     public void bool(String name, Action<? super BuildParameter<Boolean>> configure) {
