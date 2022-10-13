@@ -198,6 +198,10 @@ include::{samples-path}/defining-parameters/kotlin/gradle/plugins/build-paramete
 include::{samples-path}/defining-parameters/groovy/gradle/plugins/build-parameters/build.gradle[tags=boolean-parameter]
 ----
 
+Boolean parameters can only be set to 'true' or 'false'.
+The empty string is also mapped to 'true' so that `-Pmybool` is the same as `-Pmybool=true`.
+All other values will lead to an error during build configuration.
+
 ==== Enum parameters
 
 Use the `enumeration` method to define enumeration parameters.

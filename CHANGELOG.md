@@ -1,6 +1,7 @@
 # Build Parameters Gradle plugin - Changelog
 
 ## Version 1.2
+* [New] [#42](https://github.com/gradlex-org/build-parameters/issues/42) Boolean parameters: empty string maps to 'true' and invalid value fails the build (instead of silently mapping to 'false')
 * [New] [#40](https://github.com/gradlex-org/build-parameters/issues/40) Allow defining parameters without configuration action
 * [Fixed] [#43](https://github.com/gradlex-org/build-parameters/issues/43) Parameter groups cannot be used in settings files
 

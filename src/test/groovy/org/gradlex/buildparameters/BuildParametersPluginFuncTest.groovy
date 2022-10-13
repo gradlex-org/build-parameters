@@ -136,18 +136,26 @@ class BuildParametersPluginFuncTest extends Specification {
                     description = "A simple boolean parameter"
                     defaultValue = true
                 }
+                group("g1") {
+                    bool("myParameter") {
+                        defaultValue = false
+                    }
+                }
+                group("g2") {
+                    bool("myParameter") {
+                        defaultValue = true
+                    }
+                }
             }
         """
         buildFile << """
             assert buildParameters.myParameter == true
-            println buildParameters.myParameter
+            assert buildParameters.g1.myParameter == true
+            assert buildParameters.g2.myParameter == false
         """
 
-        when:
-        def result = build("help")
-
-        then:
-        result.output.contains("true")
+        expect:
+        build("help", "-Pg1.myParameter", "-Pg2.myParameter=false")
     }
 
     def "supports boolean build parameters without default value"() {
@@ -157,14 +165,41 @@ class BuildParametersPluginFuncTest extends Specification {
                 bool("myParameter") {
                     description = "A simple boolean parameter"
                 }
+                group("g1") {
+                    bool("myParameter")
+                }
+                group("g2") {
+                    bool("myParameter")
+                }
             }
         """
         buildFile << """
             assert buildParameters.myParameter.getOrElse(true) == true
+            assert buildParameters.g1.myParameter.get() == true
+            assert buildParameters.g2.myParameter.get() == false
         """
 
         expect:
-        build("help")
+        build("help", "-Pg1.myParameter", "-Pg2.myParameter=false")
+    }
+
+    def "using an unknown value for a boolean parameter leads to an error"() {
+        given:
+        buildLogicBuildFile << """
+            buildParameters {
+                group("g1") {
+                    bool("myParameter") {
+                        defaultValue = false
+                    }
+                }
+            }
+        """
+
+        when:
+        def result = buildAndFail("help", "-Pg1.myParameter=treu")
+
+        then:
+        result.output.contains("Value 'treu' for parameter 'g1.myParameter' is not a valid boolean value - use 'true' (or '') / 'false'")
     }
 
     def "supports enum build parameters with default value"() {

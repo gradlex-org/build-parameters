@@ -24,7 +24,7 @@ buildParameters {
 buildParameters {
     bool('mybool') {
         description = 'Optional description of the bool parameter'
-        defaultValue= true // optional
+        defaultValue = false // optional
     }
 }
 // end::boolean-parameter[]
