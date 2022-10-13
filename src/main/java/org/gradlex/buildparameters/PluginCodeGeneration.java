@@ -75,7 +75,7 @@ public abstract class PluginCodeGeneration extends DefaultTask {
         subGroups.forEach(this::generateGroupClass);
         buildParameters.stream().filter(p -> p instanceof EnumBuildParameter).forEach(p -> generateEnumClass((EnumBuildParameter) p));
 
-        List<CodeGeneratingBuildParameter> parameters = buildParameters.stream().map(CodeGeneratingBuildParameter::from).collect(toList());
+        List<CodeGeneratingBuildParameter> parameters = buildParameters.stream().map(p -> CodeGeneratingBuildParameter.from(p, group)).collect(toList());
         String groupClassName = group.id.toSimpleTypeName();
 
         getOutputDirectory().get().dir(group.id.toPackageFolderPath()).getAsFile().mkdirs();
@@ -114,6 +114,7 @@ public abstract class PluginCodeGeneration extends DefaultTask {
             lines.add("        return this." + parameter.getId().toFieldName() + ";");
             lines.add("    }");
         }
+        buildParameters.stream().filter(p -> p instanceof BooleanBuildParameter).forEach(p -> generateParseMethod((BooleanBuildParameter) p, lines));
         lines.add("}");
 
         write(groupSource, lines);
@@ -133,6 +134,14 @@ public abstract class PluginCodeGeneration extends DefaultTask {
         lines.add("}");
 
         write(enumSource, lines);
+    }
+
+    private void generateParseMethod(BooleanBuildParameter p, List<String> lines) {
+        lines.add("    private static boolean parse" + p.id.toSimpleTypeName() + "(String p) {");
+        lines.add("        if (p.isEmpty() || p.equalsIgnoreCase(\"true\")) return true;");
+        lines.add("        if (p.equalsIgnoreCase(\"false\")) return false;");
+        lines.add("        throw new RuntimeException(\"Value '\" + p + \"' for parameter '" + p.id.toPropertyPath() + "' is not a valid boolean value - use 'true' (or '') / 'false'\");");
+        lines.add("    }");
     }
 
     private static void write(Path file, List<String> lines) {

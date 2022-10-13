@@ -26,12 +26,12 @@ interface CodeGeneratingBuildParameter {
 
     Identifier getId();
 
-    static CodeGeneratingBuildParameter from(BuildParameter<?> parameter) {
+    static CodeGeneratingBuildParameter from(BuildParameter<?> parameter, BuildParameterGroup containingGroup) {
         ParameterType type;
         if (parameter instanceof IntegerBuildParameter) {
             type = new ParameterType("int", "Integer", ".map(Integer::parseInt)", Function.identity());
         } else if (parameter instanceof BooleanBuildParameter) {
-            type = new ParameterType("boolean", "Boolean", ".map(Boolean::parseBoolean)", Function.identity());
+            type = new ParameterType("boolean", "Boolean", ".map(" + containingGroup.id.toSimpleTypeName() + "::parse" + parameter.id.toSimpleTypeName() + ")", Function.identity());
         } else if (parameter instanceof EnumBuildParameter) {
             String typeName = parameter.id.toFullQualifiedTypeName();
             type = new ParameterType(typeName, typeName, ".map(" + typeName + "::valueOf)", s -> typeName + "." + s);
