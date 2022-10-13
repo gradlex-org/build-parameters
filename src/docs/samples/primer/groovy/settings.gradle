@@ -1,1 +1,18 @@
-pluginManagement.includeBuild('gradle/plugins')
+pluginManagement {
+    includeBuild('gradle/plugins')
+}
+
+dependencyResolutionManagement {
+    repositories {
+        maven {
+            url = 'https://repo.my-company.com'
+            credentials {
+                // username has a default and is therefore of type String
+                username = buildParameters.deployment.username
+
+                // password does not have a default and is therefore of type Provider<String>
+                password = buildParameters.deployment.password.get()
+            }
+        }
+    }
+}
