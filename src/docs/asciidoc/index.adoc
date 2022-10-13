@@ -37,28 +37,14 @@ include::{samples-path}/primer/groovy/build.gradle[]
 
 Use compile-safe accessor in your `settings.gradle(.kts)` (since 1.1):
 
-```kotlin
-plugins {
-    id("build-parameters")
-}
-
-dependencyResolutionManagement {
-    repositories {
-        maven {
-            url = uri("https://repo.my-company.com")
-            credentials {
-                // username has a default and is therefore of type String
-                username = the<BuildParametersExtension>().deployment.username
-                // [Groovy DSL] buildParameters.deployment.username
-
-                // password does not have a default and is therefore of type Provider<String>
-                password = the<BuildParametersExtension>().deployment.password.get()
-                // [Groovy DSL] buildParameters.deployment.password.get()
-            }
-        }
-    }
-}
-```
+[source.multi-language-sample,kotlin]
+----
+include::{samples-path}/primer/kotlin/settings.gradle.kts[tags=build-parameters]
+----
+[source.multi-language-sample,groovy]
+----
+include::{samples-path}/primer/groovy/settings.gradle[tags=build-parameters]
+----
 
 Run your build and pass the parameters to it using `-P` commandline parameters:
 
