@@ -1,8 +1,9 @@
+import buildparameters.BuildParametersExtension
+
 pluginManagement {
     includeBuild("gradle/plugins")
 }
 
-/*
 // tag::build-parameters[]
 plugins {
     id("build-parameters")
@@ -21,6 +22,4 @@ dependencyResolutionManagement {
         }
     }
 }
-
 // end::build-parameters[]
-*/
