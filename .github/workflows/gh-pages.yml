@@ -30,7 +30,7 @@ jobs:
           java-version: 11
       - name: gradle asciidoc
         id: gradle
-        uses: gradle/gradle-build-action@v2.3.2
+        uses: gradle/gradle-build-action@v2.3.3
         with:
           arguments: ":asciidoctor"
       - name: Upload artifact
