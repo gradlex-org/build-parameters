@@ -85,4 +85,14 @@ class BuildParametersPluginCrossVersionTest extends Specification {
         where:
         gradleVersion << ["7.1", "7.1.1", "7.2", "7.3.3", "7.4.2", "7.5.1"]
     }
+
+    def "fails the build on unsupported version"() {
+        when:
+        def result = runner("help")
+            .withGradleVersion("7.0.2")
+            .buildAndFail()
+
+        then:
+        result.output.contains("Plugin requires at least Gradle 7.1")
+    }
 }
