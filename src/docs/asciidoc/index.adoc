@@ -9,7 +9,7 @@ Based on this description it generates code for a plugin that can then be applie
 In that sense, the Build Parameters Gradle plugin is not a conventional plugin, but a meta plugin that you use to generate a plugin for your build.
 See the <<Setup>> section for more information on how to configure your build to use this plugin.
 
-Compatible with Java 8 and Gradle 7.0 or later. Earlier versions of Gradle may also work but compatibility is not tested.
+Compatible with Java 8 and Gradle 7.1 or later.
 
 == Primer
 
