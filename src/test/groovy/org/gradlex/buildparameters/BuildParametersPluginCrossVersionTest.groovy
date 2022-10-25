@@ -83,8 +83,6 @@ class BuildParametersPluginCrossVersionTest extends Specification {
                 .build()
 
         where:
-        gradleVersion << [
-                "6.2", "6.2.2", "6.3", "6.4.1", "6.5.1", "6.6.1", "6.7.1", "6.8.3", "6.9.2",
-                "7.0.2", "7.1.1", "7.2", "7.3.3", "7.4.2", "7.5.1"]
+        gradleVersion << ["7.1", "7.1.1", "7.2", "7.3.3", "7.4.2", "7.5.1"]
     }
 }
