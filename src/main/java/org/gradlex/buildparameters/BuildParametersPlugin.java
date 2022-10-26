@@ -23,11 +23,18 @@ import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.plugin.devel.GradlePluginDevelopmentExtension;
 import org.gradle.plugin.devel.plugins.JavaGradlePluginPlugin;
+import org.gradle.util.GradleVersion;
 
 public class BuildParametersPlugin implements Plugin<Project> {
 
+    private static final GradleVersion MINIMUM_SUPPORTED_VERSION = GradleVersion.version("7.1");
+
     @Override
     public void apply(Project project) {
+        if (GradleVersion.current().compareTo(MINIMUM_SUPPORTED_VERSION) < 0) {
+            throw new IllegalStateException("Plugin requires at least Gradle 7.1");
+        }
+
         project.getPlugins().apply(JavaGradlePluginPlugin.class);
 
         GradlePluginDevelopmentExtension gradlePlugins =

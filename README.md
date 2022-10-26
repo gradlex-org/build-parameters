@@ -4,6 +4,7 @@
 [![Gradle Plugin Portal](https://img.shields.io/maven-metadata/v?label=Plugin%20Portal&metadataUrl=https%3A%2F%2Fplugins.gradle.org%2Fm2%2Forg%2Fgradlex%2Fbuild-parameters%2Forg.gradlex.build-parameters.gradle.plugin%2Fmaven-metadata.xml)](https://plugins.gradle.org/plugin/org.gradlex.build-parameters)
 
 Compile-safe access to parameters supplied to a Gradle build.
+Compatible with Java 8 and Gradle 7.1 or later.
 
 # Primer
 
