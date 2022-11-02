@@ -38,6 +38,9 @@ class CodeGenerationFuncTest extends Specification {
                     description = "A simple string parameter"
                     defaultValue = "foo"
                 }
+                group("myGroup") {
+                    description = "Group description"
+                }
             }
         """
     }

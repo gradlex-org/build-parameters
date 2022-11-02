@@ -19,8 +19,10 @@ package org.gradlex.buildparameters;
 import org.gradle.api.Action;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.ListProperty;
+import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.Nested;
+import org.gradle.api.tasks.Optional;
 
 import javax.inject.Inject;
 
@@ -34,6 +36,13 @@ public abstract class BuildParameterGroup {
     public BuildParameterGroup(Identifier identifier) {
         this.id = identifier;
     }
+
+    /**
+     * @since 1.3
+     */
+    @Input
+    @Optional
+    public abstract Property<String> getDescription();
 
     /**
      * @since 1.2
