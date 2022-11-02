@@ -21,7 +21,7 @@ import org.gradle.testkit.runner.TaskOutcome
 import spock.lang.AutoCleanup
 import spock.lang.Specification
 
-class BuildParametersPluginBasicFuncTest extends Specification {
+class CodeGenerationFuncTest extends Specification {
 
     @Delegate
     @AutoCleanup

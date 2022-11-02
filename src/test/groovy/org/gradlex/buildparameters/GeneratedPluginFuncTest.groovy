@@ -21,7 +21,7 @@ import spock.lang.AutoCleanup
 import spock.lang.Issue
 import spock.lang.Specification
 
-class BuildParametersPluginFuncTest extends Specification {
+class GeneratedPluginFuncTest extends Specification {
 
     @Delegate
     @AutoCleanup

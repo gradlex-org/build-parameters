@@ -20,7 +20,7 @@ import org.gradlex.buildparameters.fixture.GradleBuild
 import spock.lang.AutoCleanup
 import spock.lang.Specification
 
-class BuildParametersSettingsPluginFuncTest extends Specification {
+class SettingsPluginApplicationFuncTest extends Specification {
 
     @Delegate
     @AutoCleanup
