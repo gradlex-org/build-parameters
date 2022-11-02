@@ -27,8 +27,7 @@ class CodeGenerationFuncTest extends Specification {
     @AutoCleanup
     GradleBuild build = new GradleBuild()
 
-    def "build depends on generatePluginCode"() {
-        given:
+    void setup() {
         buildFile << """
             plugins {
                 id 'org.gradlex.build-parameters'
@@ -41,12 +40,84 @@ class CodeGenerationFuncTest extends Specification {
                 }
             }
         """
+    }
 
+    def "build depends on generatePluginCode"() {
         when:
         def result = build("build")
 
         then:
         result.task(":generatePluginCode").outcome == TaskOutcome.SUCCESS
+    }
+
+    def "task is up to date when nothing changes"() {
+        given:
+        build("build")
+
+        when:
+        def result = build("build")
+
+        then:
+        result.task(":pluginDescriptors").outcome == TaskOutcome.UP_TO_DATE
+        result.task(":generatePluginCode").outcome == TaskOutcome.UP_TO_DATE
+    }
+
+    def "changing the pluginId does not cause the task to become out of date"() {
+        given:
+        build("build")
+
+        when:
+        buildFile << """
+            buildParameters.pluginId("custom-plugin-id")
+        """
+
+        and:
+        def result = build("build")
+
+        then:
+        result.task(":pluginDescriptors").outcome == TaskOutcome.SUCCESS
+        result.task(":generatePluginCode").outcome == TaskOutcome.UP_TO_DATE
+    }
+
+    def "adding a new parameter causes to task to become out of date"() {
+        given:
+        build("build")
+
+        when:
+        buildFile << """
+            buildParameters {
+                string("another")
+            }
+        """
+
+        and:
+        def result = build("build")
+
+        then:
+        result.task(":pluginDescriptors").outcome == TaskOutcome.UP_TO_DATE
+        result.task(":generatePluginCode").outcome == TaskOutcome.SUCCESS
+    }
+
+    def "task is not cacheable"() {
+        given:
+        build("build", "--build-cache")
+
+        when:
+        def result = build("clean", "build", "--build-cache")
+
+        then:
+        result.task(":generatePluginCode").outcome == TaskOutcome.SUCCESS
+    }
+
+    def "task configuration cache compatible"() {
+        given:
+        build("build", "--configuration-cache")
+
+        when:
+        def result = build("build", "--configuration-cache")
+
+        then:
+        result.output.contains("Configuration cache entry reused.")
     }
 
 }
