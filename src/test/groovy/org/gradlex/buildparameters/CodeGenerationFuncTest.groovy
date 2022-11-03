@@ -123,4 +123,78 @@ class CodeGenerationFuncTest extends Specification {
         result.output.contains("Configuration cache entry reused.")
     }
 
+    def "it renders descriptions of parameters and groups as JavaDocs of getters"() {
+        when:
+        build("build")
+
+        then:
+        def parameterJavaDoc =
+        """ |    /**
+            |     * A simple string parameter
+            |     */
+            |    public String getMyParameter()""".stripMargin("|")
+        generatedFile("buildparameters/BuildParametersExtension.java").text.contains(parameterJavaDoc)
+
+        and:
+        def groupJavaDoc =
+        """ |    /**
+            |     * Group description
+            |     */
+            |    public buildparameters.MyGroup getMyGroup()""".stripMargin("|")
+        generatedFile("buildparameters/BuildParametersExtension.java").text.contains(groupJavaDoc)
+    }
+
+    def "it renders multiline descriptions as multi line JavaDoc comments"() {
+        given:
+        buildFile << """
+            buildParameters {
+                integer("myInt") {
+                    description = ${'"""'}
+                        A multi line
+                        description for
+                        
+                        an int parameter.
+                    ${'"""'}
+                    defaultValue = 42
+                }
+                group("someGroup") {
+                    description = ${'"""'}
+                        A multi line
+                        description for
+                        
+                        a group.
+                    ${'"""'}
+                }
+            }
+        """
+
+        when:
+        build("build")
+
+        then:
+        def parameterJavaDoc =
+        """ |    /**
+            |     * A multi line
+            |     * description for
+            |     * 
+            |     * an int parameter.
+            |     */
+            |    public int getMyInt()""".stripMargin("|")
+        generatedFile("buildparameters/BuildParametersExtension.java").text.contains(parameterJavaDoc)
+
+        and:
+        def groupJavaDoc =
+        """ |    /**
+            |     * A multi line
+            |     * description for
+            |     * 
+            |     * a group.
+            |     */
+            |    public buildparameters.SomeGroup getSomeGroup()""".stripMargin("|")
+        generatedFile("buildparameters/BuildParametersExtension.java").text.contains(groupJavaDoc)
+    }
+
+    private File generatedFile(String path) {
+        projectDir.file("build/generated/sources/build-parameters-plugin/java/main/$path")
+    }
 }

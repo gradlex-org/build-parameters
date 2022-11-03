@@ -3,6 +3,7 @@
 ## Version 1.3
 * [New] [#18](https://github.com/gradlex-org/build-parameters/issues/18) Fail the build when it's running on an unsupported Gradle version
 * [New] [#52](https://github.com/gradlex-org/build-parameters/issues/52) Groups should have a description
+* [New] [#53](https://github.com/gradlex-org/build-parameters/issues/53) Render descriptions into getters JavaDoc
 
 ## Version 1.2
 * [New] [#42](https://github.com/gradlex-org/build-parameters/issues/42) Boolean parameters: empty string maps to 'true' and invalid value fails the build (instead of silently mapping to 'false')

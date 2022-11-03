@@ -30,6 +30,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.gradlex.buildparameters.Constants.GENERATED_EXTENSION_CLASS_NAME;
 import static org.gradlex.buildparameters.Constants.GENERATED_EXTENSION_NAME;
@@ -105,11 +106,13 @@ public abstract class PluginCodeGeneration extends DefaultTask {
         }
         lines.add("    }");
         for (BuildParameterGroup subGroup : subGroups) {
+            renderJavaDoc(lines, subGroup.getDescription());
             lines.add("    public " + subGroup.id.toFullQualifiedTypeName() + " get" + subGroup.id.toSimpleTypeName() + "() {");
             lines.add("        return this." + subGroup.id.toFieldName() + ";");
             lines.add("    }");
         }
         for (CodeGeneratingBuildParameter parameter : parameters) {
+            renderJavaDoc(lines, parameter.getDescription());
             lines.add("    public " + parameter.getType() + " get" + capitalize(parameter.getId().toFieldName()) + "() {");
             lines.add("        return this." + parameter.getId().toFieldName() + ";");
             lines.add("    }");
@@ -118,6 +121,20 @@ public abstract class PluginCodeGeneration extends DefaultTask {
         lines.add("}");
 
         write(groupSource, lines);
+    }
+
+    private void renderJavaDoc(List<String> lines, Property<String> description) {
+        if (description.isPresent()) {
+            List<String> descriptionLines = Arrays.stream(description.get().split(System.lineSeparator()))
+                    .map(String::trim)
+                    .collect(Collectors.toCollection(ArrayList::new));
+
+            StringLists.dropLeadingAndTrailingEmptyLines(descriptionLines);
+
+            lines.add("    /**");
+            descriptionLines.forEach(l -> lines.add("     * " + l.trim()));
+            lines.add("     */");
+        }
     }
 
     private void generateEnumClass(EnumBuildParameter enumBuildParameter) {
