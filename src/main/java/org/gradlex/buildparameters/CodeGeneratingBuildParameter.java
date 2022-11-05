@@ -18,8 +18,6 @@ package org.gradlex.buildparameters;
 
 import org.gradle.api.provider.Property;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.function.Function;
 
 interface CodeGeneratingBuildParameter {

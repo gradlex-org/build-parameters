@@ -32,11 +32,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
 import static org.gradlex.buildparameters.Constants.GENERATED_EXTENSION_CLASS_NAME;
 import static org.gradlex.buildparameters.Constants.GENERATED_EXTENSION_NAME;
 import static org.gradlex.buildparameters.Constants.PLUGIN_CLASS_NAME;
 import static org.gradlex.buildparameters.Strings.capitalize;
-import static java.util.stream.Collectors.toList;
 
 public abstract class PluginCodeGeneration extends DefaultTask {
 
