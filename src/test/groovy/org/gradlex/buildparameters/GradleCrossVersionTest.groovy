@@ -20,7 +20,7 @@ import org.gradlex.buildparameters.fixture.GradleBuild
 import spock.lang.AutoCleanup
 import spock.lang.Specification
 
-class BuildParametersPluginCrossVersionTest extends Specification {
+class GradleCrossVersionTest extends Specification {
 
     @Delegate
     @AutoCleanup

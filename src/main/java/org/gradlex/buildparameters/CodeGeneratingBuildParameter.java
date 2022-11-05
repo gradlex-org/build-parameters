@@ -16,6 +16,10 @@
 
 package org.gradlex.buildparameters;
 
+import org.gradle.api.provider.Property;
+
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.function.Function;
 
 interface CodeGeneratingBuildParameter {
@@ -25,6 +29,8 @@ interface CodeGeneratingBuildParameter {
     String getValue();
 
     Identifier getId();
+
+    Property<String> getDescription();
 
     static CodeGeneratingBuildParameter from(BuildParameter<?> parameter, BuildParameterGroup containingGroup) {
         ParameterType type;
@@ -78,6 +84,11 @@ interface CodeGeneratingBuildParameter {
         public Identifier getId() {
             return parameter.id;
         }
+
+        @Override
+        public Property<String> getDescription() {
+            return parameter.getDescription();
+        }
     }
 
     class ParameterWithoutDefault implements CodeGeneratingBuildParameter {
@@ -108,6 +119,11 @@ interface CodeGeneratingBuildParameter {
         @Override
         public Identifier getId() {
             return parameter.id;
+        }
+
+        @Override
+        public Property<String> getDescription() {
+            return parameter.getDescription();
         }
     }
 
