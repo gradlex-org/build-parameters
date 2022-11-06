@@ -19,6 +19,7 @@ package org.gradlex.buildparameters;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.provider.Property;
+import org.gradle.api.tasks.CacheableTask;
 import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.TaskAction;
@@ -38,6 +39,7 @@ import static org.gradlex.buildparameters.Constants.GENERATED_EXTENSION_NAME;
 import static org.gradlex.buildparameters.Constants.PLUGIN_CLASS_NAME;
 import static org.gradlex.buildparameters.Strings.capitalize;
 
+@CacheableTask
 public abstract class PluginCodeGeneration extends DefaultTask {
 
     @Nested

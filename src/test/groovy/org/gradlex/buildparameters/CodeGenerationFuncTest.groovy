@@ -43,6 +43,9 @@ class CodeGenerationFuncTest extends Specification {
                 }
             }
         """
+        settingsFile << """
+            buildCache.local.directory = new File(rootDir, 'build-cache')
+        """
     }
 
     def "build depends on generatePluginCode"() {
@@ -101,11 +104,42 @@ class CodeGenerationFuncTest extends Specification {
         result.task(":generatePluginCode").outcome == TaskOutcome.SUCCESS
     }
 
-    def "task is not cacheable"() {
+    def "task is loaded from cache if nothing changes"() {
         given:
         build("build", "--build-cache")
 
         when:
+        def result = build("clean", "build", "--build-cache")
+
+        then:
+        result.task(":generatePluginCode").outcome == TaskOutcome.FROM_CACHE
+    }
+
+    def "task is loaded from cache if only pluginId changes"() {
+        given:
+        build("build", "--build-cache")
+
+        when:
+        buildFile << """
+            buildParameters.pluginId("custom-plugin-id")
+        """
+        def result = build("clean", "build", "--build-cache")
+
+        then:
+        result.task(":pluginDescriptors").outcome == TaskOutcome.SUCCESS
+        result.task(":generatePluginCode").outcome == TaskOutcome.FROM_CACHE
+    }
+
+    def "task is not loaded from cache if parameters change"() {
+        given:
+        build("build", "--build-cache")
+
+        when:
+        buildFile << """
+            buildParameters {
+                string("another")
+            }
+        """
         def result = build("clean", "build", "--build-cache")
 
         then:
