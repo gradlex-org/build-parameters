@@ -1,5 +1,7 @@
 # Build Parameters Gradle plugin - Changelog
 
+## Version 1.4
+
 ## Version 1.3
 * [New] [#18](https://github.com/gradlex-org/build-parameters/issues/18) Fail the build when it's running on an unsupported Gradle version
 * [New] [#52](https://github.com/gradlex-org/build-parameters/issues/52) Groups should have a description

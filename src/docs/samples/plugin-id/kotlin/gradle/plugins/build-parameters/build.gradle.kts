@@ -1,5 +1,5 @@
 plugins {
-    id("org.gradlex.build-parameters") version "1.2"
+    id("org.gradlex.build-parameters") version "1.3"
 }
 
 buildParameters {
