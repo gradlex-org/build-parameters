@@ -5,8 +5,9 @@ plugins {
 // tag::grouping[]
 buildParameters {
     group("myGroup") {
-        string("myString") { }
-        integer("myInt") { }
+        description.set("Optional description of the group")
+        string("myString")
+        integer("myInt")
     }
 }
 // end::grouping[]
