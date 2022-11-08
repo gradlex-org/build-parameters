@@ -1,6 +1,6 @@
 = Build Parameters Gradle plugin
 
-image:https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fgradlex-org%2Fbuild-parameters%2Fbadge%3Fref%3Dmain&style=flat["Build Status", link="https://actions-badge.atrox.dev/gradlex/build-parameters/goto?ref=main"]
+image:https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fgradlex-org%2Fbuild-parameters%2Fbadge%3Fref%3Dmain&style=flat["Build Status", link="https://actions-badge.atrox.dev/gradlex-org/build-parameters/goto?ref=main"]
 image:https://img.shields.io/maven-metadata/v?label=Plugin%20Portal&metadataUrl=https%3A%2F%2Fplugins.gradle.org%2Fm2%2Fde%2Fgradlex-org%2Fbuild-parameters%2Forg.gradlex.build-parameters.gradle.plugin%2Fmaven-metadata.xml["Gradle Plugin Portal", link="https://plugins.gradle.org/plugin/org.gradlex.build-parameters"]
 
 The Build Parameters Gradle plugin provides compile-safe access to parameters supplied to a Gradle build.
