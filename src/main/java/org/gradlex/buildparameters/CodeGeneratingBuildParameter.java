@@ -108,9 +108,9 @@ interface CodeGeneratingBuildParameter {
             if (parameter.getEnvironmentVariableName().isPresent()) {
                 String envName = parameter.getEnvironmentVariableName().get();
                 envName = envName.isEmpty() ? parameter.id.toEnvironmentVariableName() : envName;
-                return "providers.gradleProperty(\"" + parameter.id.toPropertyPath() + "\").orElse(providers.environmentVariable(\"" + envName + "\"))" + customError() + type.transformation;
+                return "providers.gradleProperty(\"" + parameter.id.toPropertyPath() + "\").orElse(providers.environmentVariable(\"" + envName + "\"))" + errorIfMandatory() + type.transformation;
             } else {
-                return "providers.gradleProperty(\"" + parameter.id.toPropertyPath() + "\")" + customError() + type.transformation;
+                return "providers.gradleProperty(\"" + parameter.id.toPropertyPath() + "\")" + errorIfMandatory() + type.transformation;
             }
         }
 
@@ -124,7 +124,11 @@ interface CodeGeneratingBuildParameter {
             return parameter.getDescription();
         }
 
-        private String customError() {
+        private String errorIfMandatory() {
+            if (!parameter.getMandatory().get()) {
+                return "";
+            }
+
             String description = parameter.getDescription().isPresent()
                     ? " (" + parameter.getDescription().get() + ")" : "";
             String envVariable = parameter.getEnvironmentVariableName().isPresent()

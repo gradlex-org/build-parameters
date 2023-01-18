@@ -47,13 +47,14 @@ class BuildParametersPluginErrorTest extends Specification {
         """
     }
 
-    def "gives proper error when accessing an optional parameter without value"() {
+    def "gives proper error when accessing a mandatory parameter without value"() {
         given:
         buildLogicBuildFile << """
             buildParameters {
                 group("db") {
                     integer("maxConnections") {
                         description = "Max Database Connections"
+                        mandatory = true
                     }
                 }
             }
@@ -70,7 +71,7 @@ class BuildParametersPluginErrorTest extends Specification {
         '''.stripIndent())
     }
 
-    def "gives proper error when accessing an optional parameter without value (with fromEnvironment)"() {
+    def "gives proper error when accessing a mandatory parameter without value (with fromEnvironment)"() {
         given:
         buildLogicBuildFile << """
             buildParameters {
@@ -78,6 +79,7 @@ class BuildParametersPluginErrorTest extends Specification {
                     integer("maxConnections") {
                         description = "Max Database Connections"
                         fromEnvironment()
+                        mandatory = true
                     }
                 }
             }
@@ -95,7 +97,7 @@ class BuildParametersPluginErrorTest extends Specification {
         '''.stripIndent())
     }
 
-    def "gives proper error when accessing an optional parameter without value (with custom fromEnvironment)"() {
+    def "gives proper error when accessing a mandatory parameter without value (with custom fromEnvironment)"() {
         given:
         buildLogicBuildFile << """
             buildParameters {
@@ -103,6 +105,7 @@ class BuildParametersPluginErrorTest extends Specification {
                     integer("maxConnections") {
                         description = "Max Database Connections"
                         fromEnvironment("MAX_DB_CON")
+                        mandatory = true
                     }
                 }
             }
