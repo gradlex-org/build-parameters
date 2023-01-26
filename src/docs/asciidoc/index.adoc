@@ -142,7 +142,7 @@ include::{samples-path}/plugin-id/groovy/build.gradle[]
 
 This plugin supports String, boolean, integer and enum types for modelling build parameters.
 Parameters can be defined with and without default value.
-If no default value is defined, the resulting compile-safe parameter accessor will be a `org.gradle.api.provider.Provider`.
+If no default value is defined, or if the parameter is mandatory, the resulting compile-safe parameter accessor will be a `org.gradle.api.provider.Provider`.
 If a default value is defined, the resulting compile-safe parameter accessor will have the actual parameter type.
 
 ==== String parameters
@@ -210,6 +210,23 @@ public enum MyEnum {
     One, Two, Three;
 }
 ```
+
+=== Mandatory parameters without default value
+
+A parameter can be made `mandatory`, which means that a user will see an actionable error message when not setting the parameter:
+
+[source.multi-language-sample,kotlin]
+----
+include::{samples-path}/defining-parameters/kotlin/gradle/plugins/build-parameters/build.gradle.kts[tags=mandatory-string-parameter]
+----
+[source.multi-language-sample,groovy]
+----
+include::{samples-path}/defining-parameters/groovy/gradle/plugins/build-parameters/build.gradle[tags=mandatory-string-parameter]
+----
+
+The generated accessor will be a provider and the error message will only be triggered when the provider is accessed for the first time in the build.
+This means that if the parameter is only used to configure a certain task, the parameter is only mandatory for build runs that include that task.
+Setting a parameter to `mandatory` has no effect if the parameter has a `defaultValue`.
 
 === Grouping parameters
 

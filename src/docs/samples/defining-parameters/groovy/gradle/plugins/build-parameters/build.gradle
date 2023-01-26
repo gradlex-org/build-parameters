@@ -38,3 +38,14 @@ buildParameters {
     }
 }
 // end::enum-parameter[]
+
+/*
+// tag::mandatory-string-parameter[]
+buildParameters {
+    string('myString') {
+        description = 'Optional description of the mandatory parameter (shown in error message when not set)'
+        mandatory = true
+    }
+}
+// end::mandatory-string-parameter[]
+*/
