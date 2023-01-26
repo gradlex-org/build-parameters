@@ -16,6 +16,7 @@
 
 package org.gradlex.buildparameters
 
+import org.gradle.testkit.runner.TaskOutcome
 import org.gradlex.buildparameters.fixture.GradleBuild
 import spock.lang.AutoCleanup
 import spock.lang.Specification
@@ -120,6 +121,80 @@ class BuildParametersPluginErrorTest extends Specification {
             -Pdb.maxConnections=value (command line)
             db.maxConnections=value (in 'gradle.properties' file)
             MAX_DB_CON=value (environment variable)
+        '''.stripIndent())
+    }
+
+    def "can use mandatory parameter for publish repository password"() {
+        given:
+        buildLogicBuildFile << """
+            buildParameters {
+                group("deployment") {
+                    string("username") {
+                        defaultValue.set("test")
+                    }
+                    string("password") {
+                        description.set("The password used for deploying to the artifact repository")
+                        mandatory.set(true)
+                    }
+                }
+            }
+        """
+        buildFile.text = """
+            import org.gradle.internal.artifacts.repositories.AuthenticationSupportedInternal
+            
+            plugins {
+                id 'build-parameters'
+                id 'java-library'
+                id 'maven-publish'
+            }
+            
+            group = "org.test"
+            version = "0.1"
+            
+            publishing.publications.create("main", MavenPublication).from(components.java)
+            
+            def c = objects.newInstance(LazyPasswordCredentials)
+            c.user.set(buildParameters.deployment.username)
+            c.secret.set(buildParameters.deployment.password)
+            
+            publishing.repositories {
+                maven {
+                    url = 'https://oss.sonatype.org/service/local/staging/deploy/maven2'
+                    (it as AuthenticationSupportedInternal).configuredCredentials = c
+                }
+            }
+            
+            abstract class LazyPasswordCredentials implements PasswordCredentials {
+                @Input
+                abstract Property<String> getUser()
+                @Input
+                abstract Property<String> getSecret()
+            
+                @Internal
+                String getUsername() { user.get() }
+                @Internal
+                String getPassword() { user.get() }
+            
+                void setUsername(String userName) { user.set(userName)  }
+                void setPassword(String password) { user.set(password) }
+            }
+        """
+
+        when:
+        def assemble = build("assemble")
+
+        then:
+        assemble.task(":assemble").outcome == TaskOutcome.SUCCESS
+
+        when:
+        def publish = buildAndFail("publish")
+
+        then:
+        publish.output.contains('''
+        > Failed to calculate the value of property 'secret'.
+           > Build parameter deployment.password (The password used for deploying to the artifact repository) not set. Use one of the following:
+               -Pdeployment.password=value (command line)
+               deployment.password=value (in 'gradle.properties' file)
         '''.stripIndent())
     }
 }
