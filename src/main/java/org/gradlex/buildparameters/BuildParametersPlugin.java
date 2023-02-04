@@ -18,6 +18,7 @@ package org.gradlex.buildparameters;
 
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.invocation.Gradle;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.api.tasks.TaskProvider;
@@ -52,6 +53,15 @@ public class BuildParametersPlugin implements Plugin<Project> {
 
         project.getTasks().register("parameters", Parameters.class, t -> {
             t.getRootBuildParameterGroup().convention(extension);
+            t.getBuildPath().convention(getBuildPath(project.getGradle(), ""));
         });
+    }
+
+    private static String getBuildPath(Gradle gradle, String acc) {
+        if (gradle.getParent() == null) {
+            return acc;
+        } else {
+            return getBuildPath(gradle.getParent(), ":" + gradle.getRootProject().getName() + acc);
+        }
     }
 }

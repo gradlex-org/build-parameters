@@ -5,6 +5,7 @@ import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Console;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.logging.Logger;
+import org.gradle.internal.os.OperatingSystem;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
@@ -16,9 +17,11 @@ public abstract class Parameters extends DefaultTask {
     @Console
     public abstract Property<BuildParameterGroup> getRootBuildParameterGroup();
 
+    @Console
+    public abstract Property<String> getBuildPath();
+
     @TaskAction
     public void printParameters() {
-
         print("------------------------------------------------------------");
         print("Supported Build Parameters");
         print("------------------------------------------------------------");
@@ -28,7 +31,9 @@ public abstract class Parameters extends DefaultTask {
         print("");
         print("To set a parameter use -Pparameter.name=value");
         print("");
-        print("To see more detail about a parameter, run gradlew parameters --details <parameter.name>");
+        String path = getBuildPath().get() + getPath();
+        String gradlew = OperatingSystem.current() == OperatingSystem.WINDOWS ? "gradlew.bat" : "./gradlew";
+        print("To see more detail about a parameter, run " + gradlew + " " + path + " --details <parameter.name>");
     }
 
     private void printGroup(BuildParameterGroup buildParameterGroup) {
