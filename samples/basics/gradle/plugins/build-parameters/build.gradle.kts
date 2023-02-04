@@ -8,15 +8,30 @@ buildParameters {
         defaultValue.set("localhost")
         description.set("Define the database host")
     }
-    string("tomcatHome") {
-        defaultValue.set("/tmp/tomcat")
-        description.set("Define the installation directory of the local Tomcat server")
-    }
+
     bool("ci") {
         fromEnvironment() // -> -Pci=true, env var CI
         defaultValue.set(false)
     }
     bool("local") {
         fromEnvironment("LOCAL_RUN") // -> -Plocal=true, env var LOCAL_RUN
+    }
+    group("gitflow") {
+        description.set("Parameters configuring the gitflow process")
+        enumeration("baseBranch") {
+            values.addAll("bugfix", "hotfix", "integration", "main")
+            defaultValue.set("main")
+        }
+    }
+
+    group("deployment") {
+        description.set("Parameters related to the deployment of the app")
+        string("tomcatHome") {
+            defaultValue.set("/tmp/tomcat")
+            description.set("Define the installation directory of the local Tomcat server")
+        }
+        group("dev") {
+            bool("debug")
+        }
     }
 }

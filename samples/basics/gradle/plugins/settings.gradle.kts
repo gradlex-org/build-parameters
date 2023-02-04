@@ -1,5 +1,5 @@
 pluginManagement {
-    includeBuild("../../..")
+    includeBuild("../../../..")
 }
 
 dependencyResolutionManagement {

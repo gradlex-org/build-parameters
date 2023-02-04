@@ -49,5 +49,9 @@ public class BuildParametersPlugin implements Plugin<Project> {
         SourceSetContainer sourceSets = project.getExtensions().getByType(SourceSetContainer.class);
         SourceSet main = sourceSets.getByName("main");
         main.getJava().srcDir(task.flatMap(PluginCodeGeneration::getOutputDirectory));
+
+        project.getTasks().register("parameters", Parameters.class, t -> {
+            t.getRootBuildParameterGroup().convention(extension);
+        });
     }
 }

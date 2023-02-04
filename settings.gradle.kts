@@ -1,7 +1,9 @@
 import buildparameters.BuildParametersExtension
 
 pluginManagement {
-    includeBuild("gradle/plugins")
+    includeBuild("gradle/plugins") {
+        name = "build-parameters-gradle-plugins"
+    }
 }
 
 plugins {
