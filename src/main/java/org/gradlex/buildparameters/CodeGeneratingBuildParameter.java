@@ -108,9 +108,9 @@ interface CodeGeneratingBuildParameter {
             if (parameter.getEnvironmentVariableName().isPresent()) {
                 String envName = parameter.getEnvironmentVariableName().get();
                 envName = envName.isEmpty() ? parameter.id.toEnvironmentVariableName() : envName;
-                return "providers.gradleProperty(\"" + parameter.id.toPropertyPath() + "\").orElse(providers.environmentVariable(\"" + envName + "\"))" + type.transformation;
+                return "providers.gradleProperty(\"" + parameter.id.toPropertyPath() + "\").orElse(providers.environmentVariable(\"" + envName + "\"))" + errorIfMandatory() + type.transformation;
             } else {
-                return "providers.gradleProperty(\"" + parameter.id.toPropertyPath() + "\")" + type.transformation;
+                return "providers.gradleProperty(\"" + parameter.id.toPropertyPath() + "\")" + errorIfMandatory() + type.transformation;
             }
         }
 
@@ -122,6 +122,30 @@ interface CodeGeneratingBuildParameter {
         @Override
         public Property<String> getDescription() {
             return parameter.getDescription();
+        }
+
+        private String errorIfMandatory() {
+            if (!parameter.getMandatory().get()) {
+                return "";
+            }
+
+            String description = parameter.getDescription().isPresent()
+                    ? " (" + parameter.getDescription().get() + ")" : "";
+            String envVariable = parameter.getEnvironmentVariableName().isPresent()
+                    ? "  " + environmentVariableName() + "=value (environment variable)\\n" : "";
+
+            return ".orElse(providers.provider(() -> { throw new RuntimeException(\"" +
+                        "Build parameter " + parameter.id.toPropertyPath() + description + " not set. Use one of the following:\\n" +
+                        "  -P" + parameter.id.toPropertyPath() + "=value (command line)\\n" +
+                        "  " + parameter.id.toPropertyPath() + "=value (in 'gradle.properties' file)\\n" +
+                        envVariable +
+                    "\"); }))";
+        }
+
+        private String environmentVariableName() {
+            return parameter.getEnvironmentVariableName().get().isEmpty()
+                    ? parameter.id.toEnvironmentVariableName()
+                    : parameter.getEnvironmentVariableName().get();
         }
     }
 

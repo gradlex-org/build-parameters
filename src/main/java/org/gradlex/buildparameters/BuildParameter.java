@@ -34,6 +34,9 @@ public abstract class BuildParameter<ParameterType> {
     }
 
     @Input
+    public abstract Property<Boolean> getMandatory();
+
+    @Input
     @Optional
     public abstract Property<ParameterType> getDefaultValue();
 

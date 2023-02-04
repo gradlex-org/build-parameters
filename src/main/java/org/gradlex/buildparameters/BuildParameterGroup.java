@@ -83,6 +83,7 @@ public abstract class BuildParameterGroup {
 
     private <T extends BuildParameter<?>> void configureParameter(String name, Class<T> paramType, Action<? super T> configure) {
         T parameter = getObjects().newInstance(paramType, id.append(name));
+        parameter.getMandatory().convention(false);
         configure.execute(parameter);
         getParameters().add(parameter);
     }
