@@ -34,4 +34,9 @@ buildParameters {
             bool("debug")
         }
     }
+    group("dev") {
+        group("local") {
+            bool("debug")
+        }
+    }
 }
