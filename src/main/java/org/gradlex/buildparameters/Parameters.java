@@ -97,6 +97,12 @@ public abstract class Parameters extends DefaultTask {
             output.withStyle(Header).println("     " + type);
             output.println();
 
+            if (parameter.getDescription().isPresent()) {
+                output.println("Description");
+                output.withStyle(Header).println("     " + parameter.getDescription().get());
+                output.println();
+            }
+
             if (parameter instanceof EnumBuildParameter) {
                 String enumValues = String.join(", ", ((EnumBuildParameter) parameter).getValues().get());
                 output.println("Values");
