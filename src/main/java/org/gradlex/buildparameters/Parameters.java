@@ -137,6 +137,7 @@ public abstract class Parameters extends DefaultTask {
         output.println("------------------------------------------------------------");
         output.println("Supported Build Parameters");
         output.println("------------------------------------------------------------");
+        output.println();
         output.style(Normal);
 
         printGroup(getRootBuildParameterGroup().get());
@@ -155,8 +156,8 @@ public abstract class Parameters extends DefaultTask {
     private void printGroup(BuildParameterGroup buildParameterGroup) {
         if (!buildParameterGroup.getParameters().get().isEmpty() || buildParameterGroup.getDescription().isPresent()) {
             String header = buildParameterGroup.getPropertyPath() + buildParameterGroup.getDescription().map(d1 -> " - " + d1).getOrElse("");
-            output.withStyle(Header).println(header);
             if (!header.isEmpty()) {
+                output.withStyle(Header).println(header);
                 output.withStyle(Header).println(String.join("", Collections.nCopies(header.length(), "-")));
             }
 

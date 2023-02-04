@@ -52,6 +52,11 @@ Run your build and pass the parameters to it using `-P` commandline parameters:
 ./gradlew :publish -Pdeployment.username="jane" -Pdeployment.password="super-secret"
 ```
 
+
+Or explore available parameters by running the _parameters_ task:
+
+image::primer.gif[]
+
 == Features
 
 * Parameters can be supplied via `-P` on the command line, via `gradle.properties` files or via environment variables

@@ -56,6 +56,10 @@ Run your build and pass the parameters to it using `-P` commandline parameters:
 ./gradlew :publish -Pdeployment.username="jane" -Pdeployment.password="super-secret"
 ```
 
+Or explore available parameters by running the _parameters_ task:
+
+![running parameters task](src/docs/asciidoc/primer.gif)
+
 # Usage
 
 See the plugin's [documentation page](https://gradlex.org/build-parameters) for more details on how to configure your build.
