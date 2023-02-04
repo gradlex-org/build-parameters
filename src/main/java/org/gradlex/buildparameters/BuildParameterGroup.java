@@ -25,6 +25,7 @@ import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.Optional;
 
 import javax.inject.Inject;
+import java.util.stream.Stream;
 
 public abstract class BuildParameterGroup {
 
@@ -106,5 +107,20 @@ public abstract class BuildParameterGroup {
     @Input
     public String getPropertyPath() {
         return id.toPropertyPath();
+    }
+
+    java.util.Optional<BuildParameter<?>> findParameter(String propertyPath) {
+        java.util.Optional<BuildParameter<?>> match =
+                getParameters().get().stream().filter(p -> p.getPropertyPath().equals(propertyPath)).findFirst();
+        if (match.isPresent()) {
+            return match;
+        } else {
+            return getGroups().get().stream().flatMap(g -> stream(g.findParameter(propertyPath))).findFirst();
+        }
+    }
+
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    private static <T> Stream<T> stream(java.util.Optional<T> optional) {
+        return optional.map(Stream::of).orElseGet(Stream::empty);
     }
 }

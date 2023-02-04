@@ -4,12 +4,14 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Console;
 import org.gradle.api.tasks.TaskAction;
+import org.gradle.api.tasks.options.Option;
 import org.gradle.internal.logging.text.StyledTextOutput;
 import org.gradle.internal.logging.text.StyledTextOutputFactory;
 import org.gradle.internal.os.OperatingSystem;
 
 import javax.inject.Inject;
 import java.util.Collections;
+import java.util.Optional;
 
 import static org.gradle.internal.logging.text.StyledTextOutput.Style.Header;
 import static org.gradle.internal.logging.text.StyledTextOutput.Style.Identifier;
@@ -19,6 +21,10 @@ import static org.gradle.internal.logging.text.StyledTextOutput.Style.Normal;
 public abstract class Parameters extends DefaultTask {
 
     private final StyledTextOutput output;
+
+    @Console
+    @Option(option = "details", description = "Name of parameter to display detail information for")
+    public abstract Property<String> getDetails();
 
     @Console
     public abstract Property<BuildParameterGroup> getRootBuildParameterGroup();
@@ -34,7 +40,77 @@ public abstract class Parameters extends DefaultTask {
     }
 
     @TaskAction
-    public void printParameters() {
+    public void print() {
+        if (getDetails().isPresent()) {
+            printDetails();
+        } else {
+            printParameters();
+        }
+    }
+
+    private void printDetails() {
+        String propertyPath = getDetails().get();
+        Optional<BuildParameter<?>> match = getRootBuildParameterGroup().get().findParameter(propertyPath);
+        if (match.isPresent()) {
+            BuildParameter<?> parameter = match.get();
+
+            String type;
+            String exampleValue;
+
+            if (parameter instanceof StringBuildParameter) {
+                type = "String";
+                exampleValue = "\"a string value\"";
+            } else if (parameter instanceof IntegerBuildParameter) {
+                type = "Integer";
+                exampleValue = "42";
+            } else if (parameter instanceof BooleanBuildParameter) {
+                type = "Boolean";
+                exampleValue = "false";
+            } else if (parameter instanceof EnumBuildParameter) {
+                type = "Enum";
+                exampleValue = ((EnumBuildParameter) parameter).getValues().get().get(0);
+            } else {
+                throw new IllegalStateException();
+            }
+
+            output.text("Detailed build parameter information for ");
+            output.withStyle(Header).println(propertyPath);
+            output.println();
+
+            output.println("Type");
+            output.withStyle(Header).println("     " + type);
+            output.println();
+
+            if (parameter instanceof EnumBuildParameter) {
+                String enumValues = String.join(", ", ((EnumBuildParameter) parameter).getValues().get());
+                output.println("Values");
+                output.withStyle(Header).println("     " + enumValues);
+                output.println();
+            }
+
+            output.println("Default value");
+            output.withStyle(Header).println("     " + parameter.getDefaultValue().map(Object::toString).getOrElse("(none)"));
+            output.println();
+
+            if (parameter.getEnvironmentVariableName().isPresent()) {
+                String envName = parameter.getEnvironmentVariableName().get();
+                envName = envName.isEmpty() ? parameter.id.toEnvironmentVariableName() : envName;
+                output.println("Environment Variable");
+                output.withStyle(Header).println("     " + envName);
+                output.println();
+            }
+
+            output.println("Examples");
+            if (parameter instanceof BooleanBuildParameter) {
+                output.withStyle(Header).println("     -P" + propertyPath);
+            }
+            output.withStyle(Header).println("     -P" + propertyPath + "=" + exampleValue);
+        } else {
+            throw new RuntimeException("Unknown build parameter: " + propertyPath);
+        }
+    }
+
+    private void printParameters() {
         output.style(Header);
         output.println("------------------------------------------------------------");
         output.println("Supported Build Parameters");
@@ -63,19 +139,10 @@ public abstract class Parameters extends DefaultTask {
             }
 
             for (BuildParameter<?> parameter : buildParameterGroup.getParameters().get()) {
-                String enumValues = "";
-                if (parameter instanceof EnumBuildParameter) {
-                    enumValues = " [";
-                    enumValues += String.join(", ", ((EnumBuildParameter) parameter).getValues().get());
-                    enumValues += "]";
-                }
-
                 String propertyPath = parameter.getPropertyPath();
                 Property<String> description = parameter.getDescription();
                 output.withStyle(Identifier).text(propertyPath);
                 output.withStyle(Info).println(description.map(d -> " - " + d).getOrElse(""));
-                // print("  Type: " + parameter.getClass().getSimpleName().replace("BuildParameter_Decorated", "") + enumValues);
-                // print("  Default value: " + parameter.getDefaultValue().map(Object::toString).getOrElse("(none)"));
             }
             output.println();
         }
