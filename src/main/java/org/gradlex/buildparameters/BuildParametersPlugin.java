@@ -18,6 +18,8 @@ package org.gradlex.buildparameters;
 
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.invocation.Gradle;
+import org.gradle.api.plugins.HelpTasksPlugin;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.api.tasks.TaskProvider;
@@ -42,12 +44,28 @@ public class BuildParametersPlugin implements Plugin<Project> {
         BuildParametersExtension extension =
                 project.getExtensions().create("buildParameters", BuildParametersExtension.class, gradlePlugins);
 
-        TaskProvider<PluginCodeGeneration> task = project.getTasks().register("generatePluginCode", PluginCodeGeneration.class, it -> {
-            it.getBaseGroup().convention(extension);
-            it.getOutputDirectory().convention(project.getLayout().getBuildDirectory().dir("generated/sources/build-parameters-plugin/java/main"));
+        TaskProvider<PluginCodeGeneration> task = project.getTasks().register("generatePluginCode", PluginCodeGeneration.class, t -> {
+            t.setDescription("Generates code for compile-safe access to build parameters.");
+            t.getBaseGroup().convention(extension);
+            t.getOutputDirectory().convention(project.getLayout().getBuildDirectory().dir("generated/sources/build-parameters-plugin/java/main"));
         });
         SourceSetContainer sourceSets = project.getExtensions().getByType(SourceSetContainer.class);
         SourceSet main = sourceSets.getByName("main");
         main.getJava().srcDir(task.flatMap(PluginCodeGeneration::getOutputDirectory));
+
+        project.getTasks().register("parameters", Parameters.class, t -> {
+            t.setGroup(HelpTasksPlugin.HELP_GROUP);
+            t.setDescription("Displays the supported build parameters.");
+            t.getRootBuildParameterGroup().convention(extension);
+            t.getBuildPath().convention(getBuildPath(project.getGradle(), ""));
+        });
+    }
+
+    private static String getBuildPath(Gradle gradle, String acc) {
+        if (gradle.getParent() == null) {
+            return acc;
+        } else {
+            return getBuildPath(gradle.getParent(), ":" + gradle.getRootProject().getName() + acc);
+        }
     }
 }

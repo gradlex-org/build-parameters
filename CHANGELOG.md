@@ -1,6 +1,7 @@
 # Build Parameters Gradle plugin - Changelog
 
 ## Version 1.4
+* [New] [#7](https://github.com/gradlex-org/build-parameters/issues/7) ':parameters' help task
 * [New] [#25](https://github.com/gradlex-org/build-parameters/issues/25) Mandatory parameters that give an actionable error if not set
 
 ## Version 1.3
