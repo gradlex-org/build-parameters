@@ -49,7 +49,7 @@ public abstract class BuildParameter<ParameterType> {
     public abstract Property<String> getEnvironmentVariableName();
 
     public void fromEnvironment() {
-        getEnvironmentVariableName().set("");
+        getEnvironmentVariableName().set(id.toEnvironmentVariableName());
     }
 
     public void fromEnvironment(String variableName) {

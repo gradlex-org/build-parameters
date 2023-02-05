@@ -35,6 +35,7 @@ class ParametersTaskFuncTest extends Specification {
                     enumeration("baseBranch") {
                         values = ["bugfix", "hotfix", "integration", "main"]
                         defaultValue = "main"
+                        fromEnvironment("GITBRANCH")
                     }
                 }
             
@@ -141,7 +142,7 @@ class ParametersTaskFuncTest extends Specification {
         result.output.contains("Type\n     Enum")
         result.output.contains("Values\n     bugfix, hotfix, integration, main")
         result.output.contains("Default value\n     main")
-        !result.output.contains("Environment Variable")
+        result.output.contains("Environment Variable\n     GITBRANCH")
         result.output.contains("Examples\n     -Pgitflow.baseBranch=bugfix")
     }
 }
