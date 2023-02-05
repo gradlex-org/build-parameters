@@ -2,6 +2,7 @@
 
 ## Version 1.4
 * [New] [#7](https://github.com/gradlex-org/build-parameters/issues/7) ':parameters' help task
+* [New] [#28](https://github.com/gradlex-org/build-parameters/issues/28) Throw error if a non-existing parameter is set via -P and if -D is used to set a parameter
 * [New] [#25](https://github.com/gradlex-org/build-parameters/issues/25) Mandatory parameters that give an actionable error if not set
 * [New] [#64](https://github.com/gradlex-org/build-parameters/issues/64) Enum parameter values that contain '-' or '.' and values that are Java keywords
 
