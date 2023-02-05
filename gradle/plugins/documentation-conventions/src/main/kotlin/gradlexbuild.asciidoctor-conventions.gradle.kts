@@ -19,6 +19,12 @@ tasks {
             "samples-path" to "$projectDir/src/docs/samples"
         ))
 
+        resources {
+            from(sourceDir) {
+                include("*.jpeg", "*.jpg", "*.png", "*.gif")
+            }
+        }
+
         inputs.dir("src/docs/samples")
                 .withPathSensitivity(PathSensitivity.RELATIVE)
                 .withPropertyName("samples")
