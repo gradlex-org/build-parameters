@@ -50,3 +50,4 @@ tasks.publishPlugins {
     dependsOn(tasks.check)
 }
 
+error("test")
