@@ -322,7 +322,7 @@ class GeneratedPluginFuncTest extends Specification {
         """
 
         when:
-        def result = build("help", "-Pdb.port=9999")
+        def result = build("help")
 
         then:
         result.output.contains("db.connection.host: db host")
