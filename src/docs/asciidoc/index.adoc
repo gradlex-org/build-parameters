@@ -118,31 +118,6 @@ include::{samples-path}/usage/kotlin/build.gradle.kts[]
 include::{samples-path}/usage/groovy/build.gradle[]
 ----
 
-=== Controlling the generated plugin ID
-
-By default, `build-parameters` is used as plugin ID for the generated plugin.
-The ID of the generated plugin can be configured using the `pluginId` method.
-
-[source.multi-language-sample,kotlin]
-----
-include::{samples-path}/plugin-id/kotlin/gradle/plugins/build-parameters/build.gradle.kts[]
-----
-[source.multi-language-sample,groovy]
-----
-include::{samples-path}/plugin-id/groovy/gradle/plugins/build-parameters/build.gradle[]
-----
-
-And then in your build script:
-
-[source.multi-language-sample,kotlin]
-----
-include::{samples-path}/plugin-id/kotlin/build.gradle.kts[]
-----
-[source.multi-language-sample,groovy]
-----
-include::{samples-path}/plugin-id/groovy/build.gradle[]
-----
-
 === Defining parameters
 
 This plugin supports String, boolean, integer and enum types for modelling build parameters.
@@ -317,3 +292,44 @@ Given the configuration above, the generated plugin will look up the `SOME_CUSTO
 The plugin does not verify whether the value supplied to `fromEnvironment(String)` is a valid environment variable name.
 It's the responsibility of the user to make sure only upper case letters and underscores are used.
 ====
+
+=== Controlling the generated plugin ID
+
+By default, `build-parameters` is used as plugin ID for the generated plugin.
+The ID of the generated plugin can be configured using the `pluginId` method.
+
+[source.multi-language-sample,kotlin]
+----
+include::{samples-path}/plugin-id/kotlin/gradle/plugins/build-parameters/build.gradle.kts[]
+----
+[source.multi-language-sample,groovy]
+----
+include::{samples-path}/plugin-id/groovy/gradle/plugins/build-parameters/build.gradle[]
+----
+
+And then in your build script:
+
+[source.multi-language-sample,kotlin]
+----
+include::{samples-path}/plugin-id/kotlin/build.gradle.kts[]
+----
+[source.multi-language-sample,groovy]
+----
+include::{samples-path}/plugin-id/groovy/build.gradle[]
+----
+
+=== Disable build parameter validation
+
+By default, the generated plugin forbids using `-P` for things that are not defined as build parameter.
+It also fails if a user accidentally used `-D` to set one of the defined build parameters.
+
+If you do not want this validation in your build, you can disable it.
+
+[source.multi-language-sample,kotlin]
+----
+include::{samples-path}/validation/kotlin/build.gradle.kts[tags=disable-validation]
+----
+[source.multi-language-sample,groovy]
+----
+include::{samples-path}/validation/groovy/build.gradle[tags=disable-validation]
+----

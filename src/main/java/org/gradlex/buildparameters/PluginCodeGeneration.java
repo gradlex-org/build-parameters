@@ -30,6 +30,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,7 +46,7 @@ import static org.gradlex.buildparameters.Strings.capitalize;
 public abstract class PluginCodeGeneration extends DefaultTask {
 
     @Nested
-    public abstract Property<BuildParameterGroup> getBaseGroup();
+    public abstract Property<BuildParametersExtension> getBaseGroup();
 
     @OutputDirectory
     public abstract DirectoryProperty getOutputDirectory();
@@ -57,20 +58,64 @@ public abstract class PluginCodeGeneration extends DefaultTask {
 
         generateGroupClass(baseGroup);
 
+        List<String> allParameters = new ArrayList<>();
+        collectAllParameters(baseGroup, allParameters);
+
+        List<String> validationCode = validationCode();
+
         Path pluginSource = getOutputDirectory().get().file(baseGroup.id.toPackageFolderPath() + "/" + PLUGIN_CLASS_NAME + ".java").getAsFile().toPath();
         write(pluginSource, Arrays.asList(
                 "package " + baseGroup.id.toPackageName() + ";",
                 "",
                 "import org.gradle.api.Plugin;",
+                "import org.gradle.api.Project;",
+                "import org.gradle.api.initialization.Settings;",
+                "import org.gradle.api.invocation.Gradle;",
                 "import org.gradle.api.plugins.ExtensionAware;",
+                "import java.util.Arrays;",
+                "import java.util.List;",
                 "",
                 "public abstract class " + PLUGIN_CLASS_NAME + " implements Plugin<ExtensionAware> {",
+                "",
+                "    private static final List<String> ALL_PARAMETERS = Arrays.asList(",
+                        allParameters.stream().map(p -> "        \"" + p + "\"").collect(Collectors.joining(",\n")),
+                "    );",
+                "",
                 "    @Override",
                 "    public void apply(ExtensionAware projectOrSettings) {",
+                        String.join("\n", validationCode),
                 "        projectOrSettings.getExtensions().create(\"" + GENERATED_EXTENSION_NAME + "\", " + GENERATED_EXTENSION_CLASS_NAME + ".class);",
                 "    }",
                 "}"
         ));
+    }
+
+    private List<String> validationCode() {
+        if (!getBaseGroup().get().getEnableValidation().get()) {
+            return Collections.emptyList();
+        }
+        return Arrays.asList(
+                "        Gradle gradle = projectOrSettings instanceof Project ? ((Project) projectOrSettings).getGradle() : ((Settings) projectOrSettings).getGradle();",
+                "        for (String parameter : gradle.getStartParameter().getProjectProperties().keySet()) {",
+                "            if (!ALL_PARAMETERS.contains(parameter)) {",
+                "                throw new RuntimeException(\"Unknown build parameter: \" + parameter);",
+                "            }",
+                "        }",
+                "        for (String parameter : gradle.getStartParameter().getSystemPropertiesArgs().keySet()) {",
+                "            if (ALL_PARAMETERS.contains(parameter)) {",
+                "                throw new RuntimeException(\"Build parameter defined via '-D\" + parameter + \"'! Use '-P\" + parameter + \"' instead\");",
+                "            }",
+                "        }"
+        );
+    }
+
+    private void collectAllParameters(BuildParameterGroup group, List<String> allParameters) {
+        for (BuildParameter<?> parameter : group.getParameters().get()) {
+            allParameters.add(parameter.getPropertyPath());
+        }
+        for (BuildParameterGroup subGroup: group.getGroups().get()) {
+            collectAllParameters(subGroup, allParameters);
+        }
     }
 
     private void generateGroupClass(BuildParameterGroup group) {
