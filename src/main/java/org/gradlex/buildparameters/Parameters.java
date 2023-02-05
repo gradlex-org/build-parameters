@@ -116,7 +116,6 @@ public abstract class Parameters extends DefaultTask {
 
             if (parameter.getEnvironmentVariableName().isPresent()) {
                 String envName = parameter.getEnvironmentVariableName().get();
-                envName = envName.isEmpty() ? parameter.id.toEnvironmentVariableName() : envName;
                 output.println("Environment Variable");
                 output.withStyle(Header).println("     " + envName);
                 output.println();
