@@ -6,6 +6,8 @@ tasks {
     asciidoctor {
         notCompatibleWithConfigurationCache("See https://github.com/asciidoctor/asciidoctor-gradle-plugin/issues/564")
 
+        failureLevel = Severity.WARN
+
         attributes(mapOf(
             "docinfodir" to "src/docs/asciidoc",
             "docinfo" to "shared",
