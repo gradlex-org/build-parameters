@@ -327,9 +327,9 @@ If you do not want this validation in your build, you can disable it.
 
 [source.multi-language-sample,kotlin]
 ----
-include::{samples-path}/validation/kotlin/build.gradle.kts[tags=disable-validation]
+include::{samples-path}/validation/kotlin/gradle/plugins/build-parameters/build.gradle.kts[tags=disable-validation]
 ----
 [source.multi-language-sample,groovy]
 ----
-include::{samples-path}/validation/groovy/build.gradle[tags=disable-validation]
+include::{samples-path}/validation/groovy/gradle/plugins/build-parameters/build.gradle[tags=disable-validation]
 ----
