@@ -1,10 +1,9 @@
 plugins {
-    id("org.gradlex.build-parameters") version "1.4"
+    id("org.gradlex.build-parameters") version "1.4.1"
 }
 
 buildParameters {
     pluginId("gradlexbuild.build-parameters")
-    enableValidation.set(false)
     bool("ci") {
         description.set("Whether or not the build is running in a CI environment")
         fromEnvironment()
