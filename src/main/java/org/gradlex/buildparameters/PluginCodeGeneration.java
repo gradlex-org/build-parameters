@@ -36,7 +36,9 @@ import java.util.stream.Collectors;
 import static java.util.stream.Collectors.toList;
 import static org.gradlex.buildparameters.Constants.GENERATED_EXTENSION_CLASS_NAME;
 import static org.gradlex.buildparameters.Constants.GENERATED_EXTENSION_NAME;
+import static org.gradlex.buildparameters.Constants.JAVA_KEYWORDS;
 import static org.gradlex.buildparameters.Constants.PLUGIN_CLASS_NAME;
+import static org.gradlex.buildparameters.Constants.SPECIAL_IDENTIFIER_CHARACTERS;
 import static org.gradlex.buildparameters.Strings.capitalize;
 
 @CacheableTask
@@ -119,7 +121,7 @@ public abstract class PluginCodeGeneration extends DefaultTask {
             lines.add("        return this." + parameter.getId().toFieldName() + ";");
             lines.add("    }");
         }
-        buildParameters.stream().filter(p -> p instanceof BooleanBuildParameter).forEach(p -> generateParseMethod((BooleanBuildParameter) p, lines));
+        buildParameters.stream().filter(p -> p instanceof BooleanBuildParameter).forEach(p -> generateBooleanParseMethod((BooleanBuildParameter) p, lines));
         lines.add("}");
 
         write(groupSource, lines);
@@ -141,26 +143,56 @@ public abstract class PluginCodeGeneration extends DefaultTask {
 
     private void generateEnumClass(EnumBuildParameter enumBuildParameter) {
         getOutputDirectory().get().dir(enumBuildParameter.id.toPackageFolderPath()).getAsFile().mkdirs();
-        Path enumSource = getOutputDirectory().get().file(enumBuildParameter.id.toPackageFolderPath() + "/" + enumBuildParameter.id.toSimpleTypeName() + ".java").getAsFile().toPath();
+        String typeName = enumBuildParameter.id.toSimpleTypeName();
+        List<String> values = enumBuildParameter.getValues().get();
+
+        Path enumSource = getOutputDirectory().get().file(enumBuildParameter.id.toPackageFolderPath() + "/" + typeName + ".java").getAsFile().toPath();
 
         List<String> lines = new ArrayList<>();
         lines.add("package " + enumBuildParameter.id.toPackageName() + ";");
         lines.add("");
-        lines.add("public enum " + enumBuildParameter.id.toSimpleTypeName() + " {");
-        for (String enumValue : enumBuildParameter.getValues().get()) {
-            lines.add("    " + enumValue + ",");
+        lines.add("public enum " + typeName + " {");
+        for (String enumValue : values) {
+            lines.add("    " + escapeEnumValue(enumValue) + ",");
         }
+        lines.add("    ;");
+        lines.add("");
+        generateEnumParseMethod(typeName, values, lines);
         lines.add("}");
 
         write(enumSource, lines);
     }
 
-    private void generateParseMethod(BooleanBuildParameter p, List<String> lines) {
+    private void generateEnumParseMethod(String typeName, List<String> values, List<String> lines) {
+        lines.add("    public static " + typeName + " parse(String value) {");
+        for (String enumValue : values) {
+            String escapedValue = escapeEnumValue(enumValue);
+            if (!enumValue.equals(escapedValue)) {
+                lines.add("        if (\"" + enumValue + "\".equals(value)) return " + typeName + "." + escapedValue + ";");
+            }
+        }
+        lines.add("        return " + typeName + ".valueOf(value);");
+        lines.add("    }");
+    }
+
+    private void generateBooleanParseMethod(BooleanBuildParameter p, List<String> lines) {
         lines.add("    private static boolean parse" + p.id.toSimpleTypeName() + "(String p) {");
         lines.add("        if (p.isEmpty() || p.equalsIgnoreCase(\"true\")) return true;");
         lines.add("        if (p.equalsIgnoreCase(\"false\")) return false;");
         lines.add("        throw new RuntimeException(\"Value '\" + p + \"' for parameter '" + p.id.toPropertyPath() + "' is not a valid boolean value - use 'true' (or '') / 'false'\");");
         lines.add("    }");
+    }
+
+    static String escapeEnumValue(String value) {
+        if (JAVA_KEYWORDS.contains(value)) {
+            return "_" + value;
+        }
+
+        String escapedValue = value;
+        for (char character : SPECIAL_IDENTIFIER_CHARACTERS) {
+            escapedValue = escapedValue.replace(character, '_');
+        }
+        return escapedValue;
     }
 
     private static void write(Path file, List<String> lines) {

@@ -19,8 +19,8 @@ buildParameters {
     group("gitflow") {
         description.set("Parameters configuring the gitflow process")
         enumeration("baseBranch") {
-            values.addAll("bugfix", "hotfix", "integration", "main")
-            defaultValue.set("main")
+            values.addAll("bugfix-rc", "hotfix", "integration", "main", "requires", "enum")
+            defaultValue.set("bugfix-rc")
         }
     }
 
