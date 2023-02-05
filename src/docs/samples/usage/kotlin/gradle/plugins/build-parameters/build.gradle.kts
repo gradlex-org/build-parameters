@@ -1,6 +1,6 @@
 // tag::plugin-application[]
 plugins {
-    id("org.gradlex.build-parameters") version "1.3"
+    id("org.gradlex.build-parameters") version "1.4"
 }
 // end::plugin-application[]
 
