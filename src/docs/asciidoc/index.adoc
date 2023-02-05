@@ -55,7 +55,7 @@ Run your build and pass the parameters to it using `-P` commandline parameters:
 
 Or explore available parameters by running the _parameters_ task:
 
-image::primer.gif[]
+image::images/primer.gif[]
 
 == Features
 

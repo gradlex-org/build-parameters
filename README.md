@@ -58,7 +58,7 @@ Run your build and pass the parameters to it using `-P` commandline parameters:
 
 Or explore available parameters by running the _parameters_ task:
 
-![running parameters task](src/docs/asciidoc/primer.gif)
+![running parameters task](src/docs/asciidoc/images/primer.gif)
 
 # Usage
 
