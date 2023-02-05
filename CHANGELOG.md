@@ -1,5 +1,9 @@
 # Build Parameters Gradle plugin - Changelog
 
+## Version 1.4.1
+* [Fixed] [#80](https://github.com/gradlex-org/build-parameters/issues/80) Parameter validation fails IDEA sync
+* [Fixed] [#78](https://github.com/gradlex-org/build-parameters/issues/78) Parameters task not compatible with configuration cache
+
 ## Version 1.4
 * [New] [#7](https://github.com/gradlex-org/build-parameters/issues/7) ':parameters' help task
 * [New] [#28](https://github.com/gradlex-org/build-parameters/issues/28) Throw error if a non-existing parameter is set via -P and if -D is used to set a parameter
