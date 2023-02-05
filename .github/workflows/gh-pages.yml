@@ -28,11 +28,10 @@ jobs:
         with:
           distribution: zulu
           java-version: 11
-      - name: gradle asciidoc
-        id: gradle
+      - name: Set up Gradle
         uses: gradle/gradle-build-action@v2.3.3
-        with:
-          arguments: ":asciidoctor"
+      - name: gradle asciidoc
+        run: "./gradlew :asciidoctor"
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
