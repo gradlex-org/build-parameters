@@ -17,11 +17,11 @@ jobs:
         with:
           distribution: zulu
           java-version: 11
+      - name: Set up Gradle
+        uses: gradle/gradle-build-action@v2.3.3
       - name: gradle check
         id: gradle
-        uses: gradle/gradle-build-action@v2.3.3
-        with:
-          arguments: ":check"
+        run: "./gradlew :check"
       - name: Comment build scan url
         uses: actions/github-script@v6
         if: github.event_name == 'pull_request' && failure()
