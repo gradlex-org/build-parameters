@@ -1,5 +1,6 @@
 plugins {
     id("groovy")
+    id("gradlexbuild.build-parameters")
     id("gradlexbuild.documentation-conventions")
     id("org.gradlex.internal.plugin-publish-conventions") version "0.5"
 }
@@ -31,6 +32,11 @@ pluginPublishConventions {
     }
 }
 
+// TODO This needs to be included in org.gradlex.internal.plugin-publish-conventions
+signing {
+    useInMemoryPgpKeys(buildParameters.signing.key, buildParameters.signing.passphrase)
+}
+
 dependencies {
     testImplementation("org.spockframework:spock-core:2.1-groovy-3.0")
 }
@@ -39,3 +45,8 @@ tasks.test {
     useJUnitPlatform()
     maxParallelForks = 4
 }
+
+tasks.publishPlugins {
+    dependsOn(tasks.check)
+}
+
