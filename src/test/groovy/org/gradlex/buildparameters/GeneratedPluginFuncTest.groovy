@@ -616,4 +616,9 @@ class GeneratedPluginFuncTest extends Specification {
         expect:
         build("help")
     }
+
+    def "generator task is compatible with configuration cache"() {
+        expect:
+        build("help", "--configuration-cache")
+    }
 }

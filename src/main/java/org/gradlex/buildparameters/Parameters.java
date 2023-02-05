@@ -36,8 +36,6 @@ import static org.gradle.internal.logging.text.StyledTextOutput.Style.Normal;
 
 public abstract class Parameters extends DefaultTask {
 
-    private final StyledTextOutput output;
-
     @Console
     @Option(option = "details", description = "Name of parameter to display detail information for")
     public abstract Property<String> getDetails();
@@ -51,20 +49,17 @@ public abstract class Parameters extends DefaultTask {
     @Inject
     protected abstract StyledTextOutputFactory getTextOutputFactory();
 
-    public Parameters() {
-        output = getTextOutputFactory().create(getClass());
-    }
-
     @TaskAction
     public void print() {
+        StyledTextOutput output = getTextOutputFactory().create(getClass());
         if (getDetails().isPresent()) {
-            printDetails();
+            printDetails(output);
         } else {
-            printParameters();
+            printParameters(output);
         }
     }
 
-    private void printDetails() {
+    private void printDetails(StyledTextOutput output) {
         String propertyPath = getDetails().get();
         Optional<BuildParameter<?>> match = getRootBuildParameterGroup().get().findParameter(propertyPath);
         if (match.isPresent()) {
@@ -131,7 +126,7 @@ public abstract class Parameters extends DefaultTask {
         }
     }
 
-    private void printParameters() {
+    private void printParameters(StyledTextOutput output) {
         output.style(Header);
         output.println("------------------------------------------------------------");
         output.println("Supported Build Parameters");
@@ -139,7 +134,7 @@ public abstract class Parameters extends DefaultTask {
         output.println();
         output.style(Normal);
 
-        printGroup(getRootBuildParameterGroup().get());
+        printGroup(getRootBuildParameterGroup().get(), output);
 
         output.text("To set a parameter use ");
         output.withStyle(Header).println("-Pparameter.name=value");
@@ -152,7 +147,7 @@ public abstract class Parameters extends DefaultTask {
         output.withStyle(Header).println(cmd);
     }
 
-    private void printGroup(BuildParameterGroup buildParameterGroup) {
+    private void printGroup(BuildParameterGroup buildParameterGroup, StyledTextOutput output) {
         if (!buildParameterGroup.getParameters().get().isEmpty() || buildParameterGroup.getDescription().isPresent()) {
             String header = buildParameterGroup.getPropertyPath() + buildParameterGroup.getDescription().map(d1 -> " - " + d1).getOrElse("");
             if (!header.isEmpty()) {
@@ -170,7 +165,7 @@ public abstract class Parameters extends DefaultTask {
         }
 
         for (BuildParameterGroup subGroup : buildParameterGroup.getGroups().get()) {
-            printGroup(subGroup);
+            printGroup(subGroup, output);
         }
     }
 }

@@ -145,4 +145,9 @@ class ParametersTaskFuncTest extends Specification {
         result.output.contains("Environment Variable\n     GITBRANCH")
         result.output.contains("Examples\n     -Pgitflow.baseBranch=bugfix")
     }
+
+    def "is compatible with configuration cache"() {
+        expect:
+        build(":build-logic:parameters", "--configuration-cache")
+    }
 }
