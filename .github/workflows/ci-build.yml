@@ -9,6 +9,8 @@ on:
 jobs:
   gradle-build:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     steps:
       - name: git clone
         uses: actions/checkout@v3.3.0
