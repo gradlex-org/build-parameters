@@ -96,13 +96,14 @@ public abstract class PluginCodeGeneration extends DefaultTask {
         }
         return Arrays.asList(
                 "        Gradle gradle = projectOrSettings instanceof Project ? ((Project) projectOrSettings).getGradle() : ((Settings) projectOrSettings).getGradle();",
+                "        boolean validationActive = !gradle.getStartParameter().getSystemPropertiesArgs().keySet().contains(\"idea.version\");",
                 "        for (String parameter : gradle.getStartParameter().getProjectProperties().keySet()) {",
-                "            if (!ALL_PARAMETERS.contains(parameter)) {",
+                "            if (validationActive && !ALL_PARAMETERS.contains(parameter)) {",
                 "                throw new RuntimeException(\"Unknown build parameter: \" + parameter);",
                 "            }",
                 "        }",
                 "        for (String parameter : gradle.getStartParameter().getSystemPropertiesArgs().keySet()) {",
-                "            if (ALL_PARAMETERS.contains(parameter)) {",
+                "            if (validationActive && ALL_PARAMETERS.contains(parameter)) {",
                 "                throw new RuntimeException(\"Build parameter defined via '-D\" + parameter + \"'! Use '-P\" + parameter + \"' instead\");",
                 "            }",
                 "        }"

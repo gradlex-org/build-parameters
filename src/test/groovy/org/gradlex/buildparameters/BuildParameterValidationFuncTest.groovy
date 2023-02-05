@@ -87,4 +87,16 @@ class BuildParameterValidationFuncTest extends Specification {
         build("help", "-Pparam3=smth", "-Dparam1=smth") // does not fail
     }
 
+    def "does not validate during idea sync"() {
+        given:
+        buildLogicBuildFile << """
+            buildParameters {
+                string("param1") 
+            }
+        """
+
+        expect:
+        // -Didea.version to simulate IDEA Sync
+        build("help", "-Didea.version=3", "-Dandroid.injected.build.model.only.advanced=true")
+    }
 }
