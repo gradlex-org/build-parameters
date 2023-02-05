@@ -3,6 +3,7 @@
 ## Version 1.4
 * [New] [#7](https://github.com/gradlex-org/build-parameters/issues/7) ':parameters' help task
 * [New] [#25](https://github.com/gradlex-org/build-parameters/issues/25) Mandatory parameters that give an actionable error if not set
+* [New] [#64](https://github.com/gradlex-org/build-parameters/issues/64) Enum parameter values that contain '-' or '.' and values that are Java keywords
 
 ## Version 1.3
 * [New] [#18](https://github.com/gradlex-org/build-parameters/issues/18) Fail the build when it's running on an unsupported Gradle version
