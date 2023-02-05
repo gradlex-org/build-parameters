@@ -1,3 +1,5 @@
+import org.asciidoctor.gradle.base.log.Severity
+
 plugins {
     id("org.asciidoctor.jvm.convert")
 }
