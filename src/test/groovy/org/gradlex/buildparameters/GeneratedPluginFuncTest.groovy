@@ -17,6 +17,7 @@
 package org.gradlex.buildparameters
 
 import org.gradlex.buildparameters.fixture.GradleBuild
+import org.gradlex.buildparameters.fixture.RestoreDefaultLocale
 import spock.lang.AutoCleanup
 import spock.lang.Issue
 import spock.lang.Specification
@@ -44,7 +45,6 @@ class GeneratedPluginFuncTest extends Specification {
             plugins {
                 id 'build-parameters'
             }
-            buildParameters {}
         """
     }
 
@@ -620,5 +620,34 @@ class GeneratedPluginFuncTest extends Specification {
     def "generator task is compatible with configuration cache"() {
         expect:
         build("help", "--configuration-cache")
+    }
+
+
+    @RestoreDefaultLocale
+    @Issue("https://github.com/gradlex-org/build-parameters/issues/87")
+    def "code generation is locale insensitive"() {
+        given:
+        Locale.setDefault(new Locale("tr", "TR"))
+
+        and:
+        buildLogicBuildFile << """
+            buildParameters {
+                bool("includeTestTags") {
+                    defaultValue = true
+                }
+            }
+        """
+
+        and: "Kotlin DSL is used"
+        buildFile.delete()
+        build.file("build.gradle.kts") << """
+            plugins {
+                id("build-parameters")
+            }
+            println("includeTestTags is accessible: " + buildParameters.includeTestTags)
+        """
+
+        expect:
+        build("help")
     }
 }
