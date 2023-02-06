@@ -1,3 +1,5 @@
+import org.asciidoctor.gradle.base.log.Severity
+
 plugins {
     id("org.asciidoctor.jvm.convert")
 }
@@ -5,6 +7,8 @@ plugins {
 tasks {
     asciidoctor {
         notCompatibleWithConfigurationCache("See https://github.com/asciidoctor/asciidoctor-gradle-plugin/issues/564")
+
+        failureLevel = Severity.WARN
 
         attributes(mapOf(
             "docinfodir" to "src/docs/asciidoc",
