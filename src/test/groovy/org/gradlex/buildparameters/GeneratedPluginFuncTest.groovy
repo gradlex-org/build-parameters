@@ -16,7 +16,10 @@
 
 package org.gradlex.buildparameters
 
+
+import org.gradle.testkit.runner.internal.DefaultGradleRunner
 import org.gradlex.buildparameters.fixture.GradleBuild
+
 import spock.lang.AutoCleanup
 import spock.lang.Issue
 import spock.lang.Specification
@@ -44,7 +47,6 @@ class GeneratedPluginFuncTest extends Specification {
             plugins {
                 id 'build-parameters'
             }
-            buildParameters {}
         """
     }
 
@@ -620,5 +622,35 @@ class GeneratedPluginFuncTest extends Specification {
     def "generator task is compatible with configuration cache"() {
         expect:
         build("help", "--configuration-cache")
+    }
+
+
+    @Issue("https://github.com/gradlex-org/build-parameters/issues/87")
+    def "code generation is locale insensitive"() {
+        given:
+        buildLogicBuildFile << """
+            buildParameters {
+                bool("includeTestTags") {
+                    defaultValue = true
+                }
+            }
+        """
+
+        and: "Kotlin DSL is used"
+        buildFile.delete()
+        build.file("build.gradle.kts") << """
+            plugins {
+                id("build-parameters")
+            }
+            println("includeTestTags is accessible: " + buildParameters.includeTestTags)
+        """
+
+        expect:
+        // We need to cast to DefaultGradleRunner here, because withJvmArguments
+        // is not accessible on GradleRunner
+        ((DefaultGradleRunner) runner())
+            .withArguments("help")
+            .withJvmArguments("-Duser.language=tr", "-Duser.country=TR")
+            .build()
     }
 }
