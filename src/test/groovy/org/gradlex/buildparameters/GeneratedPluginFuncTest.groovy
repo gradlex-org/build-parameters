@@ -16,8 +16,10 @@
 
 package org.gradlex.buildparameters
 
+
+import org.gradle.testkit.runner.internal.DefaultGradleRunner
 import org.gradlex.buildparameters.fixture.GradleBuild
-import org.gradlex.buildparameters.fixture.RestoreDefaultLocale
+
 import spock.lang.AutoCleanup
 import spock.lang.Issue
 import spock.lang.Specification
@@ -623,13 +625,9 @@ class GeneratedPluginFuncTest extends Specification {
     }
 
 
-    @RestoreDefaultLocale
     @Issue("https://github.com/gradlex-org/build-parameters/issues/87")
     def "code generation is locale insensitive"() {
         given:
-        Locale.setDefault(new Locale("tr", "TR"))
-
-        and:
         buildLogicBuildFile << """
             buildParameters {
                 bool("includeTestTags") {
@@ -648,6 +646,11 @@ class GeneratedPluginFuncTest extends Specification {
         """
 
         expect:
-        build("help")
+        // We need to cast to DefaultGradleRunner here, because withJvmArguments
+        // is not accessible on GradleRunner
+        ((DefaultGradleRunner) runner())
+            .withArguments("help")
+            .withJvmArguments("-Duser.language=tr", "-Duser.country=TR")
+            .build()
     }
 }

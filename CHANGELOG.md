@@ -1,5 +1,8 @@
 # Build Parameters Gradle plugin - Changelog
 
+## Version 1.4.2
+* [Fixed] [#87](https://github.com/gradlex-org/build-parameters/issues/87) Code generation is locale sensitive and generates invalid code on some locales
+
 ## Version 1.4.1
 * [Fixed] [#80](https://github.com/gradlex-org/build-parameters/issues/80) Parameter validation fails IDEA sync
 * [Fixed] [#78](https://github.com/gradlex-org/build-parameters/issues/78) Parameters task not compatible with configuration cache
