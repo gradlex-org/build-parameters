@@ -18,9 +18,7 @@ jobs:
           java-version: 11
       - name: Set up Gradle
         uses: gradle/gradle-build-action@v2.3.3
-      - name: gradle publishPlugins
-        id: gradle
-        run: "./gradlew :publishPlugin --no-configuration-cache"
+      - run: "./gradlew :publishPlugin --no-configuration-cache"
         env:
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
           SIGNING_PASSPHRASE: ${{ secrets.SIGNING_PASSPHRASE }}
