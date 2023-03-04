@@ -99,4 +99,9 @@ class BuildParameterValidationFuncTest extends Specification {
         // -Didea.version to simulate IDEA Sync
         build("help", "-Didea.version=3", "-Dandroid.injected.build.model.only.advanced=true")
     }
+
+    def "does not fail for built-in parameters"() {
+        expect:
+        build("help" , "-Porg.gradle.java.installations.auto-download", "-Porg.gradle.foo")
+    }
 }
