@@ -34,6 +34,9 @@ import static org.gradle.internal.logging.text.StyledTextOutput.Style.Identifier
 import static org.gradle.internal.logging.text.StyledTextOutput.Style.Info;
 import static org.gradle.internal.logging.text.StyledTextOutput.Style.Normal;
 
+/**
+ * @since 1.4
+ */
 public abstract class Parameters extends DefaultTask {
 
     @Console
