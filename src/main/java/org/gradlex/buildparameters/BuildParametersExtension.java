@@ -63,6 +63,7 @@ public abstract class BuildParametersExtension extends BuildParameterGroup {
      * Generating this validation code can be deactivated by setting this flag to 'true'.
      *
      * @return disable validation property
+     * @since 1.4
      */
     @Input
     public abstract Property<Boolean> getEnableValidation();
