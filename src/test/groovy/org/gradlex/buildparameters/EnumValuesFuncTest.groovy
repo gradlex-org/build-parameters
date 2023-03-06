@@ -63,6 +63,16 @@ class EnumValuesFuncTest extends Specification {
             assert buildParameters.enumParam == buildparameters.EnumParam._super
             // if the value is an allowed identifier, it is not escaped
             assert buildParameters.enumParam != buildparameters.EnumParam.not_a_keyword
+            
+            // using the enum value "as String" you get the original (non-escapen) value
+            assert buildparameters.EnumParam._super.toString() == 'super'
+            assert "" + buildparameters.EnumParam._super == 'super'
+            assert buildparameters.EnumParam._enum.toString() == 'enum'
+            assert "" + buildparameters.EnumParam._enum == 'enum'
+            assert buildparameters.EnumParam._int.toString() == 'int'
+            assert "" + buildparameters.EnumParam._int == 'int'
+            assert buildparameters.EnumParam.not_a_keyword.toString() == 'not_a_keyword'
+            assert "" + buildparameters.EnumParam.not_a_keyword == 'not_a_keyword'      
         """
 
         expect:
