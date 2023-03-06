@@ -1,5 +1,8 @@
 # Build Parameters Gradle plugin - Changelog
 
+## Version 1.4.3
+* [Fixed] [#100](https://github.com/gradlex-org/build-parameters/issues/100) Parameter validation ignores parameters from the `org.gralde` namespace
+
 ## Version 1.4.2
 * [Fixed] [#87](https://github.com/gradlex-org/build-parameters/issues/87) Code generation is locale sensitive and generates invalid code on some locales
 
