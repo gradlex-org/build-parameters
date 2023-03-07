@@ -224,6 +224,17 @@ public abstract class PluginCodeGeneration extends DefaultTask {
         }
         lines.add("        return " + typeName + ".valueOf(value);");
         lines.add("    }");
+        lines.add("");
+        lines.add("    @Override");
+        lines.add("    public String toString() {");
+        for (String enumValue : values) {
+            String escapedValue = escapeEnumValue(enumValue);
+            if (!enumValue.equals(escapedValue)) {
+                lines.add("        if (this == " + escapedValue + ") return \"" + enumValue + "\";");
+            }
+        }
+        lines.add("        return name();");
+        lines.add("    }");
     }
 
     private void generateBooleanParseMethod(BooleanBuildParameter p, List<String> lines) {
