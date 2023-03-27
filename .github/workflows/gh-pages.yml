@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3.4.0
+        uses: actions/checkout@v3.5.0
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Set up JDK 11
