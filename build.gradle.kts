@@ -9,7 +9,7 @@ group = "org.gradlex"
 version = "1.4.4"
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(8))
+    toolchain.languageVersion = JavaLanguageVersion.of(8)
 }
 
 pluginPublishConventions {
@@ -21,14 +21,14 @@ pluginPublishConventions {
     gitHub("https://github.com/gradlex-org/build-parameters")
     website("https://gradlex.org/build-parameters")
     developer {
-        id.set("britter")
-        name.set("Benedikt Ritter")
-        email.set("benedikt@gradlex.org")
+        id = "britter"
+        name = "Benedikt Ritter"
+        email = "benedikt@gradlex.org"
     }
     developer {
-        id.set("jjohannes")
-        name.set("Jendrik Johannes")
-        email.set("jendrik@gradlex.org")
+        id = "jjohannes"
+        name = "Jendrik Johannes"
+        email = "jendrik@gradlex.org"
     }
 }
 
