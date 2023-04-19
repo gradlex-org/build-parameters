@@ -1,5 +1,7 @@
 import buildparameters.BuildParametersExtension
 
+rootProject.name = "build-parameters"
+
 pluginManagement {
     includeBuild("gradle/plugins") {
         name = "build-parameters-gradle-plugins"
