@@ -3,6 +3,7 @@ plugins {
     id("gradlexbuild.build-parameters")
     id("gradlexbuild.documentation-conventions")
     id("org.gradlex.internal.plugin-publish-conventions") version "0.5"
+    id("de.thetaphi.forbiddenapis") version "3.4"
 }
 
 group = "org.gradlex"
@@ -50,3 +51,7 @@ tasks.publishPlugins {
     dependsOn(tasks.check)
 }
 
+forbiddenApis {
+    // See https://github.com/policeman-tools/forbidden-apis/wiki/BundledSignatures
+    bundledSignatures.add("jdk-unsafe")
+}
