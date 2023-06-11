@@ -2,7 +2,7 @@ plugins {
     id("groovy")
     id("gradlexbuild.build-parameters")
     id("gradlexbuild.documentation-conventions")
-    id("org.gradlex.internal.plugin-publish-conventions") version "0.5"
+    id("org.gradlex.internal.plugin-publish-conventions") version "0.6"
 }
 
 group = "org.gradlex"
@@ -30,11 +30,6 @@ pluginPublishConventions {
         name = "Jendrik Johannes"
         email = "jendrik@gradlex.org"
     }
-}
-
-// TODO This needs to be included in org.gradlex.internal.plugin-publish-conventions
-signing {
-    useInMemoryPgpKeys(buildParameters.signing.key, buildParameters.signing.passphrase)
 }
 
 dependencies {
