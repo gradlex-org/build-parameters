@@ -99,7 +99,7 @@ class GradleCrossVersionTest extends Specification {
                 .build()
 
         where:
-        gradleVersion << ["7.1", "7.1.1", "7.2", "7.3.3", "7.4.2", "7.5.1", "7.6.1"]
+        gradleVersion << ["7.1.1", "7.6.1", "8.0.1", "8.2-rc-2"]
     }
 
     def "fails the build on unsupported version"() {
