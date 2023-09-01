@@ -79,7 +79,7 @@ public abstract class Parameters extends DefaultTask {
                 exampleValue = "42";
             } else if (parameter instanceof BooleanBuildParameter) {
                 type = "Boolean";
-                exampleValue = "false";
+                exampleValue = ((BooleanBuildParameter)parameter).getDefaultValue().map(v -> v ? "false" : "true").getOrElse("false");
             } else if (parameter instanceof EnumBuildParameter) {
                 type = "Enum";
                 exampleValue = ((EnumBuildParameter) parameter).getValues().get().get(0);
