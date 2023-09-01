@@ -122,7 +122,7 @@ class ParametersTaskFuncTest extends Specification {
         result.output.contains("Examples\n     -Pdeployment.dev.port=42")
     }
 
-    def "prints details for Boolean parameter"() {
+    def "prints details for Boolean parameter with a false default"() {
         when:
         def result = build(":build-logic:parameters", "--details", "ci")
 
@@ -131,7 +131,19 @@ class ParametersTaskFuncTest extends Specification {
         !result.output.contains("Description")
         result.output.contains("Default value\n     false")
         result.output.contains("Environment Variable\n     CI")
-        result.output.contains("Examples\n     -Pci\n     -Pci=false")
+        result.output.contains("Examples\n     -Pci\n     -Pci=true")
+    }
+
+    def "prints details for Boolean parameter with no default"() {
+        when:
+        def result = build(":build-logic:parameters", "--details", "local")
+
+        then:
+        result.output.contains("Type\n     Boolean")
+        !result.output.contains("Description")
+        result.output.contains("Default value\n     (none)")
+        result.output.contains("Environment Variable\n     LOCAL_RUN")
+        result.output.contains("Examples\n     -Plocal\n     -Plocal=false")
     }
 
     def "prints details for Enum parameter"() {
