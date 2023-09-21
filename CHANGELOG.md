@@ -1,5 +1,8 @@
 # Build Parameters Gradle plugin - Changelog
 
+## Version 1.4.4
+* [Fixed] [#88](https://github.com/gradlex-org/build-parameters/issues/88) Example for boolean parameters with default false should be setting it to true. Thanks to @timyates.
+
 ## Version 1.4.3
 * [Fixed] [#100](https://github.com/gradlex-org/build-parameters/issues/100) Parameter validation ignores parameters from the `org.gralde` namespace
 * [Fixed] [#93](https://github.com/gradlex-org/build-parameters/issues/93) Generated Enum's `toString()` method returns the un-escaped value
