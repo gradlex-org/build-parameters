@@ -10,7 +10,7 @@ pluginManagement {
 
 plugins {
     id("com.gradle.enterprise") version "3.15"
-    id("com.gradle.common-custom-user-data-gradle-plugin") version "1.11.2"
+    id("com.gradle.common-custom-user-data-gradle-plugin") version "1.11.3"
     id("gradlexbuild.build-parameters")
 }
 
