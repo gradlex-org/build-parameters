@@ -3,5 +3,5 @@ plugins {
 }
 
 dependencies {
-    implementation("org.asciidoctor:asciidoctor-gradle-jvm:3.3.2")
+    implementation("org.asciidoctor:asciidoctor-gradle-jvm:4.0.2")
 }
