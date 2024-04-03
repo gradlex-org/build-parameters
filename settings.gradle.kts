@@ -17,11 +17,10 @@ dependencyResolutionManagement {
 }
 
 if (the<BuildParametersExtension>().ci) {
-    gradleEnterprise {
+    develocity {
         buildScan {
-            publishAlways()
-            termsOfServiceUrl = "https://gradle.com/terms-of-service"
-            termsOfServiceAgree = "yes"
+             termsOfUseUrl = "https://gradle.com/terms-of-service"
+             termsOfUseAgree = "yes"
         }
     }
 }
