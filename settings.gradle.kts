@@ -16,11 +16,13 @@ dependencyResolutionManagement {
     repositories.gradlePluginPortal()
 }
 
-if (the<BuildParametersExtension>().ci) {
-    develocity {
-        buildScan {
-             termsOfUseUrl = "https://gradle.com/terms-of-service"
-             termsOfUseAgree = "yes"
-        }
+develocity {
+    buildScan {
+        termsOfUseUrl = "https://gradle.com/help/legal-terms-of-use"
+        termsOfUseAgree = "yes"
+
+        // required to bind this to a local variable for configuration cache compatibility
+        val isCi = the<BuildParametersExtension>().ci
+        publishing.onlyIf { isCi }
     }
 }
