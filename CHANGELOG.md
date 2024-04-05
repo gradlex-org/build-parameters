@@ -1,6 +1,7 @@
 # Build Parameters Gradle plugin - Changelog
 
 ## Version 1.4.4
+* [New] [#185](https://github.com/gradlex-org/build-parameters/issues/185) String '1' is accepted as a truthy value for boolean parameters.
 * [Fixed] [#88](https://github.com/gradlex-org/build-parameters/issues/88) Example for boolean parameters with default false should be setting it to true. Thanks to @timyates.
 
 ## Version 1.4.3

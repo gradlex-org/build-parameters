@@ -157,7 +157,7 @@ class GeneratedPluginFuncTest extends Specification {
         """
 
         expect:
-        build("help", "-Pg1.myParameter", "-Pg2.myParameter=false")
+        build("help", "-Pg1.myParameter=true", "-Pg2.myParameter=false")
     }
 
     def "supports boolean build parameters without default value"() {
@@ -182,7 +182,28 @@ class GeneratedPluginFuncTest extends Specification {
         """
 
         expect:
-        build("help", "-Pg1.myParameter", "-Pg2.myParameter=false")
+        build("help", "-Pg1.myParameter=true", "-Pg2.myParameter=false")
+    }
+
+    def "supports alternative values for boolean build parameters"() {
+        given:
+        buildLogicBuildFile << """
+            buildParameters {
+                group("g1") {
+                    bool("myParameter")
+                }
+                group("g2") {
+                    bool("myParameter")
+                }
+            }
+        """
+        buildFile << """
+            assert buildParameters.g1.myParameter.get() == true
+            assert buildParameters.g2.myParameter.get() == true
+        """
+
+        expect: "empty string and '1' are also mapped to true"
+        build("help", "-Pg1.myParameter", "-Pg2.myParameter=1")
     }
 
     def "using an unknown value for a boolean parameter leads to an error"() {
@@ -201,7 +222,7 @@ class GeneratedPluginFuncTest extends Specification {
         def result = buildAndFail("help", "-Pg1.myParameter=treu")
 
         then:
-        result.output.contains("Value 'treu' for parameter 'g1.myParameter' is not a valid boolean value - use 'true' (or '') / 'false'")
+        result.output.contains("Value 'treu' for parameter 'g1.myParameter' is not a valid boolean value. Allowed values are strings 'true', '1', and empty string for true, and string 'false' for false")
     }
 
     def "supports enum build parameters with default value"() {

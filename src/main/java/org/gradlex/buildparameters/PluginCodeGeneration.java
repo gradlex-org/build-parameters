@@ -239,9 +239,9 @@ public abstract class PluginCodeGeneration extends DefaultTask {
 
     private void generateBooleanParseMethod(BooleanBuildParameter p, List<String> lines) {
         lines.add("    private static boolean parse" + p.id.toSimpleTypeName() + "(String p) {");
-        lines.add("        if (p.isEmpty() || p.equalsIgnoreCase(\"true\")) return true;");
+        lines.add("        if (p.isEmpty() || p.equalsIgnoreCase(\"true\") || p.equals(\"1\")) return true;");
         lines.add("        if (p.equalsIgnoreCase(\"false\")) return false;");
-        lines.add("        throw new RuntimeException(\"Value '\" + p + \"' for parameter '" + p.id.toPropertyPath() + "' is not a valid boolean value - use 'true' (or '') / 'false'\");");
+        lines.add("        throw new RuntimeException(\"Value '\" + p + \"' for parameter '" + p.id.toPropertyPath() + "' is not a valid boolean value. Allowed values are strings 'true', '1', and empty string for true, and string 'false' for false\");");
         lines.add("    }");
     }
 
