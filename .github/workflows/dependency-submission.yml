@@ -10,9 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout sources
-        uses: actions/checkout@v4.1.2
+        uses: actions/checkout@v4
       - name: Generate and submit dependency graph
-        uses: gradle/actions/dependency-submission@v3.1.0
+        uses: gradle/actions/dependency-submission@v3
         with:
           build-scan-publish: true
           build-scan-terms-of-service-url: "https://gradle.com/terms-of-service"
