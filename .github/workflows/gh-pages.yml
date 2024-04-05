@@ -30,7 +30,7 @@ jobs:
           java-version: 11
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v3.1.0
-      - run: "./gradlew :asciidoctor"
+      - run: "./gradlew :asciidoctor --no-configuration-cache"
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
