@@ -29,7 +29,7 @@ jobs:
           distribution: zulu
           java-version: 11
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
       - run: "./gradlew :asciidoctor --no-configuration-cache"
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
