@@ -13,16 +13,8 @@ java {
 }
 
 dependencies.constraints {
-    checkstyle("com.google.guava:guava") {
-        version {
-            require("33.3.1-jre")
-        }
-    }
-    testSamplesImplementation("commons-io:commons-io") {
-        version {
-            require("2.18.0")
-        }
-    }
+    checkstyle("com.google.guava:guava:33.3.1-jre")
+    testSamplesImplementation("commons-io:commons-io:2.18.0")
 }
 
 pluginPublishConventions {
