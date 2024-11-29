@@ -12,6 +12,11 @@ java {
     toolchain.languageVersion = JavaLanguageVersion.of(8)
 }
 
+dependencies.constraints {
+    checkstyle("com.google.guava:guava:33.3.1-jre")
+    testSamplesImplementation("commons-io:commons-io:2.18.0")
+}
+
 pluginPublishConventions {
     id("${project.group}.${project.name}")
     implementationClass("org.gradlex.buildparameters.BuildParametersPlugin")
