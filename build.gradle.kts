@@ -13,8 +13,12 @@ java {
 }
 
 dependencies.constraints {
-    checkstyle("com.google.guava:guava:33.3.1-jre")
-    testSamplesImplementation("commons-io:commons-io:2.18.0")
+    checkstyle("com.google.guava:guava:33.3.1-jre") {
+        because("CVE-2023-2976, CVE-2020-8908")
+    }
+    testSamplesImplementation("commons-io:commons-io:2.18.0") {
+        because("CVE-2024-47554, CVE-2021-29425")
+    }
 }
 
 pluginPublishConventions {
