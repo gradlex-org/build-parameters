@@ -13,7 +13,7 @@ java {
 }
 
 dependencies.constraints {
-    checkstyle("com.google.guava:guava:33.3.1-jre") {
+    checkstyle("com.google.guava:guava:33.4.0-jre") {
         because("CVE-2023-2976, CVE-2020-8908")
     }
     testSamplesImplementation("commons-io:commons-io:2.18.0") {
