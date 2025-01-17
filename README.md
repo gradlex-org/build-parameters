@@ -6,7 +6,7 @@
 Compile-safe access to parameters supplied to a Gradle build.
 Compatible with Java 8 and Gradle 7.1 or later.
 
-# Primer
+## Primer
 
 Describe build parameters using a rich DSL:
 
@@ -60,15 +60,15 @@ Or explore available parameters by running the _parameters_ task:
 
 ![running parameters task](src/docs/asciidoc/images/primer.gif)
 
-# Usage
+## Usage
 
 See the plugin's [documentation page](https://gradlex.org/build-parameters) for more details on how to configure your build.
 
-# Example
+## Example
 
 You can find a basic example project setup here: [samples/basics](samples/basics)
 
-# Disclaimer
+## Disclaimer
 
 Gradle and the Gradle logo are trademarks of Gradle, Inc.
 The GradleX project is not endorsed by, affiliated with, or associated with Gradle or Gradle, Inc. in any way.
