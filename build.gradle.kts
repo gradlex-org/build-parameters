@@ -16,7 +16,7 @@ dependencies.constraints {
     checkstyle("com.google.guava:guava:33.4.8-jre") {
         because("CVE-2023-2976, CVE-2020-8908")
     }
-    testSamplesImplementation("commons-io:commons-io:2.19.0") {
+    testSamplesImplementation("commons-io:commons-io:2.20.0") {
         because("CVE-2024-47554, CVE-2021-29425")
     }
 }
