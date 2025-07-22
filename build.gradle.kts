@@ -16,8 +16,14 @@ dependencies.constraints {
     checkstyle("com.google.guava:guava:33.4.8-jre") {
         because("CVE-2023-2976, CVE-2020-8908")
     }
+    checkstyle("commons-beanutils:commons-beanutils:1.11.0") {
+        because("CVE-2025-48734")
+    }
     testSamplesImplementation("commons-io:commons-io:2.20.0") {
         because("CVE-2024-47554, CVE-2021-29425")
+    }
+    testSamplesImplementation("org.apache.commons:commons-lang3:3.18.0") {
+        because("CVE-2025-48924")
     }
 }
 
