@@ -9,7 +9,11 @@ group = "org.gradlex"
 version = "1.4.5"
 
 java {
-    toolchain.languageVersion = JavaLanguageVersion.of(8)
+    toolchain.languageVersion = JavaLanguageVersion.of(17)
+}
+
+tasks.withType<JavaCompile>().configureEach {
+    options.release = 8
 }
 
 dependencies.constraints {
@@ -50,7 +54,7 @@ pluginPublishConventions {
 testing.suites.named<JvmTestSuite>("test") {
     useJUnitJupiter()
     dependencies {
-        implementation("org.spockframework:spock-core:2.3-groovy-3.0")
+        implementation("org.spockframework:spock-core:2.3-groovy-4.0")
     }
     targets.all {
         testTask { maxParallelForks = 4 }

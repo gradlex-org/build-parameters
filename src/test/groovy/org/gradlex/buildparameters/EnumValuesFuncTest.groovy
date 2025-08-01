@@ -119,7 +119,7 @@ class EnumValuesFuncTest extends Specification {
 
         expect:
         buildAndFail("help").output.contains(
-                "error: variable a_special_value is already defined in enum buildparameters.EnumParam"
+                "error: variable a_special_value is already defined in enum EnumParam"
         )
     }
 }

@@ -2,7 +2,7 @@ name: Deploy documentation to GitHub Pages
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
@@ -23,11 +23,11 @@ jobs:
         uses: actions/checkout@v5
       - name: Setup Pages
         uses: actions/configure-pages@v5
-      - name: Set up JDK 11
+      - name: Set up JDK 17
         uses: actions/setup-java@v5
         with:
           distribution: zulu
-          java-version: 11
+          java-version: 17
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
       - run: "./gradlew :asciidoctor --no-configuration-cache"
