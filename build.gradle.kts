@@ -9,7 +9,11 @@ group = "org.gradlex"
 version = "1.4.5"
 
 java {
-    toolchain.languageVersion = JavaLanguageVersion.of(8)
+    toolchain.languageVersion = JavaLanguageVersion.of(17)
+}
+
+tasks.withType<JavaCompile>().configureEach {
+    options.release = 8
 }
 
 dependencies.constraints {
