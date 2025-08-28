@@ -32,7 +32,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
       - run: "./gradlew :asciidoctor --no-configuration-cache"
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: "./build/docs/asciidoc"
 
