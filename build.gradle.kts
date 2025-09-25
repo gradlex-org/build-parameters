@@ -26,7 +26,7 @@ dependencies.constraints {
     testSamplesImplementation("commons-io:commons-io:2.20.0") {
         because("CVE-2024-47554, CVE-2021-29425")
     }
-    testSamplesImplementation("org.apache.commons:commons-lang3:3.18.0") {
+    testSamplesImplementation("org.apache.commons:commons-lang3:3.19.0") {
         because("CVE-2025-48924")
     }
 }
