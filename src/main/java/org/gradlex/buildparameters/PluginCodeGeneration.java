@@ -1,28 +1,13 @@
-/*
- * Copyright 2022 the GradleX team.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// SPDX-License-Identifier: Apache-2.0
 package org.gradlex.buildparameters;
 
-import org.gradle.api.DefaultTask;
-import org.gradle.api.file.DirectoryProperty;
-import org.gradle.api.provider.Property;
-import org.gradle.api.tasks.CacheableTask;
-import org.gradle.api.tasks.Nested;
-import org.gradle.api.tasks.OutputDirectory;
-import org.gradle.api.tasks.TaskAction;
+import static java.util.stream.Collectors.toList;
+import static org.gradlex.buildparameters.Constants.GENERATED_EXTENSION_CLASS_NAME;
+import static org.gradlex.buildparameters.Constants.GENERATED_EXTENSION_NAME;
+import static org.gradlex.buildparameters.Constants.JAVA_KEYWORDS;
+import static org.gradlex.buildparameters.Constants.PLUGIN_CLASS_NAME;
+import static org.gradlex.buildparameters.Constants.SPECIAL_IDENTIFIER_CHARACTERS;
+import static org.gradlex.buildparameters.Strings.capitalize;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -33,14 +18,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.toList;
-import static org.gradlex.buildparameters.Constants.GENERATED_EXTENSION_CLASS_NAME;
-import static org.gradlex.buildparameters.Constants.GENERATED_EXTENSION_NAME;
-import static org.gradlex.buildparameters.Constants.JAVA_KEYWORDS;
-import static org.gradlex.buildparameters.Constants.PLUGIN_CLASS_NAME;
-import static org.gradlex.buildparameters.Constants.SPECIAL_IDENTIFIER_CHARACTERS;
-import static org.gradlex.buildparameters.Strings.capitalize;
+import org.gradle.api.DefaultTask;
+import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.provider.Property;
+import org.gradle.api.tasks.CacheableTask;
+import org.gradle.api.tasks.Nested;
+import org.gradle.api.tasks.OutputDirectory;
+import org.gradle.api.tasks.TaskAction;
 
 @CacheableTask
 public abstract class PluginCodeGeneration extends DefaultTask {
@@ -54,7 +38,11 @@ public abstract class PluginCodeGeneration extends DefaultTask {
     @TaskAction
     public void generate() {
         BuildParameterGroup baseGroup = getBaseGroup().get();
-        getOutputDirectory().get().dir(baseGroup.id.toPackageFolderPath()).getAsFile().mkdirs();
+        getOutputDirectory()
+                .get()
+                .dir(baseGroup.id.toPackageFolderPath())
+                .getAsFile()
+                .mkdirs();
 
         generateGroupClass(baseGroup);
 
@@ -63,33 +51,39 @@ public abstract class PluginCodeGeneration extends DefaultTask {
 
         List<String> validationCode = validationCode();
 
-        Path pluginSource = getOutputDirectory().get().file(baseGroup.id.toPackageFolderPath() + "/" + PLUGIN_CLASS_NAME + ".java").getAsFile().toPath();
-        write(pluginSource, Arrays.asList(
-                "package " + baseGroup.id.toPackageName() + ";",
-                "",
-                "import org.gradle.api.Plugin;",
-                "import org.gradle.api.Project;",
-                "import org.gradle.api.initialization.Settings;",
-                "import org.gradle.api.invocation.Gradle;",
-                "import org.gradle.api.plugins.ExtensionAware;",
-                "import java.util.Arrays;",
-                "import java.util.List;",
-                "import java.util.Set;",
-                "import java.util.stream.Collectors;",
-                "",
-                "public abstract class " + PLUGIN_CLASS_NAME + " implements Plugin<ExtensionAware> {",
-                "",
-                "    private static final List<String> ALL_PARAMETERS = Arrays.asList(",
+        Path pluginSource = getOutputDirectory()
+                .get()
+                .file(baseGroup.id.toPackageFolderPath() + "/" + PLUGIN_CLASS_NAME + ".java")
+                .getAsFile()
+                .toPath();
+        write(
+                pluginSource,
+                Arrays.asList(
+                        "package " + baseGroup.id.toPackageName() + ";",
+                        "",
+                        "import org.gradle.api.Plugin;",
+                        "import org.gradle.api.Project;",
+                        "import org.gradle.api.initialization.Settings;",
+                        "import org.gradle.api.invocation.Gradle;",
+                        "import org.gradle.api.plugins.ExtensionAware;",
+                        "import java.util.Arrays;",
+                        "import java.util.List;",
+                        "import java.util.Set;",
+                        "import java.util.stream.Collectors;",
+                        "",
+                        "public abstract class " + PLUGIN_CLASS_NAME + " implements Plugin<ExtensionAware> {",
+                        "",
+                        "    private static final List<String> ALL_PARAMETERS = Arrays.asList(",
                         allParameters.stream().map(p -> "        \"" + p + "\"").collect(Collectors.joining(",\n")),
-                "    );",
-                "",
-                "    @Override",
-                "    public void apply(ExtensionAware projectOrSettings) {",
+                        "    );",
+                        "",
+                        "    @Override",
+                        "    public void apply(ExtensionAware projectOrSettings) {",
                         String.join("\n", validationCode),
-                "        projectOrSettings.getExtensions().create(\"" + GENERATED_EXTENSION_NAME + "\", " + GENERATED_EXTENSION_CLASS_NAME + ".class);",
-                "    }",
-                "}"
-        ));
+                        "        projectOrSettings.getExtensions().create(\"" + GENERATED_EXTENSION_NAME + "\", "
+                                + GENERATED_EXTENSION_CLASS_NAME + ".class);",
+                        "    }",
+                        "}"));
     }
 
     private List<String> validationCode() {
@@ -111,15 +105,14 @@ public abstract class PluginCodeGeneration extends DefaultTask {
                 "            if (validationActive && ALL_PARAMETERS.contains(parameter)) {",
                 "                throw new RuntimeException(\"Build parameter defined via '-D\" + parameter + \"'! Use '-P\" + parameter + \"' instead\");",
                 "            }",
-                "        }"
-        );
+                "        }");
     }
 
     private void collectAllParameters(BuildParameterGroup group, List<String> allParameters) {
         for (BuildParameter<?> parameter : group.getParameters().get()) {
             allParameters.add(parameter.getPropertyPath());
         }
-        for (BuildParameterGroup subGroup: group.getGroups().get()) {
+        for (BuildParameterGroup subGroup : group.getGroups().get()) {
             collectAllParameters(subGroup, allParameters);
         }
     }
@@ -129,13 +122,25 @@ public abstract class PluginCodeGeneration extends DefaultTask {
         List<BuildParameter<?>> buildParameters = group.getParameters().get();
 
         subGroups.forEach(this::generateGroupClass);
-        buildParameters.stream().filter(p -> p instanceof EnumBuildParameter).forEach(p -> generateEnumClass((EnumBuildParameter) p));
+        buildParameters.stream()
+                .filter(p -> p instanceof EnumBuildParameter)
+                .forEach(p -> generateEnumClass((EnumBuildParameter) p));
 
-        List<CodeGeneratingBuildParameter> parameters = buildParameters.stream().map(p -> CodeGeneratingBuildParameter.from(p, group)).collect(toList());
+        List<CodeGeneratingBuildParameter> parameters = buildParameters.stream()
+                .map(p -> CodeGeneratingBuildParameter.from(p, group))
+                .collect(toList());
         String groupClassName = group.id.toSimpleTypeName();
 
-        getOutputDirectory().get().dir(group.id.toPackageFolderPath()).getAsFile().mkdirs();
-        Path groupSource = getOutputDirectory().get().file(group.id.toPackageFolderPath() + "/" + groupClassName + ".java").getAsFile().toPath();
+        getOutputDirectory()
+                .get()
+                .dir(group.id.toPackageFolderPath())
+                .getAsFile()
+                .mkdirs();
+        Path groupSource = getOutputDirectory()
+                .get()
+                .file(group.id.toPackageFolderPath() + "/" + groupClassName + ".java")
+                .getAsFile()
+                .toPath();
 
         List<String> lines = new ArrayList<>();
         lines.add("package " + group.id.toPackageName() + ";");
@@ -146,15 +151,18 @@ public abstract class PluginCodeGeneration extends DefaultTask {
         lines.add("");
         lines.add("public abstract class " + groupClassName + " {");
         for (BuildParameterGroup subGroup : subGroups) {
-            lines.add("    private final " + subGroup.id.toFullQualifiedTypeName() + " " + subGroup.id.toFieldName() + ";");
+            lines.add("    private final " + subGroup.id.toFullQualifiedTypeName() + " " + subGroup.id.toFieldName()
+                    + ";");
         }
         for (CodeGeneratingBuildParameter parameter : parameters) {
-            lines.add("    private final " + parameter.getType() + " " + parameter.getId().toFieldName() + ";");
+            lines.add("    private final " + parameter.getType() + " "
+                    + parameter.getId().toFieldName() + ";");
         }
         lines.add("    @Inject");
         lines.add("    public " + groupClassName + "(ProviderFactory providers, ObjectFactory objects) {");
         for (BuildParameterGroup subGroup : subGroups) {
-            lines.add("        this." + subGroup.id.toFieldName() + " = objects.newInstance(" + subGroup.id.toFullQualifiedTypeName() + ".class, providers, objects);");
+            lines.add("        this." + subGroup.id.toFieldName() + " = objects.newInstance("
+                    + subGroup.id.toFullQualifiedTypeName() + ".class, providers, objects);");
         }
         for (CodeGeneratingBuildParameter parameter : parameters) {
             lines.add("        this." + parameter.getId().toFieldName() + " = " + parameter.getValue() + ";");
@@ -162,17 +170,21 @@ public abstract class PluginCodeGeneration extends DefaultTask {
         lines.add("    }");
         for (BuildParameterGroup subGroup : subGroups) {
             renderJavaDoc(lines, subGroup.getDescription());
-            lines.add("    public " + subGroup.id.toFullQualifiedTypeName() + " get" + subGroup.id.toSimpleTypeName() + "() {");
+            lines.add("    public " + subGroup.id.toFullQualifiedTypeName() + " get" + subGroup.id.toSimpleTypeName()
+                    + "() {");
             lines.add("        return this." + subGroup.id.toFieldName() + ";");
             lines.add("    }");
         }
         for (CodeGeneratingBuildParameter parameter : parameters) {
             renderJavaDoc(lines, parameter.getDescription());
-            lines.add("    public " + parameter.getType() + " get" + capitalize(parameter.getId().toFieldName()) + "() {");
+            lines.add("    public " + parameter.getType() + " get"
+                    + capitalize(parameter.getId().toFieldName()) + "() {");
             lines.add("        return this." + parameter.getId().toFieldName() + ";");
             lines.add("    }");
         }
-        buildParameters.stream().filter(p -> p instanceof BooleanBuildParameter).forEach(p -> generateBooleanParseMethod((BooleanBuildParameter) p, lines));
+        buildParameters.stream()
+                .filter(p -> p instanceof BooleanBuildParameter)
+                .forEach(p -> generateBooleanParseMethod((BooleanBuildParameter) p, lines));
         lines.add("}");
 
         write(groupSource, lines);
@@ -193,11 +205,19 @@ public abstract class PluginCodeGeneration extends DefaultTask {
     }
 
     private void generateEnumClass(EnumBuildParameter enumBuildParameter) {
-        getOutputDirectory().get().dir(enumBuildParameter.id.toPackageFolderPath()).getAsFile().mkdirs();
+        getOutputDirectory()
+                .get()
+                .dir(enumBuildParameter.id.toPackageFolderPath())
+                .getAsFile()
+                .mkdirs();
         String typeName = enumBuildParameter.id.toSimpleTypeName();
         List<String> values = enumBuildParameter.getValues().get();
 
-        Path enumSource = getOutputDirectory().get().file(enumBuildParameter.id.toPackageFolderPath() + "/" + typeName + ".java").getAsFile().toPath();
+        Path enumSource = getOutputDirectory()
+                .get()
+                .file(enumBuildParameter.id.toPackageFolderPath() + "/" + typeName + ".java")
+                .getAsFile()
+                .toPath();
 
         List<String> lines = new ArrayList<>();
         lines.add("package " + enumBuildParameter.id.toPackageName() + ";");
@@ -219,7 +239,8 @@ public abstract class PluginCodeGeneration extends DefaultTask {
         for (String enumValue : values) {
             String escapedValue = escapeEnumValue(enumValue);
             if (!enumValue.equals(escapedValue)) {
-                lines.add("        if (\"" + enumValue + "\".equals(value)) return " + typeName + "." + escapedValue + ";");
+                lines.add("        if (\"" + enumValue + "\".equals(value)) return " + typeName + "." + escapedValue
+                        + ";");
             }
         }
         lines.add("        return " + typeName + ".valueOf(value);");
@@ -241,7 +262,9 @@ public abstract class PluginCodeGeneration extends DefaultTask {
         lines.add("    private static boolean parse" + p.id.toSimpleTypeName() + "(String p) {");
         lines.add("        if (p.isEmpty() || p.equalsIgnoreCase(\"true\") || p.equals(\"1\")) return true;");
         lines.add("        if (p.equalsIgnoreCase(\"false\")) return false;");
-        lines.add("        throw new RuntimeException(\"Value '\" + p + \"' for parameter '" + p.id.toPropertyPath() + "' is not a valid boolean value. Allowed values are strings 'true', '1', and empty string for true, and string 'false' for false\");");
+        lines.add(
+                "        throw new RuntimeException(\"Value '\" + p + \"' for parameter '" + p.id.toPropertyPath()
+                        + "' is not a valid boolean value. Allowed values are strings 'true', '1', and empty string for true, and string 'false' for false\");");
         lines.add("    }");
     }
 
@@ -264,5 +287,4 @@ public abstract class PluginCodeGeneration extends DefaultTask {
             throw new UncheckedIOException(e);
         }
     }
-
 }

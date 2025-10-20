@@ -11,6 +11,12 @@ jobs:
     steps:
       - name: Checkout sources
         uses: actions/checkout@v5
+      - name: git clone gradlex-build-conventions
+        uses: actions/checkout@v5
+        with:
+          repository: gradlex-org/plugin-publish-conventions
+          path: build/plugin-publish-conventions
+          ref: new-convention-plugins
       - name: Generate and submit dependency graph
         uses: gradle/actions/dependency-submission@v5
         with:

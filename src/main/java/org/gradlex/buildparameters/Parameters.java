@@ -1,21 +1,14 @@
-/*
- * Copyright 2022 the GradleX team.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// SPDX-License-Identifier: Apache-2.0
 package org.gradlex.buildparameters;
 
+import static org.gradle.internal.logging.text.StyledTextOutput.Style.Header;
+import static org.gradle.internal.logging.text.StyledTextOutput.Style.Identifier;
+import static org.gradle.internal.logging.text.StyledTextOutput.Style.Info;
+import static org.gradle.internal.logging.text.StyledTextOutput.Style.Normal;
+
+import java.util.Collections;
+import java.util.Optional;
+import javax.inject.Inject;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Console;
@@ -24,15 +17,6 @@ import org.gradle.api.tasks.options.Option;
 import org.gradle.internal.logging.text.StyledTextOutput;
 import org.gradle.internal.logging.text.StyledTextOutputFactory;
 import org.gradle.internal.os.OperatingSystem;
-
-import javax.inject.Inject;
-import java.util.Collections;
-import java.util.Optional;
-
-import static org.gradle.internal.logging.text.StyledTextOutput.Style.Header;
-import static org.gradle.internal.logging.text.StyledTextOutput.Style.Identifier;
-import static org.gradle.internal.logging.text.StyledTextOutput.Style.Info;
-import static org.gradle.internal.logging.text.StyledTextOutput.Style.Normal;
 
 /**
  * @since 1.4
@@ -79,10 +63,14 @@ public abstract class Parameters extends DefaultTask {
                 exampleValue = "42";
             } else if (parameter instanceof BooleanBuildParameter) {
                 type = "Boolean";
-                exampleValue = ((BooleanBuildParameter)parameter).getDefaultValue().map(v -> v ? "false" : "true").getOrElse("false");
+                exampleValue = ((BooleanBuildParameter) parameter)
+                        .getDefaultValue()
+                        .map(v -> v ? "false" : "true")
+                        .getOrElse("false");
             } else if (parameter instanceof EnumBuildParameter) {
                 type = "Enum";
-                exampleValue = ((EnumBuildParameter) parameter).getValues().get().get(0);
+                exampleValue =
+                        ((EnumBuildParameter) parameter).getValues().get().get(0);
             } else {
                 throw new IllegalStateException();
             }
@@ -97,19 +85,23 @@ public abstract class Parameters extends DefaultTask {
 
             if (parameter.getDescription().isPresent()) {
                 output.println("Description");
-                output.withStyle(Header).println("     " + parameter.getDescription().get());
+                output.withStyle(Header)
+                        .println("     " + parameter.getDescription().get());
                 output.println();
             }
 
             if (parameter instanceof EnumBuildParameter) {
-                String enumValues = String.join(", ", ((EnumBuildParameter) parameter).getValues().get());
+                String enumValues = String.join(
+                        ", ", ((EnumBuildParameter) parameter).getValues().get());
                 output.println("Values");
                 output.withStyle(Header).println("     " + enumValues);
                 output.println();
             }
 
             output.println("Default value");
-            output.withStyle(Header).println("     " + parameter.getDefaultValue().map(Object::toString).getOrElse("(none)"));
+            output.withStyle(Header)
+                    .println("     "
+                            + parameter.getDefaultValue().map(Object::toString).getOrElse("(none)"));
             output.println();
 
             if (parameter.getEnvironmentVariableName().isPresent()) {
@@ -151,14 +143,17 @@ public abstract class Parameters extends DefaultTask {
     }
 
     private void printGroup(BuildParameterGroup buildParameterGroup, StyledTextOutput output) {
-        if (!buildParameterGroup.getParameters().get().isEmpty() || buildParameterGroup.getDescription().isPresent()) {
-            String header = buildParameterGroup.getPropertyPath() + buildParameterGroup.getDescription().map(d1 -> " - " + d1).getOrElse("");
+        if (!buildParameterGroup.getParameters().get().isEmpty()
+                || buildParameterGroup.getDescription().isPresent()) {
+            String header = buildParameterGroup.getPropertyPath()
+                    + buildParameterGroup.getDescription().map(d1 -> " - " + d1).getOrElse("");
             if (!header.isEmpty()) {
                 output.withStyle(Header).println(header);
                 output.withStyle(Header).println(String.join("", Collections.nCopies(header.length(), "-")));
             }
 
-            for (BuildParameter<?> parameter : buildParameterGroup.getParameters().get()) {
+            for (BuildParameter<?> parameter :
+                    buildParameterGroup.getParameters().get()) {
                 String propertyPath = parameter.getPropertyPath();
                 Property<String> description = parameter.getDescription();
                 output.withStyle(Identifier).text(propertyPath);
