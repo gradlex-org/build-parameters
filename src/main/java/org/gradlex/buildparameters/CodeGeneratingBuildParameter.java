@@ -1,26 +1,10 @@
-/*
- * Copyright 2022 the GradleX team.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+// SPDX-License-Identifier: Apache-2.0
 package org.gradlex.buildparameters;
 
-import org.gradle.api.provider.Property;
+import static org.gradlex.buildparameters.PluginCodeGeneration.escapeEnumValue;
 
 import java.util.function.Function;
-
-import static org.gradlex.buildparameters.PluginCodeGeneration.escapeEnumValue;
+import org.gradle.api.provider.Property;
 
 interface CodeGeneratingBuildParameter {
 
@@ -37,10 +21,15 @@ interface CodeGeneratingBuildParameter {
         if (parameter instanceof IntegerBuildParameter) {
             type = new ParameterType("int", "Integer", ".map(Integer::parseInt)", Function.identity());
         } else if (parameter instanceof BooleanBuildParameter) {
-            type = new ParameterType("boolean", "Boolean", ".map(" + containingGroup.id.toSimpleTypeName() + "::parse" + parameter.id.toSimpleTypeName() + ")", Function.identity());
+            type = new ParameterType(
+                    "boolean",
+                    "Boolean",
+                    ".map(" + containingGroup.id.toSimpleTypeName() + "::parse" + parameter.id.toSimpleTypeName() + ")",
+                    Function.identity());
         } else if (parameter instanceof EnumBuildParameter) {
             String typeName = parameter.id.toFullQualifiedTypeName();
-            type = new ParameterType(typeName, typeName, ".map(" + typeName + "::parse)", s -> typeName + "." + escapeEnumValue(s));
+            type = new ParameterType(
+                    typeName, typeName, ".map(" + typeName + "::parse)", s -> typeName + "." + escapeEnumValue(s));
         } else {
             type = new ParameterType("String", "String", "", s -> "\"" + s + "\"");
         }
@@ -70,13 +59,17 @@ interface CodeGeneratingBuildParameter {
         public String getValue() {
             if (parameter.getEnvironmentVariableName().isPresent()) {
                 String envName = parameter.getEnvironmentVariableName().get();
-                return "providers.gradleProperty(\"" + parameter.id.toPropertyPath() + "\").orElse(providers.environmentVariable(\"" + envName + "\"))" + type.transformation + ".getOrElse(" + getDefaultValue() + ")";
+                return "providers.gradleProperty(\"" + parameter.id.toPropertyPath()
+                        + "\").orElse(providers.environmentVariable(\"" + envName + "\"))" + type.transformation
+                        + ".getOrElse(" + getDefaultValue() + ")";
             }
-            return "providers.gradleProperty(\"" + parameter.id.toPropertyPath() + "\")" + type.transformation + ".getOrElse(" + getDefaultValue() + ")";
+            return "providers.gradleProperty(\"" + parameter.id.toPropertyPath() + "\")" + type.transformation
+                    + ".getOrElse(" + getDefaultValue() + ")";
         }
 
         private String getDefaultValue() {
-            return type.defaultValueTransformation.apply(parameter.getDefaultValue().get().toString());
+            return type.defaultValueTransformation.apply(
+                    parameter.getDefaultValue().get().toString());
         }
 
         @Override
@@ -108,9 +101,12 @@ interface CodeGeneratingBuildParameter {
         public String getValue() {
             if (parameter.getEnvironmentVariableName().isPresent()) {
                 String envName = parameter.getEnvironmentVariableName().get();
-                return "providers.gradleProperty(\"" + parameter.id.toPropertyPath() + "\").orElse(providers.environmentVariable(\"" + envName + "\"))" + errorIfMandatory() + type.transformation;
+                return "providers.gradleProperty(\"" + parameter.id.toPropertyPath()
+                        + "\").orElse(providers.environmentVariable(\"" + envName + "\"))" + errorIfMandatory()
+                        + type.transformation;
             } else {
-                return "providers.gradleProperty(\"" + parameter.id.toPropertyPath() + "\")" + errorIfMandatory() + type.transformation;
+                return "providers.gradleProperty(\"" + parameter.id.toPropertyPath() + "\")" + errorIfMandatory()
+                        + type.transformation;
             }
         }
 
@@ -130,16 +126,17 @@ interface CodeGeneratingBuildParameter {
             }
 
             String description = parameter.getDescription().isPresent()
-                    ? " (" + parameter.getDescription().get() + ")" : "";
+                    ? " (" + parameter.getDescription().get() + ")"
+                    : "";
             String envVariable = parameter.getEnvironmentVariableName().isPresent()
-                    ? "  " + parameter.getEnvironmentVariableName().get() + "=value (environment variable)\\n" : "";
+                    ? "  " + parameter.getEnvironmentVariableName().get() + "=value (environment variable)\\n"
+                    : "";
 
-            return ".orElse(providers.provider(() -> { throw new RuntimeException(\"" +
-                        "Build parameter " + parameter.id.toPropertyPath() + description + " not set. Use one of the following:\\n" +
-                        "  -P" + parameter.id.toPropertyPath() + "=value (command line)\\n" +
-                        "  " + parameter.id.toPropertyPath() + "=value (in 'gradle.properties' file)\\n" +
-                        envVariable +
-                    "\"); }))";
+            return ".orElse(providers.provider(() -> { throw new RuntimeException(\"" + "Build parameter "
+                    + parameter.id.toPropertyPath() + description + " not set. Use one of the following:\\n" + "  -P"
+                    + parameter.id.toPropertyPath() + "=value (command line)\\n" + "  "
+                    + parameter.id.toPropertyPath() + "=value (in 'gradle.properties' file)\\n" + envVariable
+                    + "\"); }))";
         }
     }
 
@@ -150,7 +147,11 @@ interface CodeGeneratingBuildParameter {
         final String transformation;
         final Function<String, String> defaultValueTransformation;
 
-        ParameterType(String name, String typeParameter, String transformation, Function<String, String> defaultValueTransformation) {
+        ParameterType(
+                String name,
+                String typeParameter,
+                String transformation,
+                Function<String, String> defaultValueTransformation) {
             this.name = name;
             this.typeParameter = typeParameter;
             this.transformation = transformation;
