@@ -24,5 +24,5 @@ publishingConventions {
 // === the following custom configuration should be removed once tests are migrated to Java
 apply(plugin = "groovy")
 
-dependencies { testImplementation("org.spockframework:spock-core:2.3-groovy-4.0") } //
+dependencies { testImplementation("org.spockframework:spock-core:2.4-groovy-5.0") } //
 // ====================================================================================
