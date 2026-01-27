@@ -7,6 +7,7 @@ import static org.gradle.internal.logging.text.StyledTextOutput.Style.Info;
 import static org.gradle.internal.logging.text.StyledTextOutput.Style.Normal;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Optional;
 import javax.inject.Inject;
 import org.gradle.api.DefaultTask;
@@ -151,14 +152,15 @@ public abstract class Parameters extends DefaultTask {
                 output.withStyle(Header).println(header);
                 output.withStyle(Header).println(String.join("", Collections.nCopies(header.length(), "-")));
             }
-
-            for (BuildParameter<?> parameter :
-                    buildParameterGroup.getParameters().get()) {
-                String propertyPath = parameter.getPropertyPath();
-                Property<String> description = parameter.getDescription();
-                output.withStyle(Identifier).text(propertyPath);
-                output.withStyle(Info).println(description.map(d -> " - " + d).getOrElse(""));
-            }
+            buildParameterGroup.getParameters().get().stream()
+                    .sorted(Comparator.comparing(a -> a.id.toPropertyPath()))
+                    .forEach(parameter -> {
+                        String propertyPath = parameter.getPropertyPath();
+                        Property<String> description = parameter.getDescription();
+                        output.withStyle(Identifier).text(propertyPath);
+                        output.withStyle(Info)
+                                .println(description.map(d -> " - " + d).getOrElse(""));
+                    });
             output.println();
         }
 

@@ -18,17 +18,16 @@ class ParametersTaskFuncTest extends Specification {
                 id 'org.gradlex.build-parameters'
             }
             buildParameters {
-                string("dbHost") {
-                    defaultValue = "localhost"
-                    description = "Define the database host"
-                }
-            
                 bool("ci") {
                     fromEnvironment()
                     defaultValue = false
                 }
                 bool("local") {
                     fromEnvironment("LOCAL_RUN")
+                }
+                string("dbHost") {
+                    defaultValue = "localhost"
+                    description = "Define the database host"
                 }
                 group("gitflow") {
                     description = "Parameters configuring the gitflow process"
@@ -66,6 +65,18 @@ class ParametersTaskFuncTest extends Specification {
     def "renders parameter help"() {
         expect:
         build(":build-logic:parameters")
+    }
+
+    def "parameters are sorted alphabetically"() {
+        when:
+        def result = build(":build-logic:parameters")
+
+        then:
+        result.output.contains("""
+        ci
+        dbHost - Define the database host
+        local
+        """.stripIndent())
     }
 
     def "renders a parameter report"() {
