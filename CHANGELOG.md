@@ -1,6 +1,8 @@
 # Build Parameters Gradle plugin - Changelog
 
 ## Version 1.4.5
+* [Fixed] [#262](https://github.com/gradlex-org/build-parameters/issues/262) Support buildParameters in a build that itself defines buildParameters
+* [Fixed] [#125](https://github.com/gradlex-org/build-parameters/issues/125) Sort parameters alphabetically when displayed via 'parameters'
 
 ## Version 1.4.4
 * [New] [#185](https://github.com/gradlex-org/build-parameters/issues/185) String '1' is accepted as a truthy value for boolean parameters.
