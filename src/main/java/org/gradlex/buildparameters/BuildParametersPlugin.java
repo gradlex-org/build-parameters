@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 package org.gradlex.buildparameters;
 
+import static org.gradlex.buildparameters.Constants.GENERATED_EXTENSION_NAME;
+
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.invocation.Gradle;
@@ -26,8 +28,13 @@ public class BuildParametersPlugin implements Plugin<Project> {
 
         GradlePluginDevelopmentExtension gradlePlugins =
                 project.getExtensions().getByType(GradlePluginDevelopmentExtension.class);
+
+        String extensionName = project.getExtensions().findByName(GENERATED_EXTENSION_NAME) != null
+                ? "buildParametersDefinition"
+                : "buildParameters";
+
         BuildParametersExtension extension =
-                project.getExtensions().create("buildParameters", BuildParametersExtension.class, gradlePlugins);
+                project.getExtensions().create(extensionName, BuildParametersExtension.class, gradlePlugins);
 
         TaskProvider<PluginCodeGeneration> task = project.getTasks()
                 .register("generatePluginCode", PluginCodeGeneration.class, t -> {
