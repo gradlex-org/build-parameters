@@ -3,7 +3,9 @@ package org.gradlex.buildparameters;
 
 import java.util.Arrays;
 import java.util.List;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 interface Constants {
     String PACKAGE_NAME = "buildparameters";
     String PLUGIN_CLASS_NAME = "GeneratedBuildParametersPlugin";

@@ -2,7 +2,9 @@
 package org.gradlex.buildparameters;
 
 import javax.inject.Inject;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public abstract class StringBuildParameter extends BuildParameter<String> {
 
     @Inject

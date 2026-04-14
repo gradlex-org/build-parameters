@@ -25,7 +25,9 @@ import org.gradle.api.tasks.CacheableTask;
 import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.TaskAction;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 @CacheableTask
 public abstract class PluginCodeGeneration extends DefaultTask {
 
