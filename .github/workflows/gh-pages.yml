@@ -31,7 +31,7 @@ jobs:
           build-scan-terms-of-use-agree: yes
       - uses: testlens-app/setup-testlens@v1.8.0
       - run: "./gradlew :asciidoctor --no-configuration-cache"
-      - uses: actions/upload-pages-artifact@v4
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: "./build/docs/asciidoc"
 
