@@ -2,7 +2,9 @@
 package org.gradlex.buildparameters;
 
 import java.util.Collections;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 class RootIdentifier extends Identifier {
 
     RootIdentifier() {

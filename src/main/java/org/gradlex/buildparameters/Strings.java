@@ -2,7 +2,9 @@
 package org.gradlex.buildparameters;
 
 import java.util.Locale;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 final class Strings {
 
     static String capitalize(String str) {

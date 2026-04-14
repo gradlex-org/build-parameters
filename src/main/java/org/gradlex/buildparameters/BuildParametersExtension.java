@@ -9,7 +9,9 @@ import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Input;
 import org.gradle.plugin.devel.GradlePluginDevelopmentExtension;
 import org.gradle.plugin.devel.PluginDeclaration;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public abstract class BuildParametersExtension extends BuildParameterGroup {
 
     private final PluginDeclaration pluginDeclaration;

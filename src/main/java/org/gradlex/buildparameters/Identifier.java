@@ -4,7 +4,9 @@ package org.gradlex.buildparameters;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 class Identifier {
 
     private final List<String> segments;

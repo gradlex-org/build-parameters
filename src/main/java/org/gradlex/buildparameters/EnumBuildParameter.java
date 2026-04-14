@@ -4,7 +4,9 @@ package org.gradlex.buildparameters;
 import javax.inject.Inject;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.tasks.Input;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public abstract class EnumBuildParameter extends BuildParameter<String> {
 
     @Input

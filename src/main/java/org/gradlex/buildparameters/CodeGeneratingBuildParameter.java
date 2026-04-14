@@ -5,7 +5,9 @@ import static org.gradlex.buildparameters.PluginCodeGeneration.escapeEnumValue;
 
 import java.util.function.Function;
 import org.gradle.api.provider.Property;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 interface CodeGeneratingBuildParameter {
 
     String getType();

@@ -13,7 +13,9 @@ import org.gradle.api.tasks.TaskProvider;
 import org.gradle.plugin.devel.GradlePluginDevelopmentExtension;
 import org.gradle.plugin.devel.plugins.JavaGradlePluginPlugin;
 import org.gradle.util.GradleVersion;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public class BuildParametersPlugin implements Plugin<Project> {
 
     private static final GradleVersion MINIMUM_SUPPORTED_VERSION = GradleVersion.version("7.1");

@@ -19,10 +19,12 @@ import org.gradle.internal.logging.text.StyledTextOutput;
 import org.gradle.internal.logging.text.StyledTextOutputFactory;
 import org.gradle.internal.os.OperatingSystem;
 import org.gradle.work.DisableCachingByDefault;
+import org.jspecify.annotations.NullMarked;
 
 /**
  * @since 1.4
  */
+@NullMarked
 @DisableCachingByDefault(because = "Not worth caching")
 public abstract class Parameters extends DefaultTask {
 

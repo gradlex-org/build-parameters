@@ -4,7 +4,9 @@ package org.gradlex.buildparameters;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.Optional;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public abstract class BuildParameter<ParameterType> {
 
     final Identifier id;
