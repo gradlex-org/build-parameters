@@ -33,7 +33,7 @@ jobs:
       - run: "./gradlew asciidoctorAll"
       - uses: actions/upload-pages-artifact@v5
         with:
-          path: "./build/docs/asciidoc"
+          path: "./build/docs/asciidoc/html"
 
   deploy:
     environment:
