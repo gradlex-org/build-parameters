@@ -16,5 +16,5 @@ jobs:
           distribution: zulu
           java-version: 17
       - uses: gradle/actions/setup-gradle@v6
-      - uses: testlens-app/setup-testlens@v1.8.0
+      - uses: testlens-app/setup-testlens@v1.9.0
       - run: "./gradlew :check"
